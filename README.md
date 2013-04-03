@@ -35,7 +35,7 @@ navigateToBallDispenser - TBA Need to implement bx, by
 loadBall - TBA Test to load ball according to bx, by, might need mechanical improvements
 navigateToDefensiveZone - TBA Need to implement w1, w2
 patrol - TBA
-navigateHome - TBA
+navigateHome - TBA Maybe not necessary but it has be done according to starterCorner
 
 
 
