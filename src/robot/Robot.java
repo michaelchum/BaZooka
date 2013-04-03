@@ -14,7 +14,7 @@ import odometry.Odometer;
 /**
  * Abstract robot class of a standard robot
  * 
- * @author Michael
+ * @author Clark
  * 
  */
 
