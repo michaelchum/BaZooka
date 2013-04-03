@@ -1,0 +1,285 @@
+package navigation;
+
+import lejos.nxt.UltrasonicSensor;
+import lejos.util.Delay;
+import odometry.Odometer;
+import navigation.Navigation;
+import navigation.Map;
+
+public class Navigator extends Navigation{
+	Map map;
+	UltrasonicSensor USSensor;
+	
+	public Navigator(Odometer odo, Map map, UltrasonicSensor USSensor){
+		super(odo);
+		this.map = map;
+		this.USSensor = USSensor;
+	}
+	
+	public void navigateTo(double destX, double destY){
+		
+		// create the wavefront grid
+		int [][] grid = setPath(destX, destY);
+		
+		//navigate the grid until goal is reached
+		navigatePath(grid);
+
+	}
+	
+	public int[][] setPath(double destX, double destY){
+		
+		// copy grid to a temporary grid for traveling purposes
+		int [][] grid = new int[10][10];
+		for(int i=0;i<map.grid.length;i++){
+			for(int j=0;j<map.grid[i].length;j++){
+				grid[i][j] = map.grid[i][j];
+			}
+		}
+		
+		// retrieve the positions in terms of grid coordinates
+		int currentI = map.currentI();
+		int currentJ = map.currentJ();
+		int destJ = map.destJ(destX);
+		int destI = map.destI(destY);
+		
+		// set the goal on the grid map
+		grid[destI][destJ]=2;
+		
+		// set the path on the grid map
+		boolean foundWave = true;
+		int currentWave = 2; //Looking for goal first
+		while(foundWave == true){
+			foundWave = false;
+			for(int y=0; y<grid.length; y++){
+				for(int x=0;x<grid[y].length; x++){
+					if(grid[x][y] == currentWave){
+						foundWave = true;
+						int goal_x = x;
+						int goal_y = y;
+						
+						//This code checks the NORTH direction
+						if(goal_x > 0 && grid[goal_x-1][goal_y] == 0){ //This code checks the array bounds heading NORTH
+							grid[goal_x-1][goal_y] = currentWave + 1;
+						}
+						
+						//This code checks the SOUTH direction
+						if(goal_x < (10 - 1) && grid[goal_x+1][goal_y] == 0){ //This code checks the array bounds heading SOUTH
+							grid[goal_x+1][goal_y] = currentWave + 1;
+						}
+
+						//This code checks the WEST direction
+						if(goal_y > 0 && grid[goal_x][goal_y-1] == 0){//This code checks the array bounds heading WEST
+							grid[goal_x][goal_y-1] = currentWave + 1;
+						}
+
+						//This code checks the EAST direction
+						if(goal_y < (10 - 1) && grid[goal_x][goal_y+1] == 0){//This code checks the array bounds heading EAST
+							grid[goal_x][goal_y+1] = currentWave + 1;
+						}
+					}
+				}
+			}
+			currentWave++;
+		}
+		
+		// set the robot on the grid map
+		grid[currentI][currentJ]=99;
+		
+		return grid;
+	}
+	
+	public void navigatePath(int [][] grid){
+		int robot_I = 0;
+		int robot_J = 0;
+		
+		//First - Find robot location by grid
+		for(int i=0; i < grid.length; i++){
+			for(int j=0; j < grid[i].length; j++){
+				if(grid[i][j] == 99){
+					robot_I = i;
+					robot_J = j;
+				}
+			}
+		}
+		
+		//Found robot location, start deciding our next path
+		int current_I = robot_I;
+		int current_J = robot_J;
+		int current_low = 99;
+		double destX;
+		double destY;
+		double direction = 0.0;
+		boolean obstacleDetected = false;
+		
+		while(current_low > 2){
+			current_low = 99; //Every time, reset to highest number (robot)
+			int Next_I = 0;
+			int Next_J = 0;
+		
+			//Check Array Bounds North
+			//Is current space occupied?
+			if(current_I > 0 && grid[current_I-1][current_J] < current_low && grid[current_I-1][current_J] != 1){
+				current_low = grid[current_I-1][current_J]; //Set next number
+				Next_I = current_I-1; //Set Next Direction as North
+				Next_J = current_J;
+				direction = 90.0;
+			}
+			
+			//Check Array Bounds South
+			//Is current space occupied?
+			if(current_I < (10 - 1) && grid[current_I+1][current_J] < current_low && grid[current_I+1][current_J] != 1){ 
+				current_low = grid[current_I+1][current_J]; //Set next number 
+				Next_I = current_I+1; //Set Next Direction as South
+				Next_J = current_J;
+				direction = 270.0;
+			}
+			
+			//Check Array Bounds West
+			//Is current space occupied?
+			if(current_J > 0 && grid[current_I][current_J-1] < current_low && grid[current_I][current_J-1] != 1){ 
+				current_low = grid[current_I][current_J-1]; //Set next number
+				Next_I = current_I; //Set Next Direction as west
+				Next_J = current_J-1;
+				direction = 180.0;
+			}
+			
+			//Check Array Bounds East
+			//Is current space occupied?
+			if(current_J < (10 - 1) && grid[current_I][current_J+1] < current_low && grid[current_I][current_J+1] != 1){
+				current_low = grid[current_I][current_J+1]; //Set next number
+				Next_I = current_I; //Set Next Direction as East
+				Next_J = current_J+1;
+				direction = 0.00;
+			}
+			
+			//Okay - We know the number we're heading for, the direction and the coordinates.
+			destX = destX(Next_J);
+			destY = destY(Next_I);
+			
+			// turn to direction of next tile
+			turnTo(direction, true);
+			try { Thread.sleep(500); } catch (InterruptedException e) {}
+	
+			// obstacle detection
+			int o1 = getFilteredData();
+			Delay.msDelay(75);
+			int o2 = getFilteredData();
+			Delay.msDelay(75);
+			int o3  = getFilteredData();
+			Delay.msDelay(75);
+			int o4  = getFilteredData();
+			Delay.msDelay(75);
+			int o5  = getFilteredData();
+			
+			if((o1<35 && o2<35 && o3<35 && o4<35 && o5<35)  && grid[Next_I][Next_J] != 1){
+				
+				// stop the following travelTo method
+				obstacleDetected = true;
+				
+				// set the obstacle on the Map grid
+				map.grid[Next_I][Next_J] = 1;
+				
+				// find destination location by grid
+				int finalJ = 0;
+				int finalI = 0;
+				for(int i=0; i < grid.length; i++){
+					for(int j=0; j < grid[i].length; j++){
+						if(grid[i][j] == 2){
+							finalI = i;
+							finalJ = j;
+						}
+					}
+				}
+				
+				// recursion
+				navigateTo(map.destX(finalJ),map.destY(finalI));
+				
+				// terminate this loop
+				current_low = 2;
+			}
+		
+			if(!obstacleDetected){
+				// travel to next tile
+				travelTo(destX, destY);
+			
+				// update the new position on the grid
+				current_I = Next_I;
+				current_J = Next_J;
+			}
+			
+		}
+	}
+	
+	int distance;
+	int filterControl = 0;
+	int FILTER_OUT = 20;
+	
+	private int getFilteredData() {
+		// do a ping
+		USSensor.ping();
+		
+		// wait for the ping to complete
+		try { Thread.sleep(100); } catch (InterruptedException e) {}
+		
+		// there will be a delay here
+		distance = USSensor.getDistance();
+		
+		//Rudimentary filter from wall following lab
+		if (distance == 255 && filterControl < FILTER_OUT) {
+			// bad value, do not set the distance variable, however do increment the filter value
+			filterControl ++;
+		} else if (distance == 255){
+			// true 255, therefore set distance to 255
+		} else {
+			// distance went below 255, therefore reset everything.
+			filterControl = 0;
+		}
+		return distance;
+	}
+	
+	public static double destX(int destJ){
+		double[] coordsX = new double[10];
+		double[] coordsY = new double[10];
+		double tileWidth = 30.0;
+		double sumX = tileWidth/2;
+		double sumY = tileWidth/2 + (tileWidth)*9;
+
+		// build x coordinates of map
+		for(int i=0;i<coordsX.length;i++){
+			coordsX[i] = sumX;
+			sumX = sumX + tileWidth;
+		}
+		
+		//build y coordinates of map
+		for(int j=0;j<coordsY.length;j++){
+			coordsY[j] = sumY;
+			sumY = sumY - tileWidth;
+		}
+
+		return coordsX[destJ];
+	}
+	
+	public static double destY(int destI){
+		double[] coordsX = new double[10];
+		double[] coordsY = new double[10];
+		double tileWidth = 30.0;
+		double sumX = tileWidth/2;
+		double sumY = tileWidth/2 + (tileWidth)*9;
+
+
+		// build x coordinates of map
+		for(int i=0;i<coordsX.length;i++){
+			coordsX[i] = sumX;
+			sumX = sumX + tileWidth;
+		}
+		
+		//build y coordinates of map
+		for(int j=0;j<coordsY.length;j++){
+			coordsY[j] = sumY;
+			sumY = sumY - tileWidth;
+		}
+
+		return coordsY[destI];
+	}
+	
+}
