@@ -12,6 +12,39 @@ Inspired by the following websites if you want to understand
 http://www.societyofrobots.com/programming_wavefront.shtml
 http://www.robotc.net/blog/2011/08/08/robotc-advanced-training/
 
+CURRENT STATUS
+
+  Odometry - Done
+  Navigation - Done
+  Navigator - Done
+  OdometryCorrection - Done
+  Map - Done
+  Bluetooth - Done
+  Catapult - Done, need to take numbers from Danial
+  OdometryAngleCorrection - Need tweaking (Michael)
+  
+  TO BE WORKED ON, in order of priority
+  
+  USLocalizer - Working, need tweaking, need to implement for all 4 corners (Clark)
+  LightLocalizer - Working, need tweaking, need to implement all 4 corners (Clark)
+  
+  Not too hard with the use of Navigator and Navigation
+  navigateToFiringArea - TBA Need to implement d1, w1, w2 which will be provided by bluetooth, need two positions in   diagonal with basket to avoid defender
+  fireBall - TBA Need to make angle according according to current firingPosition and basket
+  navigateToBallDispenser - TBA Need to implement bx, by
+  loadBall - TBA Test to load ball according to bx, by, might need mechanical improvements
+  navigateToDefensiveZone - TBA Need to implement w1, w2
+  patrol - TBA
+  navigateHome - TBA Maybe not necessary but it has be done according to starterCorner
+
+
+
+
+
+
+
+
+
 
 
 
