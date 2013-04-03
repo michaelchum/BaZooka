@@ -78,8 +78,7 @@ public class OdometryCorrection extends Thread {
 								myOdometer.setX(getClosest(xLines, closestLine)*tileWidth - sensorCenter);
 							}
 							
-							// this ensure the odometry correction occurs only once every period
-							try {Thread.sleep(CORRECTION_PERIOD);} catch (InterruptedException e) {}
+							try {Thread.sleep(CORRECTION_PERIOD);} catch (InterruptedException e) {} // correction occurs only once every period
 							val = middleSensor.readValue();
 							preVal = middleSensor.readValue();
 						}
