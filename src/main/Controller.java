@@ -42,6 +42,7 @@ public class Controller {
 		StartCorner startingCorner = t.startingCorner;
 		*/
 		
+		// testing values
 		int bx = 0;
 		int by = 0;
 		int w1 = 0;
