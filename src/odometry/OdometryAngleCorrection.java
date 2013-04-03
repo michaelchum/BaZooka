@@ -13,7 +13,6 @@ public class OdometryAngleCorrection extends Thread {
 	private Odometer myOdometer;
 	private LightSensor leftSensor, rightSensor;
 	private NXTRegulatedMotor leftMotor, rightMotor;
-	private LightData RLData, LLData;
 	private boolean leftLineDetected = false;
 	private boolean rightLineDetected = false;
 	private boolean leftLineFirst = false;
@@ -21,9 +20,8 @@ public class OdometryAngleCorrection extends Thread {
 	private int valR;
 	private int preValL;
 	private int preValR;
-	
-	// distance measured between the light sensor's position and the the center between the two light sensors
-	private double sensorDistance = 18.5;
+
+	private double sensorDistance = 18.5; // distance measured between the light sensor's position
 	
 	double initialAngle, initialX, initialY; // coordinates when first line is detected
 	double secondAngle, secondX, secondY;  // coordinates when second line is detected
@@ -52,15 +50,15 @@ public class OdometryAngleCorrection extends Thread {
 	public void run() {
 		
 		while (true){
-			// important to limit resources from the CPU
-			try {Thread.sleep(25);} catch (InterruptedException e) {}
+			
+			try {Thread.sleep(25);} catch (InterruptedException e) {} // important to limit resources from the CPU
 			
 			leftLineDetected = false;
 			rightLineDetected = false;
 			preValL = leftSensor.getLightValue();
 			preValR = rightSensor.getLightValue();
 
-			// activate correction only when the robot is moving in a straight line
+			// activate angle correction only when the robot is moving in a straight line
 			while (leftMotor.getSpeed()==FORWARD_SPEED && rightMotor.getSpeed()==FORWARD_SPEED) {
 				
 				while (!leftLineDetected || !rightLineDetected){
@@ -101,10 +99,10 @@ public class OdometryAngleCorrection extends Thread {
 					
 					preValL = valL;
 					preValR = valR;
-					Delay.msDelay(25);
+					Delay.msDelay(25); // delay is necessary for interval between val and preVal long enough
 				}	
-				// correct the angle and restart loop
-				correct();
+				
+				correct(); // correct the angle and restart loop
 			}
 		}
 	}
@@ -127,12 +125,18 @@ public class OdometryAngleCorrection extends Thread {
 		  if((myOdometer.getAng()-10) < actualAngle && actualAngle < myOdometer.getAng()+10){
 			  myOdometer.setTheta(actualAngle);
 			  Sound.beepSequence();
+			  
+			  // reset the sequence
+			  	valL = leftSensor.readValue();
+				preValL = leftSensor.readValue();
+				valR = rightSensor.readValue();
+				preValR = rightSensor.readValue();
 
 			  this.leftLineDetected = false;
 			  this.rightLineDetected = false;
 			  this.leftLineFirst = false;
 
-			  try {Thread.sleep(CORRECTION_PERIOD);} catch (InterruptedException e) {}
+			  try {Thread.sleep(CORRECTION_PERIOD);} catch (InterruptedException e) {} // correction once every period
 		  }
 	}
 	
@@ -146,10 +150,8 @@ public class OdometryAngleCorrection extends Thread {
 		 deltaPosition = Math.sqrt(Math.pow(deltaX,2)+ Math.pow(deltaY, 2)); // calculate change in robots position, relative to change in both X,Y coordinates
 	
 		 actualAngle = Math.toDegrees(Math.atan2(deltaPosition,sensorDistance)); // compute the actual angle in degrees
-		  
-		  
-		 // If right sensor detects first 
-		 if (!leftLineFirst){
+		   
+		 if (!leftLineFirst){ // If right sensor detects first
 			 actualAngle = (-actualAngle+360);
 		 }
 		  

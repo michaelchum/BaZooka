@@ -5,7 +5,7 @@ import odometry.Odometer;
 import lejos.nxt.NXTRegulatedMotor;
 
 public class Navigation {
-	final static int FAST = 175, SLOW = 85, ACCELERATION = 1000; // default 4000, try 100 later due to slippery
+	final static int FAST = 175, SLOW = 85, ACCELERATION = 500; // default 4000, trying lower for smooth transitions
 	final static double DEG_ERR = 3.0, CM_ERR = 1.0;
 	private Odometer odometer;
 	private NXTRegulatedMotor leftMotor, rightMotor;

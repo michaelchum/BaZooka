@@ -49,36 +49,30 @@ public class OdometryCorrection extends Thread {
 			while (	leftMotor.getSpeed() == FORWARD_SPEED && rightMotor.getSpeed() == FORWARD_SPEED ) {
 				val = middleSensor.readValue();
 					
-				LCD.drawString("Light: ", 0, 4);
-				LCD.drawInt(val, 7, 4);
-					
 						if ((val-preVal) > 8) {
 							Sound.beep();
 								
 							double theta = myOdometer.getAng();
 								
-							// if the robot is moving in the vertical, correct Y position
-							if (theta > 350 || theta < 10){
+							if (theta > 350 || theta < 10){ // if robot is moving EAST, correct X position
 								double currentY = myOdometer.getY();
 								double closestLine = (currentY - sensorCenter)/tileWidth;
 								myOdometer.setY(getClosest(yLines, closestLine)*tileWidth + sensorCenter);
 							}
 								
-							if (theta < 190 && theta > 170){
+							if (theta < 190 && theta > 170){ // if robot is moving WEST, correct X position
 								double currentY = myOdometer.getY();
 								double closestLine = (currentY + sensorCenter)/tileWidth;
 								myOdometer.setY(getClosest(yLines, closestLine)*tileWidth - sensorCenter);
 							}
 								
-								
-							// if the robot is moving in the horizontal, correct X position
-							if (theta < 100 && theta > 80){
+							if (theta < 100 && theta > 80){ // if robot is moving NORTH, correct Y position
 								double currentX = myOdometer.getX();
 								double closestLine = (currentX - sensorCenter)/tileWidth;
 								myOdometer.setX(getClosest(xLines, closestLine)*tileWidth + sensorCenter);
 							}
 								
-							if (theta < 280 && theta > 260){
+							if (theta < 280 && theta > 260){ // if robot is moving SOUTH, correct Y position
 								double currentX = myOdometer.getX();
 								double closestLine = (currentX + sensorCenter)/tileWidth;
 								myOdometer.setX(getClosest(xLines, closestLine)*tileWidth - sensorCenter);

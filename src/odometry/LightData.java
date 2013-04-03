@@ -4,6 +4,7 @@ import lejos.nxt.LightSensor;
 import lejos.nxt.Sound;
 import lejos.util.TimerListener;
 import lejos.util.Timer;
+import lejos.util.Delay;
 
 public class LightData implements TimerListener{
 	

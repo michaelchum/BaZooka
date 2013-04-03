@@ -7,7 +7,7 @@ import lejos.util.Timer;
 import lejos.util.TimerListener;
 
 public class LCDInfo implements TimerListener{
-	public static final int LCD_REFRESH = 100;
+	public static final int LCD_REFRESH = 80; // display refresh rate to be change for precision purposes
 	private Odometer odo;
 	private Timer lcdTimer;
 	
@@ -59,7 +59,7 @@ public class LCDInfo implements TimerListener{
 		LCD.drawInt(rightVal, 13, 6);
 	}
 	
-	private static String formattedDoubleToString(double x, int places) {
+	private static String formattedDoubleToString(double x, int places) { // taken from lab LAB 2 OdometryDisplay.java
 		String result = "";
 		String stack = "";
 		long t;
@@ -80,7 +80,6 @@ public class LCDInfo implements TimerListener{
 				stack = Long.toString(t % 10) + stack;
 				t /= 10;
 			}
-			
 			result += stack;
 		}
 		
