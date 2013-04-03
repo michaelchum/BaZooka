@@ -3,13 +3,11 @@ package odometry;
 import lejos.nxt.LightSensor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.Sound;
-import lejos.nxt.LCD;
 import lejos.util.Delay;
 
 public class OdometryCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 1000;
 	private static final int FORWARD_SPEED = 175;
-	int baseLightValue;
 	private Odometer myOdometer;
 	private LightSensor middleSensor;
 	private NXTRegulatedMotor leftMotor, rightMotor;
@@ -42,51 +40,54 @@ public class OdometryCorrection extends Thread {
 		
 		while(true) {
 			
-			// important to limit resources from the cpu
+			// important to limit resources from the CPU
 			try {Thread.sleep(25);} catch (InterruptedException e) {}
 			
 			// activate correction only when the robot is moving in a straight line and no line is detected
 			while (	leftMotor.getSpeed() == FORWARD_SPEED && rightMotor.getSpeed() == FORWARD_SPEED ) {
+				
 				val = middleSensor.readValue();
 					
-						if ((val-preVal) > 8) {
-							Sound.beep();
+				if ((val-preVal) > 8) {
+					
+					Sound.beep();
 								
-							double theta = myOdometer.getAng();
+					double theta = myOdometer.getAng();
 								
-							if (theta > 350 || theta < 10){ // if robot is moving EAST, correct X position
-								double currentY = myOdometer.getY();
-								double closestLine = (currentY - sensorCenter)/tileWidth;
-								myOdometer.setY(getClosest(yLines, closestLine)*tileWidth + sensorCenter);
-							}
+					if (theta > 350 || theta < 10){ // if robot is moving EAST, correct X position
+						double currentY = myOdometer.getY();
+						double closestLine = (currentY - sensorCenter)/tileWidth;
+						myOdometer.setY(getClosest(yLines, closestLine)*tileWidth + sensorCenter);
+					}
 								
-							if (theta < 190 && theta > 170){ // if robot is moving WEST, correct X position
-								double currentY = myOdometer.getY();
-								double closestLine = (currentY + sensorCenter)/tileWidth;
-								myOdometer.setY(getClosest(yLines, closestLine)*tileWidth - sensorCenter);
-							}
+					if (theta < 190 && theta > 170){ // if robot is moving WEST, correct X position
+						double currentY = myOdometer.getY();
+						double closestLine = (currentY + sensorCenter)/tileWidth;
+						myOdometer.setY(getClosest(yLines, closestLine)*tileWidth - sensorCenter);
+					}
 								
-							if (theta < 100 && theta > 80){ // if robot is moving NORTH, correct Y position
-								double currentX = myOdometer.getX();
-								double closestLine = (currentX - sensorCenter)/tileWidth;
-								myOdometer.setX(getClosest(xLines, closestLine)*tileWidth + sensorCenter);
-							}
+					if (theta < 100 && theta > 80){ // if robot is moving NORTH, correct Y position
+						double currentX = myOdometer.getX();
+						double closestLine = (currentX - sensorCenter)/tileWidth;
+						myOdometer.setX(getClosest(xLines, closestLine)*tileWidth + sensorCenter);
+					}
 								
-							if (theta < 280 && theta > 260){ // if robot is moving SOUTH, correct Y position
-								double currentX = myOdometer.getX();
-								double closestLine = (currentX + sensorCenter)/tileWidth;
-								myOdometer.setX(getClosest(xLines, closestLine)*tileWidth - sensorCenter);
-							}
+					if (theta < 280 && theta > 260){ // if robot is moving SOUTH, correct Y position
+						double currentX = myOdometer.getX();
+						double closestLine = (currentX + sensorCenter)/tileWidth;
+						myOdometer.setX(getClosest(xLines, closestLine)*tileWidth - sensorCenter);
+					}
 							
-							try {Thread.sleep(CORRECTION_PERIOD);} catch (InterruptedException e) {} // correction occurs only once every period
-							val = middleSensor.readValue();
-							preVal = middleSensor.readValue();
-						}
-			preVal = val;
-			Delay.msDelay(42);
+					try {Thread.sleep(CORRECTION_PERIOD);} catch (InterruptedException e) {} // correction occurs only once every period
+					val = middleSensor.readValue();
+					preVal = middleSensor.readValue();
+				}	
+				preVal = val;
+				Delay.msDelay(42);
+			}
 		}
 	}
-}
+	
 	// method to get the closest point to to a point in an array
 	public double getClosest(double[] array, double position) {
 	    double lowestDiff = Double.MAX_VALUE;
@@ -100,4 +101,5 @@ public class OdometryCorrection extends Thread {
 	    }
 	    return result;
 	}
+	
 }

@@ -9,7 +9,6 @@ public class Navigation {
 	final static double DEG_ERR = 3.0, CM_ERR = 1.0;
 	private Odometer odometer;
 	private NXTRegulatedMotor leftMotor, rightMotor;
-	boolean isNavigating;
 
 	public Navigation(Odometer odo) {
 		this.odometer = odo;
@@ -126,7 +125,9 @@ public class Navigation {
 		this.travelTo(Math.cos(Math.toRadians(this.odometer.getAng())) * distance, Math.cos(Math.toRadians(this.odometer.getAng())) * distance);
 	}
 	
-	// useful conversions from lab 2 squaredriver.java
+	/*
+	 * Useful conversions from lab 2 squaredriver.java, converts distance to rotation degrees according to wheel radius
+	 */ 
 	private static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}

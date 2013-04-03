@@ -1,5 +1,8 @@
 package defense;
 
+import navigation.Navigator;
+import odometry.Odometer;
+
 /**
  * 
  * Intelligently navigate to the defensive zone
@@ -8,24 +11,25 @@ package defense;
  *
  */
 public class navigateToDefensiveZone{
-	private static final int defenseSpotX = 0;
-	private static final int defenseSpotY = 0;
 	int w1;
 	int w2;
 	int d1; 
-	
+	Navigator nav;
+	Odometer odo;
 	
 	/**
 	 * Constructor
 	 */
-	public navigateToDefensiveZone(int w1, int w2, int d1) {
+	public navigateToDefensiveZone(int w1, int w2, int d1, Navigator nav, Odometer odo) {
 		this. w1 = w1;
 		this.w2 = w2;
 		this.d1 = d1;
+		this.nav = nav;
+		this.odo = odo;
 	}
 	
-	public static void navigate(int w1, int w2, int d1) {
-		navigateToDefensiveZone temp = new navigateToDefensiveZone(w1, w2, d1);
+	public static void navigate(int w1, int w2, int d1, Navigator nav, Odometer odo) {
+		navigateToDefensiveZone temp = new navigateToDefensiveZone(w1, w2, d1, nav, odo);
 		temp.navigate();
 	}
 	

@@ -1,8 +1,15 @@
 package offense;
 
 import motion.Catapult;
+import navigation.Navigator;
+import odometry.Odometer;
 
 public class fireBall {
+	Navigator nav;
+	Odometer odo;
+	Catapult cata;
+	int goalX;
+	int goalY;
 
 	/**
 	 * 
@@ -11,23 +18,17 @@ public class fireBall {
 	 * 
 	 */
 	
-	Catapult myCatapult;
-	int goalX;
-	int goalY;
-
-	public fireBall(Catapult myCatapult, int goalX, int goalY) {
-		this.myCatapult = myCatapult;
+	public fireBall(Catapult cata, int goalX, int goalY){
 		this.goalX = goalX;
 		this.goalY = goalY;
 	}
 	
-
-	public static void fire(Catapult myCatapult, int goalX, int goalY){
-		fireBall temp = new fireBall(myCatapult, goalX, goalY);
-		temp.fire();
+	public static void fire(Catapult cata, int goalX, int goalY){
+		fireBall temp = new fireBall(cata, goalX, goalY);
+		temp.shootFiveTimes();
 	}
 	
-	public void fire(){
+	public void shootFiveTimes(){
 		
 	}
 	

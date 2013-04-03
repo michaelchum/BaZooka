@@ -42,6 +42,10 @@ public class Controller {
 		StartCorner startingCorner = t.startingCorner;
 		*/
 		
+		// position of the basket
+		final int goalX = 150;
+		final int goalY = 300;
+		
 		// testing values
 		int bx = 0;
 		int by = 0;
@@ -59,7 +63,7 @@ public class Controller {
 		if (role==PlayerRole.ATTACKER){
 		Forward forward = new Forward(Motor.A, Motor.B, Motor.C, SensorPort.S1,
 				SensorPort.S2, SensorPort.S3, SensorPort.S4);
-		forward.play(role, bx, by, w1, w2, d1, startingCorner);
+		forward.play(role, bx, by, w1, w2, d1, startingCorner, goalX, goalY);
 		}
 		
 		else if (role==PlayerRole.DEFENDER){

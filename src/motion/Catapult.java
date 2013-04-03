@@ -1,6 +1,5 @@
 package motion;
 
-import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.util.Delay;
 
@@ -13,20 +12,8 @@ import lejos.util.Delay;
 
 public class Catapult {
 
-	public static void main(String[] args) {
-		NXTRegulatedMotor centreM = Motor.A;
-		Catapult catapult = new Catapult(centreM);
-		
-		catapult.arm();
-		
-		for(int count=0; count<5; count++){
-			catapult.carry();
-			catapult.shootCenter();
-		}
-		
-	}
-	
 	NXTRegulatedMotor centreM;
+	
   	/**
 	* Constructor
 	* @param - The catapult's motor
@@ -77,10 +64,6 @@ public class Catapult {
 	   centreM.rotateTo(0);
 	   centreM.stop();
 	   Delay.msDelay(1000);
-	}
-	
-	public void aim(){
-		
 	}
 
 }

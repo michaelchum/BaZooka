@@ -18,11 +18,9 @@ public class Navigator extends Navigation{
 	
 	public void navigateTo(double destX, double destY){
 		
-		// create the wavefront grid
-		int [][] grid = setPath(destX, destY);
+		int [][] grid = setPath(destX, destY); // create the wavefront grid
 		
-		//navigate the grid until goal is reached
-		navigatePath(grid);
+		navigatePath(grid); //navigate the wavefront grid until goal is reached
 
 	}
 	
@@ -92,7 +90,7 @@ public class Navigator extends Navigation{
 		int robot_I = 0;
 		int robot_J = 0;
 		
-		//First - Find robot location by grid
+		// First - find robot location by grid
 		for(int i=0; i < grid.length; i++){
 			for(int j=0; j < grid[i].length; j++){
 				if(grid[i][j] == 99){
@@ -102,7 +100,7 @@ public class Navigator extends Navigation{
 			}
 		}
 		
-		//Found robot location, start deciding our next path
+		// Second - Found robot location, start deciding next block and continue on until goal is reached
 		int current_I = robot_I;
 		int current_J = robot_J;
 		int current_low = 99;
@@ -116,8 +114,8 @@ public class Navigator extends Navigation{
 			int Next_I = 0;
 			int Next_J = 0;
 		
-			//Check Array Bounds North
-			//Is current space occupied?
+			// Check Array Bounds North
+			// Is current space occupied?
 			if(current_I > 0 && grid[current_I-1][current_J] < current_low && grid[current_I-1][current_J] != 1){
 				current_low = grid[current_I-1][current_J]; //Set next number
 				Next_I = current_I-1; //Set Next Direction as North
@@ -125,8 +123,8 @@ public class Navigator extends Navigation{
 				direction = 90.0;
 			}
 			
-			//Check Array Bounds South
-			//Is current space occupied?
+			// Check Array Bounds South
+			// Is current space occupied?
 			if(current_I < (10 - 1) && grid[current_I+1][current_J] < current_low && grid[current_I+1][current_J] != 1){ 
 				current_low = grid[current_I+1][current_J]; //Set next number 
 				Next_I = current_I+1; //Set Next Direction as South
@@ -134,8 +132,8 @@ public class Navigator extends Navigation{
 				direction = 270.0;
 			}
 			
-			//Check Array Bounds West
-			//Is current space occupied?
+			// Check Array Bounds West
+			// Is current space occupied?
 			if(current_J > 0 && grid[current_I][current_J-1] < current_low && grid[current_I][current_J-1] != 1){ 
 				current_low = grid[current_I][current_J-1]; //Set next number
 				Next_I = current_I; //Set Next Direction as west
@@ -143,8 +141,8 @@ public class Navigator extends Navigation{
 				direction = 180.0;
 			}
 			
-			//Check Array Bounds East
-			//Is current space occupied?
+			// Check Array Bounds East
+			// Is current space occupied?
 			if(current_J < (10 - 1) && grid[current_I][current_J+1] < current_low && grid[current_I][current_J+1] != 1){
 				current_low = grid[current_I][current_J+1]; //Set next number
 				Next_I = current_I; //Set Next Direction as East
@@ -152,7 +150,7 @@ public class Navigator extends Navigation{
 				direction = 0.00;
 			}
 			
-			//Okay - We know the number we're heading for, the direction and the coordinates.
+			// Okay - We know the number we're heading for, the direction and the coordinates.
 			destX = destX(Next_J);
 			destY = destY(Next_I);
 			
@@ -160,7 +158,7 @@ public class Navigator extends Navigation{
 			turnTo(direction, true);
 			try { Thread.sleep(500); } catch (InterruptedException e) {}
 	
-			// obstacle detection
+			// check if obstacle is detected
 			int o1 = getFilteredData();
 			Delay.msDelay(75);
 			int o2 = getFilteredData();
@@ -197,14 +195,14 @@ public class Navigator extends Navigation{
 				// terminate this loop
 				current_low = 2;
 			}
-		
-			if(!obstacleDetected){
-				// travel to next tile
-				travelTo(destX, destY);
 			
-				// update the new position on the grid
-				current_I = Next_I;
-				current_J = Next_J;
+			// if no obstacle move to next block
+			if(!obstacleDetected){
+
+				travelTo(destX, destY); // travel to next tile
+			
+				current_I = Next_I; // update new I position for loop
+				current_J = Next_J; // update new J position for loop
 			}
 			
 		}

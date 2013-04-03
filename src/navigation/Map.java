@@ -131,7 +131,7 @@ public class Map {
 		int highest= 1;
 		for(int i = 0; i < grid.length; i++) {
 		    for(int j = 0; j < grid.length; j++){
-		    	if(highest < grid[i][j]) {
+		    	if(highest < grid[i][j] && grid[i][j]!= 99) {
 			    	highest = grid[i][j];
 		    	}
 		    }

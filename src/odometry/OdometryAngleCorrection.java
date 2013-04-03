@@ -5,21 +5,12 @@ import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.Sound;
 import lejos.util.Delay;
 
-import odometry.LightData;
-
 public class OdometryAngleCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 800;
 	private static final int FORWARD_SPEED = 175;
 	private Odometer myOdometer;
 	private LightSensor leftSensor, rightSensor;
 	private NXTRegulatedMotor leftMotor, rightMotor;
-	private boolean leftLineDetected = false;
-	private boolean rightLineDetected = false;
-	private boolean leftLineFirst = false;
-	private int valL;
-	private int valR;
-	private int preValL;
-	private int preValR;
 
 	private double sensorDistance = 18.5; // distance measured between the light sensor's position
 	
@@ -27,6 +18,14 @@ public class OdometryAngleCorrection extends Thread {
 	double secondAngle, secondX, secondY;  // coordinates when second line is detected
 	double actualAngle, actualX, actualY;  // actual robot coordinates
 	double deltaPosition, deltaX,deltaY; // change in robot position
+	
+	boolean leftLineDetected = false;
+	boolean rightLineDetected = false;
+	boolean leftLineFirst = false;
+	int valL;
+	int valR;
+	int preValL;
+	int preValR;
 	
 	/**
 	 * Constructor for angle correction
@@ -52,14 +51,14 @@ public class OdometryAngleCorrection extends Thread {
 		while (true){
 			
 			try {Thread.sleep(25);} catch (InterruptedException e) {} // important to limit resources from the CPU
-			
-			leftLineDetected = false;
-			rightLineDetected = false;
-			preValL = leftSensor.getLightValue();
-			preValR = rightSensor.getLightValue();
 
 			// activate angle correction only when the robot is moving in a straight line
 			while (leftMotor.getSpeed()==FORWARD_SPEED && rightMotor.getSpeed()==FORWARD_SPEED) {
+				
+				leftLineDetected = false;
+				rightLineDetected = false;
+				preValL = leftSensor.getLightValue();
+				preValR = rightSensor.getLightValue();
 				
 				while (!leftLineDetected || !rightLineDetected){
 					
@@ -102,42 +101,46 @@ public class OdometryAngleCorrection extends Thread {
 					Delay.msDelay(25); // delay is necessary for interval between val and preVal long enough
 				}	
 				
-				correct(); // correct the angle and restart loop
+				if (leftLineDetected && rightLineDetected){ // correct the angle and restart loop if both lines are detected
+					correct(); 
+				}
 			}
 		}
 	}
-	
-	 private void correct(){
-		  if (350 < myOdometer.getAng() && myOdometer.getAng() < 10){
-			  actualAngle = correctedTheta();
-		  }
-		  else if(80 < myOdometer.getAng() && myOdometer.getAng() < 100){
-			  actualAngle = 90 + correctedTheta();
-		  }
-		  else if(170 < myOdometer.getAng() && myOdometer.getAng() < 190){
-			  actualAngle = 180 + correctedTheta();
-		  }
-		  else if(260 < myOdometer.getAng() && myOdometer.getAng() < 280){
-			  actualAngle = 270 + correctedTheta();
-		  }
+
+	private void correct(){
+		 
+		if (350 < myOdometer.getAng() && myOdometer.getAng() < 10){
+			actualAngle = correctedTheta();
+		}
+		else if (80 < myOdometer.getAng() && myOdometer.getAng() < 100){
+			actualAngle = 90 + correctedTheta();
+		}
+		else if(170 < myOdometer.getAng() && myOdometer.getAng() < 190){
+			actualAngle = 180 + correctedTheta();
+		}
+		else if(260 < myOdometer.getAng() && myOdometer.getAng() < 280){
+			actualAngle = 270 + correctedTheta();
+		}
 		  
-		  // check sensors detected same line
-		  if((myOdometer.getAng()-10) < actualAngle && actualAngle < myOdometer.getAng()+10){
-			  myOdometer.setTheta(actualAngle);
-			  Sound.beepSequence();
+		// check sensors detected same line
+		if((myOdometer.getAng()-10) < actualAngle && actualAngle < myOdometer.getAng()+10){
+			
+			myOdometer.setTheta(actualAngle); // correct the angle
+			Sound.beepSequence();
 			  
-			  // reset the sequence
-			  	valL = leftSensor.readValue();
-				preValL = leftSensor.readValue();
-				valR = rightSensor.readValue();
-				preValR = rightSensor.readValue();
+			// reset the sequence
+			valL = leftSensor.readValue();
+			preValL = leftSensor.readValue();
+			valR = rightSensor.readValue();
+			preValR = rightSensor.readValue();
+			this.leftLineDetected = false;
+			this.rightLineDetected = false;
+			this.leftLineFirst = false;
 
-			  this.leftLineDetected = false;
-			  this.rightLineDetected = false;
-			  this.leftLineFirst = false;
-
-			  try {Thread.sleep(CORRECTION_PERIOD);} catch (InterruptedException e) {} // correction once every period
-		  }
+			try {Thread.sleep(CORRECTION_PERIOD);} catch (InterruptedException e) {} // correction once every period
+		}
+		
 	}
 	
 	/**

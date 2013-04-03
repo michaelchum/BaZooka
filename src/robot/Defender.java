@@ -48,26 +48,30 @@ public class Defender extends Robot {
 	public void localize(StartCorner startingCorner) {
 		myCatapult.arm();
 		// localize and position at the first block
-		USLocalizer.doFallingEdgeLocalization(myOdometer, myNav, USSensor, leftMotor, rightMotor);
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor);
+		USLocalizer.doFallingEdgeLocalization(myOdo, myNav, USSensor, leftMotor, rightMotor);
+		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor, rightMotor);
+		
+		// navigate to the middle of the first tile depending on StartCorner
+		// myNav.TravelTo(15.0,15.0);
+		// myNav.TurnTo(90.0);
 	}
 	
 	public void play(PlayerRole role, int bx, int by, int w1, int w2, int d1, StartCorner startingCorner) {
 		// localize(startingCorner);
 		
 		// LCD
-		// LCDInfo LCD = new LCDInfo(myOdometer, myUSSensor, leftSensor, centerSensor, rightSensor);
+		// LCDInfo LCD = new LCDInfo(myOdo, myUSSensor, leftSensor, centerSensor, rightSensor);
 
 		// initialize correction threads
-		// OdometryCorrection myOdoCorrection = new OdometryCorrection(myOdometer, centerSensor, leftMotor, rightMotor);
+		// OdometryCorrection myOdoCorrection = new OdometryCorrection(myOdo, centerSensor, leftMotor, rightMotor);
 		// myOdoCorrection.start();
-		// OdometryAngleCorrection myOdoAngleCorrection = new OdometryAngleCorrection(myOdometer, leftSensor, rightSensor, leftMotor, rightMotor);
+		// OdometryAngleCorrection myOdoAngleCorrection = new OdometryAngleCorrection(myOdo, leftSensor, rightSensor, leftMotor, rightMotor);
 		// myOdoAngleCorrection.start();
 		
 		/* NEED TO WRITE ALL THESE USING NAVIGATOR */
 		
-		// navigateToDefensiveZone.navigate(w1, w2, d1);
-		// patrol.start(w1, w2, d1);
+		// navigateToDefensiveZone.navigate(w1, w2, d1, myNav, myOdo);
+		// patrol.start(w1, w2, d1, myNav, myOdo);
 	}
 
 }

@@ -23,11 +23,10 @@ public abstract class Robot {
 	protected Catapult myCatapult;
 	protected Navigator myNav;
 	protected Map myMap;
-	protected Odometer myOdometer;
+	protected Odometer myOdo;
 	protected UltrasonicSensor USSensor;
 	protected LightSensor leftSensor, centerSensor, rightSensor;
 	protected NXTRegulatedMotor leftMotor, rightMotor;
-
 
 /**
  * Constructor
@@ -43,10 +42,10 @@ public abstract class Robot {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		myCatapult = new Catapult(catapultMotor);
-		myOdometer = new Odometer(leftMotor, rightMotor, 20, true);
-		myMap = new Map(myOdometer, 30.00);
+		myOdo = new Odometer(leftMotor, rightMotor, 20, true);
+		myMap = new Map(myOdo, 30.00);
+		myNav = new Navigator(myOdo, myMap, USSensor);
 		USSensor = new UltrasonicSensor(USPort);
-		myNav = new Navigator(myOdometer, myMap, USSensor);
 		centerSensor = new LightSensor(centerLightPort);
 		leftSensor = new LightSensor(leftLightPort);
 		rightSensor = new LightSensor(rightLightPort);

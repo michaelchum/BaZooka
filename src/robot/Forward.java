@@ -39,9 +39,8 @@ public class Forward extends Robot {
 	 */
 	public Forward(NXTRegulatedMotor catapultMotor,NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor, 
 			SensorPort leftLightPort, SensorPort centerLightPort, SensorPort rightLightPort, SensorPort USPort) {
-		super(catapultMotor, leftMotor, rightMotor, leftLightPort,
-				centerLightPort, rightLightPort, USPort);
-			}
+		super(catapultMotor, leftMotor, rightMotor, leftLightPort, centerLightPort, rightLightPort, USPort);
+	}
 
 	/**
 	 * First localize and then search for ball dispenser, retrieve ball and find basket, aim and shoot. Repeat twice. 5 balls each time
@@ -58,10 +57,10 @@ public class Forward extends Robot {
 		
 		// localize and position at the first block NEED TO IMPLEMENT 
 		/* STARTERCORNER TO BOTH LOCALIZERS */
-		//USLocalizer.doFallingEdgeLocalization(myOdometer, myNav, USSensor, leftMotor, rightMotor);
-		//LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor);
+		//USLocalizer.doFallingEdgeLocalization(myOdo, myNav, USSensor, leftMotor, rightMotor);
+		//LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor, rightMotor);
 		
-		// navigate to the middle of the first tile depending on starter corner
+		// navigate to the middle of the first tile depending on StartCorner
 		// myNav.TravelTo(15.0,15.0);
 		// myNav.TurnTo(90.0);
 	}
@@ -73,36 +72,37 @@ public class Forward extends Robot {
 	 * @see robotBehavior.Robot#play()
 	 */
 
-	public void play(PlayerRole role, int bx, int by, int w1, int w2, int d1, StartCorner startingCorner) {
-		LCDInfo LCD = new LCDInfo(myOdometer, USSensor, leftSensor, centerSensor, rightSensor);
-		myOdometer.setPosition(new double [] {15.0, 15.0, 90.0}, new boolean [] {true, true, true});
+	public void play(PlayerRole role, int bx, int by, int w1, int w2, int d1, StartCorner startingCorner, int goalX, int goalY) {
+		LCDInfo LCD = new LCDInfo(myOdo, USSensor, leftSensor, centerSensor, rightSensor);
+		
+		// testing
+		myOdo.setPosition(new double [] {15.0, 15.0, 90.0}, new boolean [] {true, true, true});
+		myNav.navigateTo(75,75);
+		myNav.turnTo(90.0, true);
 		
 		//localize(startingCorner);
 
 		// initialize correction threads
-		//OdometryCorrection myOdoCorrection = new OdometryCorrection(myOdometer, centerSensor, leftMotor, rightMotor);
+		//OdometryCorrection myOdoCorrection = new OdometryCorrection(myOdo, centerSensor, leftMotor, rightMotor);
 		//myOdoCorrection.start();
-		//OdometryAngleCorrection myOdoAngleCorrection = new OdometryAngleCorrection(myOdometer, leftSensor, rightSensor, leftMotor, rightMotor);
+		//OdometryAngleCorrection myOdoAngleCorrection = new OdometryAngleCorrection(myOdo, leftSensor, rightSensor, leftMotor, rightMotor);
 		//myOdoAngleCorrection.start();
-		
-		
-		myNav.navigateTo(75,75);
-		myNav.turnTo(90.0, true);
 		
 		/* NEED TO WRITE ALL THESE USING NAVIGATOR */
 		
 		/*
-		navigateToLoadingArea.navigate(bx, by);
-		loadBall.load(bx, by);
-		navigateToFiringArea.navigate(goalX, goalY, d1);
+		navigateToLoadingArea.navigate(bx, by, myNav, myOdo);
+		loadBall.load(bx, by, myNav, myOdo);
+		navigateToFiringArea.navigateRightSpot(goalX, goalY, d1, myNav, myOdo);
 		fireBall.fire(myCatapult, goalX, goalY);
 		
-		navigateToLoadingArea.navigate(bx, by);
-		loadBall.load(bx, by);
-		navigateToFiringArea.navigate(goalX, goalY, d1);
+		navigateToLoadingArea.navigate(bx, by, myNav, myOdo);
+		loadBall.load(bx, by, myNav, myOdo);
+		navigateToFiringArea.navigateLeftSpot(goalX, goalY, d1, myNav, myOdo);
 		fireBall.fire(myCatapult, goalX, goalY);
 		
-		navigateHome.navigate(startingCorner);
+		navigateHome.navigate(startingCorner, myNav, myOdo);
 		*/
+		
 	}
 }
