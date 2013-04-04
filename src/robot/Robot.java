@@ -41,14 +41,14 @@ public abstract class Robot {
 	public Robot(NXTRegulatedMotor catapultMotor, NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor, SensorPort leftLightPort, SensorPort centerLightPort, SensorPort rightLightPort, SensorPort USPort) {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
-		myCatapult = new Catapult(catapultMotor);
-		myOdo = new Odometer(leftMotor, rightMotor, 20, true);
-		myMap = new Map(myOdo, 30.00);
-		myNav = new Navigator(myOdo, myMap, USSensor);
 		USSensor = new UltrasonicSensor(USPort);
 		centerSensor = new LightSensor(centerLightPort);
 		leftSensor = new LightSensor(leftLightPort);
 		rightSensor = new LightSensor(rightLightPort);
+		myCatapult = new Catapult(catapultMotor);
+		myOdo = new Odometer(leftMotor, rightMotor, 20, true);
+		myMap = new Map(myOdo, 30.00);
+		myNav = new Navigator(myOdo, myMap, USSensor);
 	}
 
 	public abstract void play();

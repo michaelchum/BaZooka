@@ -167,16 +167,16 @@ public class Navigator extends Navigation{
 	
 			// check if obstacle is detected
 			int o1 = getFilteredData();
-			Delay.msDelay(75);
+			Delay.msDelay(50);
 			int o2 = getFilteredData();
-			Delay.msDelay(75);
+			Delay.msDelay(50);
 			int o3  = getFilteredData();
-			Delay.msDelay(75);
+			Delay.msDelay(50);
 			int o4  = getFilteredData();
-			Delay.msDelay(75);
+			Delay.msDelay(50);
 			int o5  = getFilteredData();
 			
-			if((o1<35 && o2<35 && o3<35 && o4<35 && o5<35)  && grid[Next_I][Next_J] != 1){
+			if(o1<35 && o2<35 && o3<35 && o4<35 && o5<35 && grid[Next_I][Next_J] != 1){
 				
 				// stop the following travelTo method
 				obstacleDetected = true;
@@ -206,7 +206,7 @@ public class Navigator extends Navigation{
 			// if no obstacle move to next block
 			if(!obstacleDetected){
 
-				travelTo(destX, destY); // travel to next tile
+				travelTo2(destX, destY); // travel to next tile
 			
 				current_I = Next_I; // update new I position for loop
 				current_J = Next_J; // update new J position for loop
@@ -215,11 +215,11 @@ public class Navigator extends Navigation{
 		}
 	}
 	
-	int distance;
-	int filterControl = 0;
-	int FILTER_OUT = 20;
-	
 	private int getFilteredData() {
+		int distance;
+		int filterControl = 0;
+		int FILTER_OUT = 20;
+		
 		// do a ping
 		USSensor.ping();
 		

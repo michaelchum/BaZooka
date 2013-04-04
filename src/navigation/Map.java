@@ -4,7 +4,7 @@ package navigation;
  * A map has been written using the wavefront technique, which consists of mapping the entire field in a 2D array: a "wavefront grid".
  * Each number on the grid represents a 30' by 30' tile on the field. The system inserts numbers into the grid, in order to link the 
  * robot to its target locations, thereafter the robot will travel block per block following a pattern of number until it reaches the
- * goal. For more information, the method has been entirely based on the following websites and open source information.
+ * goal. For more information, the method has been entirely based on the following URL and open source information.
  * 
  * http://www.societyofrobots.com/programming_wavefront.shtml
  * http://www.robotc.net/blog/2011/08/08/robotc-advanced-training/

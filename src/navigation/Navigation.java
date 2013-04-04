@@ -5,7 +5,7 @@ import odometry.Odometer;
 import lejos.nxt.NXTRegulatedMotor;
 
 public class Navigation {
-	final static int FAST = 175, SLOW = 85, ACCELERATION = 500; // default 4000, trying lower for smooth transitions
+	final static int FAST = 175, SLOW = 85, ACCELERATION = 2000; // default 4000, trying lower for smooth transitions
 	final static double DEG_ERR = 3.0, CM_ERR = 1.0;
 	private Odometer odometer;
 	private NXTRegulatedMotor leftMotor, rightMotor;
@@ -88,6 +88,22 @@ public class Navigation {
 		leftMotor.stop();
 		rightMotor.stop();
 
+	}
+	
+	/*
+	 * TravelTo function which takes as arguments the x and y position in cm Will travel to designated position, while
+	 * constantly updating it's heading
+	 */
+	public void travelTo2(double x, double y) {
+		double minAng;
+		while (Math.abs(x - odometer.getX()) > CM_ERR || Math.abs(y - odometer.getY()) > CM_ERR) {
+			minAng = (Math.atan2(y - odometer.getY(), x - odometer.getX())) * (180.0 / Math.PI);
+			if (minAng < 0)
+				minAng += 360.0;
+			this.turnTo(minAng, false);
+			this.setSpeeds(FAST, FAST);
+		}
+		this.setSpeeds(0, 0);
 	}
 
 	/*

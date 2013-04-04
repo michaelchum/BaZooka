@@ -78,7 +78,6 @@ public class Forward extends Robot {
 		// testing
 		myOdo.setPosition(new double [] {15.0, 15.0, 90.0}, new boolean [] {true, true, true});
 		myNav.navigateTo(75,75);
-		myNav.turnTo(90.0, true);
 		
 		//localize(startingCorner);
 
