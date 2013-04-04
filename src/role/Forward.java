@@ -49,6 +49,7 @@ public class Forward extends Robot {
 				leftMotor, rightMotor);
 		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor,
 				rightMotor);
+		myNav.travelTo(15, 15);
 
 		computeLoadingCoordinates(bx, by);
 
@@ -81,7 +82,7 @@ public class Forward extends Robot {
 	 */
 	private void computeLoadingCoordinates(int bx, int by) {
 		if (bx == -1) { // western wall
-			preciseLoadingX = bx * 30 + loadingDistance;
+			preciseLoadingX = bx * 30 + distanceToWall;
 			preciseLoadingY = by * 30 + distanceFromCenterToRamp;
 			loadingHeading = 180;
 			
@@ -91,7 +92,7 @@ public class Forward extends Robot {
 
 		if (by == -1) { // southern wall
 			preciseLoadingX = bx * 30 - distanceFromCenterToRamp;
-			preciseLoadingY = by * 30 + loadingDistance;
+			preciseLoadingY = by * 30 + distanceToWall;
 			loadingHeading = 270;
 			
 			loadingY = -15;
@@ -99,9 +100,9 @@ public class Forward extends Robot {
 		}
 
 		if (bx == 11) { // eastern wall
-			preciseLoadingX = bx * 30 - loadingDistance;
+			preciseLoadingX = bx * 30 - distanceToWall;
 			preciseLoadingY = by * 30 - distanceFromCenterToRamp;
-			// loadingX should be between 16-18 cm of the wall
+			
 
 			loadingX = 315;
 			loadingY = (by * 30) - 15;
