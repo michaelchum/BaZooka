@@ -81,8 +81,8 @@ public class Forward extends Robot {
 	 */
 	private void computeLoadingCoordinates(int bx, int by) {
 		if (bx == -1) { // western wall
-			preciseLoadingX = bx + loadingDistance;
-			preciseLoadingY = by + distanceFromCenterToRamp;
+			preciseLoadingX = bx * 30 + loadingDistance;
+			preciseLoadingY = by * 30 + distanceFromCenterToRamp;
 			loadingHeading = 180;
 			
 			loadingX = -15;

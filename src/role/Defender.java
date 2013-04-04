@@ -37,8 +37,8 @@ public class Defender extends Robot {
 		myCatapult.arm();
 		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor, rightMotor, startingCorner);
 		USLocalizer.doFallingEdgeLocalization(myOdo, USSensor, myNav, leftMotor, rightMotor);
-		myNav.navigateTo(goalX, goalY - (w2 * 30 + 15)); //navigate to defensive zone
-		
+		myNav.navigateTo((goalX * 30) - 15, goalY - ((w2 * 30) + 15)); //navigate to defensive zone
+		myNav.travelTo(goalX*30, goalY - ((w2 * 30))); //travel in front of the goal
 		
 	}
 	
