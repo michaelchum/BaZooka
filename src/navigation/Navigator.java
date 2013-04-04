@@ -270,8 +270,7 @@ public class Navigator extends Pilot{
 		double tileWidth = 30.0;
 		double sumX = tileWidth/2;
 		double sumY = tileWidth/2 + (tileWidth)*9;
-
-
+		
 		// build x coordinates of map
 		for(int i=0;i<coordsX.length;i++){
 			coordsX[i] = sumX;
@@ -286,5 +285,7 @@ public class Navigator extends Pilot{
 
 		return coordsY[destI];
 	}
+	
+	
 	
 }

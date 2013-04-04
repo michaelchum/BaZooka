@@ -59,12 +59,13 @@ public class Controller {
 		if (role == PlayerRole.ATTACKER) {
 			robot = new Forward(Motor.A, Motor.B, Motor.C, SensorPort.S1,
 					SensorPort.S2, SensorPort.S3, SensorPort.S4);
+			((Forward) robot).loadFiveBalls();
 		} else {
 			robot = new Defender(Motor.A, Motor.B, Motor.C, SensorPort.S1,
 					SensorPort.S2, SensorPort.S3, SensorPort.S4);
 		}
 
-		robot.play(startingCorner, bx, by, w1, w2, d1, goalX, goalY);
+		// robot.play(startingCorner, bx, by, w1, w2, d1, goalX, goalY);
 	
 		Button.waitForAnyPress();
 	}

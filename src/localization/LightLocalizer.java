@@ -193,8 +193,8 @@ public class LightLocalizer {
 	public void doLocalization(StartCorner corner) {
 		doLocalization();
 
-		myOdometer.setX(corner.getX());
-		myOdometer.setY(corner.getY());
+		myOdometer.setX(corner.getX() * 30);
+		myOdometer.setY(corner.getY() * 30);
 		
 		double currentTheta = myOdometer.getAng();
 		switch (corner) {
