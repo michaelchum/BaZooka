@@ -16,7 +16,7 @@ public class OdometryCorrection extends Thread {
 	private final double tileWidth = 30.00;
 	
 	// distance measured between the light sensor's position and the the center between the wheels
-	private double sensorCenter = 14.50;
+	private double sensorCenter = 12.50;
 	
 	// array containing all the horizontal lines
 	private double[] yLines = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
@@ -54,25 +54,25 @@ public class OdometryCorrection extends Thread {
 								
 					double theta = myOdometer.getAng();
 								
-					if (theta > 350 || theta < 10){ // if robot is moving EAST, correct X position
+					if (theta < 100 && theta > 80) { // if robot is moving NORTH, correct Y position
 						double currentY = myOdometer.getY();
 						double closestLine = (currentY - sensorCenter)/tileWidth;
 						myOdometer.setY(getClosest(yLines, closestLine)*tileWidth + sensorCenter);
 					}
 								
-					if (theta < 190 && theta > 170){ // if robot is moving WEST, correct X position
+					if (theta < 280 && theta > 260){ // if robot is moving SOUTH, correct Y position
 						double currentY = myOdometer.getY();
 						double closestLine = (currentY + sensorCenter)/tileWidth;
 						myOdometer.setY(getClosest(yLines, closestLine)*tileWidth - sensorCenter);
 					}
 								
-					if (theta < 100 && theta > 80){ // if robot is moving NORTH, correct Y position
+					if (theta > 350 || theta < 10) { // if robot is moving EAST, correct X position
 						double currentX = myOdometer.getX();
 						double closestLine = (currentX - sensorCenter)/tileWidth;
 						myOdometer.setX(getClosest(xLines, closestLine)*tileWidth + sensorCenter);
 					}
 								
-					if (theta < 280 && theta > 260){ // if robot is moving SOUTH, correct Y position
+					if (theta < 190 && theta > 170){ // if robot is moving WEST, correct X position
 						double currentX = myOdometer.getX();
 						double closestLine = (currentX + sensorCenter)/tileWidth;
 						myOdometer.setX(getClosest(xLines, closestLine)*tileWidth - sensorCenter);

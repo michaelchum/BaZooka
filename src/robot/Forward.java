@@ -4,7 +4,7 @@ import navigation.Navigator;
 import navigation.navigateHome;
 import odometry.Odometer;
 import odometry.OdometryCorrection;
-import odometry.OdometryAngleCorrection;
+import odometry.RightAngleCorrection;
 import odometry.LCDInfo;
 import localization.LightLocalizer;
 import localization.USLocalizer;

@@ -2,87 +2,65 @@
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.Sound;
-import lejos.util.TimerListener;
-import lejos.util.Timer;
 import lejos.util.Delay;
 
-public class LightData implements TimerListener{
+public class LightData extends Thread{
 	
+	private static final long CORRECTION_PERIOD = 10;
 	private LightSensor ls;			
-	private Timer timer;										//timer for timedOut()
-	private int sleepTime = 42; 								//50 millisecond is optimal time for ls reading sleep
-	private boolean isLine = false;								//boolean for line detection
-	private int lsValue;
-	private int val;
-	private int preVal;
-
-	/**
-	 * @param args
-	 */
+	private boolean isLine = false;								
 	
 	/**
 	 * constructor
-	 * pass in light sensor w/ default 50 sleep time (optimal)
+	 * pass in light sensor w/ default 10 sleep time (optimal)
 	 * @param ls - the light sensor to use
 	 */
 	public LightData(LightSensor ls){	
 		this.ls =ls;
-		this.timer = new Timer(sleepTime,this);
-		preVal = getLSData();
 	}
 	
+	public void run() {
+		long correctionStart, correctionEnd;
+		while (true) {
+			correctionStart = System.currentTimeMillis();
+			
+			int lightValue = ls.getLightValue();
+			Delay.msDelay(17);
+			int a = ls.getLightValue();
+			Delay.msDelay(17);
+			int b = ls.getLightValue();
+			Delay.msDelay(17);
+			int c = ls.getLightValue();
+			Delay.msDelay(17); 
+			int d = ls.getLightValue();
+			
+			int delta1 = lightValue-a;
+			int delta2 = lightValue-b;
+			int delta3 = lightValue-c;
+			int delta4 = lightValue-d;
 
-	/**
-	 * constructor
-	 * pass in light sensor & user defined sleep time
-	 * @param ls - the light sensor to use
-	 * @param sleepTime - can choose the sleep time
-	 */
-	public LightData(LightSensor ls, int sleepTime){	
-		this.ls =ls;
-		this.sleepTime = sleepTime;
-		this.timer = new Timer(this.sleepTime,this);
-		setIsLine(false);
-		preVal = getLSData();
-	}
-	
-	/**
-	 * method to be repeated, gets the light readings once every (sleepTime - constant/or user chosen)
-	 * then sets isLine to true if sees line.
-	 */
-	public void timedOut() {
-		val = getLSData();
-		if ((val-preVal) > 8) {
-			setIsLine(true);
-			Sound.beep();
+			// beeps when sensor detects line, 
+			if (delta1 < 2 && (delta2 > 2)||(delta3 > 2)||(delta4 > 2)){
+				Sound.beep(); 
+				isLine = true;
+			}
+			
+			// this ensure the odometry correc.tion occurs only once every period
+			correctionEnd = System.currentTimeMillis();
+			if (correctionEnd - correctionStart < CORRECTION_PERIOD) {
+				try {
+					Thread.sleep(CORRECTION_PERIOD
+							- (correctionEnd - correctionStart));
+				} catch (InterruptedException e) {
+					// there is nothing to be done here because it is not
+					// expected that the odometry correction will be
+					// interrupted by another thread
+				}
+			}
 		}
-		preVal = val;
 	}
+	
 
-	/**
-	 * starts the timer
-	 */
-	public void start(){
-		timer.start();
-		setIsLine(false);
-	}
-	
-	/**
-	 * stop the timer
-	 */
-	public void stop(){
-		timer.stop();
-	}
-	
-	/**
-	 * Will read the values of the light sensor
-	 * @return lsValue
-	 */
-	public int getLSData(){
-		lsValue = ls.getNormalizedLightValue();
-		return lsValue;
-	}
-	
 	/**
 	 * set true or false (if there is a line)
 	 * @param isLine
