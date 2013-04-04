@@ -12,7 +12,7 @@ package navigation;
  * https://code.google.com/p/mindstormsproject/source/browse/trunk/LejosProject/src/it/uniba/wavefront/GridWalker.java?r=5
  * https://code.google.com/p/mindstormsproject/source/browse/trunk/LejosProject/src/it/uniba/wavefront/Grid.java?r=6
  * 
- * @author Michael
+ * @author Team 13
  * 
  */
 

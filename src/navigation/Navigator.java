@@ -3,7 +3,7 @@ package navigation;
 /**
  * Sets a path on the wavefront grid and navigates tile per tile to destination
  * 
- * @author Michael
+ * @author Team 13
  * 
  */
 

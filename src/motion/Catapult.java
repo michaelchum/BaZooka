@@ -6,7 +6,8 @@ import lejos.util.Delay;
 /**
  * 
  * The catapult of the robot
- * @author Michael
+ * 
+ * @author Team 13
  * 
  */
 

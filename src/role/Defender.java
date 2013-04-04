@@ -10,7 +10,7 @@ import bluetooth.StartCorner;
 /**
  * Specific role of defender
  * 
- * @author Michael
+ * @author Team 13
  * 
  */
 public class Defender extends Robot {

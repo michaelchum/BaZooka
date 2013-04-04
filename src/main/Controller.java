@@ -15,7 +15,7 @@ import bluetooth.ParseTransmission;
 /**
  * Main controller of the system
  * 
- * @author Michael
+ * @author Team 13
  * 
  */
 public class Controller {

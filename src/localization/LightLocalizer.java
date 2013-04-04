@@ -13,6 +13,12 @@ import java.lang.Math;
 
 import bluetooth.StartCorner;
 
+/**
+ * 
+ * Class that defines how to localize using light sensors
+ * @author Team 13
+ *
+ */
 public class LightLocalizer {
 
 	// tweaking of the distance between the sensor and center had to be done in

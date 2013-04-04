@@ -6,6 +6,11 @@ import lejos.nxt.LightSensor;
 import lejos.util.Timer;
 import lejos.util.TimerListener;
 
+/**
+ * Constantly updates LCD with Robot info
+ * @author Team 13
+ *
+ */
 public class LCDInfo implements TimerListener{
 	public static final int LCD_REFRESH = 80; // display refresh rate to be change for precision purposes
 	private Odometer odo;

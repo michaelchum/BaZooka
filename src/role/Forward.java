@@ -11,7 +11,7 @@ import bluetooth.StartCorner;
 /**
  * Specific role of forward
  * 
- * @author Michael
+ * @author Team 13
  * 
  */
 public class Forward extends Robot {

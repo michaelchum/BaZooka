@@ -16,7 +16,7 @@ import lejos.robotics.navigation.DifferentialPilot;
 /**
  * Class that defines how to localize the robot using ultrasonic sensors
  * 
- * @author Clark
+ * @author Team 13
  * 
  */
 public class USLocalizer {
