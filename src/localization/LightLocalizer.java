@@ -3,6 +3,7 @@ package localization;
 import navigation.Navigator;
 import odometry.Odometer;
 
+import lejos.nxt.LCD;
 import lejos.nxt.Sound;
 import lejos.nxt.LightSensor;
 import lejos.nxt.NXTRegulatedMotor;
@@ -16,34 +17,33 @@ public class LightLocalizer {
 
 	// tweaking of the distance between the sensor and center had to be done in
 	// order to get a more precise final position for light localization
-	private double LS_TO_CENTER = 15.35;
+	private final float LS_TO_CENTER = 11.5f;
 
 	private Odometer myOdometer;
 	private Navigator myNav;
 	private LightSensor ls;
-	NXTRegulatedMotor leftMotor, rightMotor;
+	NXTRegulatedMotor myLeftMotor, myRightMotor;
 	int val;
-	private int lineCount;
-	private double thetaX, thetaY, posX, posY, deltaTheta;
-	private double leftRadius = 2.69, rightRadius = 2.69, width = 16.32;
-	private double rotationSpeed, forwardSpeed;
-	public static double ROTATION_SPEED = -50;
-	private boolean rotating;
+
+	public static int ROTATION_SPEED = 30;
+
+	private int baseValue = 0;
 
 	public LightLocalizer(Odometer odo, Navigator nav, LightSensor ls,
 			NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor) {
 		this.myOdometer = odo;
 		this.ls = ls;
 		this.myNav = nav;
-		this.leftMotor = leftMotor;
-		this.rightMotor = rightMotor;
+		this.myLeftMotor = leftMotor;
+		this.myRightMotor = rightMotor;
 
 		// turn on the light
 		ls.setFloodlight(true);
 	}
 
 	/**
-	 * Convenience method for localizing anywhere
+	 * Convenience method for localizing at 0, 0
+	 * 
 	 * @param odo
 	 * @param nav
 	 * @param ls
@@ -58,9 +58,31 @@ public class LightLocalizer {
 				rightMotor);
 		temp.doLocalization();
 	}
+
+	
+	/**
+	 * Convenience method for localizing anywhere
+	 * 
+	 * @param odo
+	 * @param nav
+	 * @param ls
+	 * @param leftMotor
+	 * @param rightMotor
+	 * @param corner
+	 */
+	public static void doLocalization(Odometer odo, Navigator nav,
+			LightSensor ls, NXTRegulatedMotor leftMotor,
+			NXTRegulatedMotor rightMotor, double closestX, double closestY) {
+		LightLocalizer temp = 
+				new LightLocalizer(odo, nav, ls, leftMotor,
+				rightMotor);
+		temp.doLocalization(closestX, closestY);
+	}
+
 	
 	/**
 	 * Convenience method for localizing at a corner
+	 * 
 	 * @param odo
 	 * @param nav
 	 * @param ls
@@ -76,118 +98,64 @@ public class LightLocalizer {
 		temp.doLocalization(corner);
 	}
 
-	
 	/**
-	 * Does localization anywhere assuming the robot is at an intersection of gridlines
+	 * Localizes around 0, 0
 	 */
 	public void doLocalization() {
-		int preVal = ls.getLightValue();
-
-		// pause the system before implementing lightLocalizer in order to avoid
-		// oscillations from usLocalizer
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		}
-
-		// store positions from newly implemented odometer
-		double[] pos = new double[3];
-
-		// store all angles determined during line detections
-		double[] lineAngles = new double[4];
-
-		// drive to corner location
-		// myNav.travelTo(1,1);
 		myNav.turnTo(45, true);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		}
+		ls.setFloodlight(true);
+		pause(1000);
 
-		// assume and set current position as 0,0 before angle detection
-		myOdometer.setPosition(new double[] { 0.0, 0.0, 90.0 }, new boolean[] {
-				true, true, false });
+		baseValue = ls.readValue();
+		val = baseValue;
+		// preVal = baseValue;
+		LCD.drawString("BASE READING: " + val, 0, 1);
 
-		// set line count to 0
-		lineCount = 0;
+		float thetaWest = rotateTilLineDetected(0, false);
+		pause(1000);
+		float thetaNorth = rotateTilLineDetected(500, false);
+		pause(1000);
+		float thetaEast = rotateTilLineDetected(500, false);
+		pause(1000);
+		float thetaSouth = rotateTilLineDetected(500, true);
+		pause(1000);
+		float deltaX = computeCoordinate(thetaSouth, thetaNorth, LS_TO_CENTER);
+		float deltaY = computeCoordinate(thetaEast, thetaWest, LS_TO_CENTER);
 
-		// start rotating and clock all 4 gridlines
-		setRotationSpeed(ROTATION_SPEED);
-		rotating = true;
+		myOdometer.setX(deltaX);
+		myOdometer.setY(deltaY);
+		myOdometer.setTheta(myOdometer.getAng()
+				+ computeDeltaTheta(thetaSouth, thetaNorth));
 
-		while (rotating) {
-			try {
-				Thread.sleep(25);
-			} catch (InterruptedException e) {
-			}
+		pause(1000);
 
-			// continuous update of the lightvalue
-			val = ls.getLightValue();
-			Delay.msDelay(100);
-			// during our testing phase, the lightvalue was constant around ~44
-			// and dropped way below at ~35 when reaching a line therefore we
-			// put a threshold of 40
-			if ((val - preVal) > 7) {
+		myNav.travelTo(0, 0);
+		myNav.turnTo(0, true);
+		pause(1000);
 
-				// store angle when a line is detected
-				myOdometer.getPosition(pos);
-				Sound.beep();
-				lineAngles[lineCount] = pos[2];
-				lineCount++;
+		LCD.drawString("x: " + myOdometer.getX(), 0, 5);
+		LCD.drawString("y: " + myOdometer.getY(), 0, 6);
 
-				// sleep for a few ms in order to avoid counting a line twice
-				try {
-					Thread.sleep(450);
-				} catch (InterruptedException e) {
-				}
-			}
-
-			// stop rotation after 4 lines have been detected
-			if (lineCount > 4 || lineCount == 4) {
-				Sound.buzz();
-				myOdometer.getPosition(pos);
-				rotating = false;
-			}
-
-			preVal = val;
-		} // end of line detection while loop
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		}
-
-		leftMotor.stop();
-		rightMotor.stop();
-		myNav.turnTo(90.0, true);
-
-		// do trigonometry to compute (0,0) and 90 degrees
-		// following the tutorial's calculations
-		thetaX = lineAngles[1] - lineAngles[3];
-		thetaY = lineAngles[0] - lineAngles[2];
-		posX = -(Math.abs(LS_TO_CENTER * Math.cos(thetaY / 2)));
-		posY = -(Math.abs(LS_TO_CENTER * Math.cos(thetaX / 2)));
-		deltaTheta = (thetaY / 2) - lineAngles[0] + 270;
-
-		// set the new position in odometer
-		myOdometer.setPosition(new double[] { posX, posY, 0.0 }, new boolean[] {
-				true, true, false });
-		Sound.playTone(1000, 150);
-
-		// when done travel to (0,0)
-		myNav.travelTo(0.0, 0.0);
-		myNav.turnTo(90.0, true);
-
-		// set the new more accurate angle deltaTheta
-		myOdometer.setPosition(new double[] { 0.0, 0.0, deltaTheta },
-				new boolean[] { false, false, true });
-		myNav.turnTo(90.0, true);
-		
-		
-		Sound.playTone(1000, 150);
+		LCD.drawString("Theta: " + myOdometer.getAng(), 0, 7);
 	}
-	
+
+	/**
+	 * Localizes around a particular gridline intersection
+	 * 
+	 * @param gridX
+	 *            the x-coordinate of the gridline intersection
+	 * @param gridY
+	 *            the y-coordinate of the gridline intersection
+	 */
+	public void doLocalization(double gridX, double gridY) {
+		doLocalization();
+		myOdometer.setX(gridX);
+		myOdometer.setY(gridY);
+	}
+
 	/**
 	 * Does localization and adjusts for the starting corner
+	 * 
 	 * @param corner
 	 */
 	public void doLocalization(StartCorner corner) {
@@ -195,61 +163,69 @@ public class LightLocalizer {
 
 		myOdometer.setX(corner.getX() * 30);
 		myOdometer.setY(corner.getY() * 30);
-		
+
 		double currentTheta = myOdometer.getAng();
 		switch (corner) {
-		case BOTTOM_LEFT: 
-		case TOP_LEFT: myOdometer.setTheta(currentTheta + 270);
-		case TOP_RIGHT: myOdometer.setTheta(currentTheta + 180);
-		case BOTTOM_RIGHT: myOdometer.setTheta(currentTheta + 90);
+		case BOTTOM_LEFT:
+		case TOP_LEFT:
+			myOdometer.setTheta(currentTheta + 270);
+		case TOP_RIGHT:
+			myOdometer.setTheta(currentTheta + 180);
+		case BOTTOM_RIGHT:
+			myOdometer.setTheta(currentTheta + 90);
 		default:
 		}
 	}
-	
-	
-	public void setRotationSpeed(double speed) {
-		rotationSpeed = speed;
-		setSpeeds(forwardSpeed, rotationSpeed);
-	}
 
-	public void setSpeeds(double forwardSpeed, double rotationalSpeed) {
-		double leftSpeed, rightSpeed;
+	private float rotateTilLineDetected(int initialPause, boolean stopOnceDone) {
+		float theta = 0;
 
-		this.forwardSpeed = forwardSpeed;
-		this.rotationSpeed = rotationalSpeed;
+		myLeftMotor.setSpeed(ROTATION_SPEED);
+		myRightMotor.setSpeed(ROTATION_SPEED);
+		myLeftMotor.forward();
+		myRightMotor.backward();
 
-		leftSpeed = (forwardSpeed + rotationalSpeed * width * Math.PI / 360.0)
-				* 180.0 / (leftRadius * Math.PI);
-		rightSpeed = (forwardSpeed - rotationalSpeed * width * Math.PI / 360.0)
-				* 180.0 / (rightRadius * Math.PI);
+		pause(initialPause);
 
-		// set motor directions
-		if (leftSpeed > 0.0)
-			leftMotor.forward();
-		else {
-			leftMotor.backward();
-			leftSpeed = -leftSpeed;
+		boolean lineDetected = false;
+		while (lineDetected == false) {
+			val = ls.readValue();
+			Delay.msDelay(50);
+
+			LCD.drawString("LS: ", 0, 4);
+			LCD.drawString("LS: " + val, 0, 4);
+
+			if ((baseValue - val) > 8) {
+				lineDetected = true;
+				theta = (float) myOdometer.getAng();
+				if (stopOnceDone) {
+					myLeftMotor.stop();
+					myRightMotor.stop();
+				}
+				Sound.beep();
+			}
+
 		}
 
-		if (rightSpeed > 0.0)
-			rightMotor.forward();
-		else {
-			rightMotor.backward();
-			rightSpeed = -rightSpeed;
-		}
-
-		// set motor speeds
-		if (leftSpeed > 900.0)
-			leftMotor.setSpeed(900);
-		else
-			leftMotor.setSpeed((int) leftSpeed);
-
-		if (rightSpeed > 900.0)
-			rightMotor.setSpeed(900);
-		else
-			rightMotor.setSpeed((int) rightSpeed);
+		return theta;
 	}
 
-	
+	private float computeCoordinate(float theta1, float theta2, float d) {
+		return (float) (-d * Math.cos(Math.toRadians(theta1 - theta2) / 2));
+	}
+
+	private float computeDeltaTheta(float theta1, float theta2) {
+
+		return (theta1 - theta2) / 2 - theta1 + 180;
+
+	}
+
+	private void pause(int milliseconds) {
+		try {
+			Thread.sleep(milliseconds);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

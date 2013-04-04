@@ -1,175 +1,259 @@
+/**
+ *
+ */
 package localization;
 
 import navigation.Navigator;
 import odometry.Odometer;
+import lejos.nxt.LCD;
 
+import lejos.nxt.Motor;
 import lejos.nxt.Sound;
 import lejos.nxt.UltrasonicSensor;
-import lejos.nxt.NXTRegulatedMotor;
+import lejos.robotics.RegulatedMotor;
+import lejos.robotics.navigation.DifferentialPilot;
 
+/**
+ * Class that defines how to localize the robot using ultrasonic sensors
+ * 
+ * @author Clark
+ * 
+ */
 public class USLocalizer {
-	// slower rotation for less slip and more accuracy
-	public static double ROTATION_SPEED = 15;
-	private double leftRadius = 2.69, rightRadius = 2.69, width = 16.32;
-	private double rotationSpeed, forwardSpeed;
+
+	private UltrasonicSensor mySensor;
 	private Odometer myOdometer;
-	private Navigator myNav;
-	private UltrasonicSensor myUSSensor;
-	private NXTRegulatedMotor leftMotor, rightMotor;
-	
-	int distance;
-	// the rudimentary filter from lab 1 wall following has been implemented with lower frequency in order to filter high noise form us sensor
-	int FILTER_OUT = 15;
-	int filterControl = 0;
-	
+	private DifferentialPilot myPilot;
+	private Navigator myNavigator;
+	private static final int ROTATION_SPEED = 30;
 
-	public USLocalizer(Odometer odometer, Navigator nav, UltrasonicSensor USSensor, NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor) {
-		this.myOdometer = odometer;
-		this.myUSSensor = USSensor;
-		this.myNav = nav;
-		this.leftMotor = leftMotor;
-		this.rightMotor = rightMotor;
+	// public final int myRotationTarget;
+	public static final int CLOCKWISE_ROTATION = -200,
+			COUNTER_CLOCKWISE_ROTATION = 200;
+
+	RegulatedMotor myLeftMotor;
+	RegulatedMotor myRightMotor;
+
+	// private boolean timedOut = false;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param sensor
+	 * @param navigator
+	 */
+	public USLocalizer(Odometer odometer, UltrasonicSensor sensor,
+			Navigator navigator, RegulatedMotor leftMotor,
+			RegulatedMotor rightMotor) {
+		mySensor = sensor;
+		myNavigator = navigator;
+		myOdometer = odometer;
+		myLeftMotor = leftMotor;
+		myRightMotor = rightMotor;
+		DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36, 16.32,
+				myLeftMotor, myRightMotor, false);
+
 	}
-	
-	public static void doFallingEdgeLocalization(Odometer odometer, Navigator nav, UltrasonicSensor USSensor, NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor) {
-			USLocalizer temp = new USLocalizer(odometer, nav, USSensor, leftMotor, rightMotor);
-			temp.doFallingEdgeLocalization();
-		}
-	
+
+	/**
+	 * Convenience method for falling edge localization
+	 * 
+	 * @param sensor
+	 *            - the UltrasonicSensor used
+	 * @param navigator
+	 *            - the Navigator
+	 */
+	public static void doFallingEdgeLocalization(Odometer odometer,
+			UltrasonicSensor sensor, Navigator navigator,
+			RegulatedMotor leftMotor, RegulatedMotor rightMotor) {
+		USLocalizer temp = new USLocalizer(odometer, sensor, navigator,
+				leftMotor, rightMotor);
+		temp.doFallingEdgeLocalization();
+
+	}
+
+	/**
+	 * Does a falling edge localization and updates the odometer
+	 */
 	public void doFallingEdgeLocalization() {
-		myOdometer.setPosition(new double []{0.0, 0.0, 0.0}, new boolean []{true, true, true});
-		//position array
-		double [] pos = new double [3];
-		// angle alpha and beta as in tutorial
-		double angleA, angleB;
-		double angleActual;
-		double initialDist = getFilteredData();
-		try { Thread.sleep(1000); } catch (InterruptedException e) {}
-		
-			if ( initialDist < 255 ){
-				// rotate the robot until it sees no wall
-				setRotationSpeed(ROTATION_SPEED);
-				while(getFilteredData() < 255) {}
-				Sound.beep();
-				myOdometer.setPosition(new double []{0.0, 0.0, 0.0}, new boolean []{true, true, true});
-				leftMotor.stop(); 
-				rightMotor.stop();
-				try { Thread.sleep(1500); } catch (InterruptedException e) {}
-			}
-			
-			// keep rotating until the robot sees a wall, then latch the angle, this is the first falling edge angleA
-			// after some sampling and testing we determined that the wall is about at a distance between 33 and 35 makes the readings accurate
-			
-			setRotationSpeed(ROTATION_SPEED);
-			// sleep this thread for one second in order to avoid double data when sensor is too fast
-			try { Thread.sleep(1000); } catch (InterruptedException e) {}
-			// we've determined that the us sensor jumps to around ~33-35 when encountering the wall
-			while(getFilteredData() < 80) {}
-			while(getFilteredData() > 20) {}
-			Sound.beep();
-			myOdometer.getPosition(pos);
-			angleA = pos[2];
-			leftMotor.stop();
-			rightMotor.stop();
-			try { Thread.sleep(1500); } catch (InterruptedException e) {}
-			
-			// switch direction and wait until it sees no wall
-			// keep rotating until the robot sees a wall, then latch the angle, this is the second falling edge angleB
-			
-			setRotationSpeed(-ROTATION_SPEED);
-			// sleep this thread for one second in order to avoid double data take in a row
-			try { Thread.sleep(1000); } catch (InterruptedException e) {}
-			while(getFilteredData() < 80) {}
-			while(getFilteredData() > 20) {}
-			Sound.playTone(1000,150);
-			myOdometer.getPosition(pos);
-			angleB = pos[2];
-			leftMotor.stop();
-			rightMotor.stop();
-			try { Thread.sleep(1500); } catch (InterruptedException e) {}
-			
-			// angleA is clockwise from angleB, so assume the average of the
-			// angles to the right of angleB is 45 degrees past 'north'
-			// formulas in the tutorial didn't work well, we derived our own
-			
-			if ( angleA < angleB ) {
-				angleActual = ((angleA + angleB)/2) + 135;
-			}
-			
-			else { 
-				angleActual = ((angleA + angleB)/2) - 45; 
-			}
-			
-			// update the odometer's position (example to follow:)
-			myNav.turnTo(angleActual, true);
-			myOdometer.setPosition(new double [] {0.0, 0.0, 90.0}, new boolean [] {true, true, true});
-			Sound.playTone(1000,150);
-	}
-	
-	public void setRotationSpeed(double speed) {
-		rotationSpeed = speed;
-		setSpeeds(forwardSpeed, rotationSpeed);
-	}
-	
-	public void setSpeeds(double forwardSpeed, double rotationalSpeed) {
-		double leftSpeed, rightSpeed;
 
-		this.forwardSpeed = forwardSpeed;
-		this.rotationSpeed = rotationalSpeed; 
+		// rotate the robot until it sees no wall
 
-		leftSpeed = (forwardSpeed + rotationalSpeed * width * Math.PI / 360.0) *
-				180.0 / (leftRadius * Math.PI);
-		rightSpeed = (forwardSpeed - rotationalSpeed * width * Math.PI / 360.0) *
-				180.0 / (rightRadius * Math.PI);
-
-		// set motor directions
-		if (leftSpeed > 0.0)
-			leftMotor.forward();
-		else {
-			leftMotor.backward();
-			leftSpeed = -leftSpeed;
+		if (getFilteredData() < 50) {
+			rotateTilWallIsNotVisible(CLOCKWISE_ROTATION);
 		}
-		
-		if (rightSpeed > 0.0)
-			rightMotor.forward();
-		else {
-			rightMotor.backward();
-			rightSpeed = -rightSpeed;
+
+		// keep rotating until the robot sees a wall, then latch the angle
+		double angleA = rotateTilWallIsVisible(CLOCKWISE_ROTATION);
+		// switch direction and wait until it sees no wall
+		rotateTilWallIsNotVisible(COUNTER_CLOCKWISE_ROTATION);
+		// keep rotating until the robot sees a wall, then latch the angle
+		double angleB = rotateTilWallIsVisible(COUNTER_CLOCKWISE_ROTATION);
+		// angleA is clockwise from angleB, so assume the average of the
+		// angles to the right of angleB is 45 degrees past 'north'
+		double dTheta = computeDeltaTheta(angleA, angleB);
+
+		// update the odometer position (example to follow:)
+		myOdometer.setTheta(myOdometer.getAng() + dTheta);
+		LCD.drawString("Turning to 45", 0, 1);
+
+		myNavigator.turnTo(45, true);
+
+		// if it fucks up, fix it
+		if (!isReasonable(45)) {
+			double theta = myOdometer.getAng();
+			DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36,
+					16.32, myLeftMotor, myRightMotor, false);
+			myPilot.rotate(180);
+			myPilot.setRotateSpeed(30);
+			myOdometer.setTheta(theta);
 		}
-		
-		// set motor speeds
-		if (leftSpeed > 900.0)
-			leftMotor.setSpeed(900);
-		else
-			leftMotor.setSpeed((int)leftSpeed);
-		
-		if (rightSpeed > 900.0)
-			rightMotor.setSpeed(900);
-		else
-			rightMotor.setSpeed((int)rightSpeed);
+
+		LCD.drawString("x: " + myOdometer.getX(), 0, 5);
+		LCD.drawString("y: " + myOdometer.getY(), 0, 6);
+		// LCD.drawString("Theta: " + myOdometer.getTheta(),0, 7);
+
+		pause(1000);
+
+		LCD.clear(0);
+		LCD.drawString("Theta: " + myOdometer.getAng(), 0, 7);
+
 	}
-	
-	private int getFilteredData() {
-		// do a ping
-		myUSSensor.ping();
-		
-		// wait for the ping to complete
-		try { Thread.sleep(100); } catch (InterruptedException e) {}
-		
-		// there will be a delay here
-		distance = myUSSensor.getDistance();
-		
-		//Rudimentary filter from wall following lab
-		if (distance == 255 && filterControl < FILTER_OUT) {
-			// bad value, do not set the distance variable, however do increment the filter value
-			filterControl ++;
-		} else if (distance == 255){
-			// true 255, therefore set distance to 255
+
+	/**
+	 * Rotates in the specified direction until the wall is not visible
+	 * 
+	 * @param direction
+	 * @return The current odometer theta reading after rotation is complete
+	 */
+	private double rotateTilWallIsNotVisible(int direction) {
+		pause(1000);
+
+		myLeftMotor.setSpeed((int) ROTATION_SPEED);
+		myRightMotor.setSpeed((int) ROTATION_SPEED);
+
+		if (direction == CLOCKWISE_ROTATION) {
+			myLeftMotor.forward();
+			myRightMotor.backward();
 		} else {
-			// distance went below 255, therefore reset everything.
-			filterControl = 0;
+			myLeftMotor.backward();
+			myRightMotor.forward();
 		}
+
+		LCD.drawString("TilNotVisible" + Integer.toString(direction), 0, 7);
+
+		int usDist = getFilteredData();
+		LCD.clear(3);
+		LCD.drawString("US: " + usDist, 0, 3);
+
+		while (usDist < 50) {
+			usDist = getFilteredData();
+			LCD.clear(3);
+			LCD.drawString("US: " + usDist, 0, 3);
+
+		}
+
+		Sound.beep();
+
+		return myOdometer.getAng();
+	}
+
+	/**
+	 * Rotates in the specified direction until the wall is visible
+	 * 
+	 * @param direction
+	 * @return The current odometer theta reading after rotation is complete
+	 */
+	private double rotateTilWallIsVisible(int direction) {
+		myLeftMotor.setSpeed((int) ROTATION_SPEED);
+		myRightMotor.setSpeed((int) ROTATION_SPEED);
+		pause(1000);
+		LCD.drawString("TilVisible" + Integer.toString(direction), 0, 7);
+		if (direction == CLOCKWISE_ROTATION) {
+			myLeftMotor.forward();
+			myRightMotor.backward();
+		} else {
+			myLeftMotor.backward();
+			myRightMotor.forward();
+		}
+
+		int usDist = getFilteredData();
+		LCD.clear(3);
+		LCD.drawString("US: " + usDist, 0, 3);
+
+		while (usDist > 35) {
+			usDist = getFilteredData();
+			LCD.clear(3);
+			LCD.drawString("US: " + usDist, 0, 3);
+
+		}
+
+		myLeftMotor.stop(true);
+		myRightMotor.stop(false);
+
+		Sound.beep();
+
+		double angleA = myOdometer.getAng();
+		LCD.drawString("A: " + angleA, 0, 4);
+		pause(3000);
+		return angleA;
+	}
+
+	private double computeDeltaTheta(double angleA, double angleB) {
+		double deltaTheta = 45 - ((angleA + angleB) / 2);
+		deltaTheta += 180;
+		if (deltaTheta < 0) {
+			deltaTheta += 360;
+		}
+		LCD.drawString("Theta: " + deltaTheta, 0, 6);
+		return deltaTheta % 360;
+
+	}
+
+	/**
+	 * Checks to see if it can see a wall or not and compares it to the targeted
+	 * angle
+	 * 
+	 * @param angle
+	 * @return - whether or not its current measured orientation is consistent
+	 *         with whether or not it can see the wall
+	 */
+	private boolean isReasonable(int angle) {
+		if (angle >= 0 && angle <= 90 && getFilteredData() < 100) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Waits 50 ms between each reading
+	 * 
+	 * @return the reading from the ultrasonic sensor
+	 */
+	private int getFilteredData() {
+		int distance;
+
+		// do a ping
+		mySensor.ping();
+
+		// wait for the ping to complete
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+		}
+
+		// there will be a delay here
+		distance = mySensor.getDistance();
+
 		return distance;
+	}
+
+	private void pause(int milliseconds) {
+		try {
+			Thread.sleep(milliseconds);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

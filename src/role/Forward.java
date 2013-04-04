@@ -44,36 +44,34 @@ public class Forward extends Robot {
 			int w2, int d1, int goalX, int goalY) {
 
 		myCatapult.arm();
-		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor,
-				rightMotor, startingCorner);
-		USLocalizer.doFallingEdgeLocalization(myOdo, myNav, USSensor,
+		USLocalizer.doFallingEdgeLocalization(myOdo, USSensor, myNav,
 				leftMotor, rightMotor);
+		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor,
+				rightMotor);
 
 		computeLoadingCoordinates(bx, by);
 
 		// navigate to loading area and load balls
 		myNav.navigateTo(loadingX, loadingY);
-		myNav.turnTo(loadingHeading, false);
+		myNav.turnTo(loadingHeading, true);
 		loadFiveBalls();
 
 		// localize again (pushing the button fucks it up)
 		computeClosestIntersection();
-		myNav.navigateTo(closestX, closestY);
+		myNav.travelTo(closestX, closestY);
 		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor,
-				rightMotor);
+				rightMotor, closestX, closestY);
+		
+		 //navigate to firing area
+		 myNav.navigateTo(150, goalY - (d1 + 1) * 30);
+		 LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor, rightMotor); //localize before shooting
+		 shootFiveBalls();
 
-		// navigate to firing area
-		myNav.navigateTo(150, goalY - (d1 + 1) * 30);
-		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor,
-				rightMotor); //localize before shooting
-		shootFiveBalls();
-		
-		
 	}
 
-	
 	/**
 	 * Need to change values if the arena changes
+	 * 
 	 * @param bx
 	 * @param by
 	 */
@@ -106,7 +104,7 @@ public class Forward extends Robot {
 	private void computeClosestIntersection() {
 		double currentX = myOdo.getX();
 		double currentY = myOdo.getY();
-		
+
 		if (currentX < 0) {
 			closestX = 0;
 		} else if (currentX > 300) {
@@ -114,7 +112,7 @@ public class Forward extends Robot {
 		} else {
 			closestX = Math.round(myOdo.getX() / 30) * 30;
 		}
-		
+
 		if (currentY < 0) {
 			closestY = 0;
 		} else if (currentY > 300) {
@@ -122,8 +120,7 @@ public class Forward extends Robot {
 		} else {
 			closestX = Math.round(myOdo.getX() / 30) * 30;
 		}
-		
-		
+
 	}
 
 	public void loadFiveBalls() {

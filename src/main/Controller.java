@@ -49,9 +49,13 @@ public class Controller {
 		int w2 = 0;
 		int d1 = 0;
 
+		
+		
 		// 1 is (0,0), 2 is (0,10), 3 is (10,10), 4 is (10,0)
 		StartCorner startingCorner;
 		startingCorner = StartCorner.lookupCorner(1);
+		
+		
 		// 2 is defender, 1 is attacker
 		PlayerRole role;
 		role = PlayerRole.lookupRole(1);
@@ -59,13 +63,13 @@ public class Controller {
 		if (role == PlayerRole.ATTACKER) {
 			robot = new Forward(Motor.A, Motor.B, Motor.C, SensorPort.S1,
 					SensorPort.S2, SensorPort.S3, SensorPort.S4);
-			((Forward) robot).loadFiveBalls();
+			//((Forward) robot).loadFiveBalls();
 		} else {
 			robot = new Defender(Motor.A, Motor.B, Motor.C, SensorPort.S1,
 					SensorPort.S2, SensorPort.S3, SensorPort.S4);
 		}
 
-		// robot.play(startingCorner, bx, by, w1, w2, d1, goalX, goalY);
+		 robot.play(startingCorner, bx, by, w1, w2, d1, goalX, goalY);
 	
 		Button.waitForAnyPress();
 	}
