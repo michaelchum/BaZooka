@@ -1,5 +1,6 @@
-package robot;
+package role;
 
+import bluetooth.StartCorner;
 import lejos.nxt.LightSensor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
@@ -50,6 +51,6 @@ public abstract class Robot {
 		myMap = new Map(myOdo, 30.00);
 		myNav = new Navigator(myOdo, myMap, USSensor);
 	}
-
-	public abstract void play();
+	
+	public abstract void play(StartCorner startingCorner, int bx, int by, int w1, int w2, int d1, int goalX, int goalY);
 }

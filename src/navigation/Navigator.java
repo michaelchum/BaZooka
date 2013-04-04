@@ -10,10 +10,10 @@ package navigation;
 import lejos.nxt.UltrasonicSensor;
 import lejos.util.Delay;
 import odometry.Odometer;
-import navigation.Navigation;
+import navigation.Pilot;
 import navigation.Map;
 
-public class Navigator extends Navigation{
+public class Navigator extends Pilot{
 	Map map;
 	UltrasonicSensor USSensor;
 	

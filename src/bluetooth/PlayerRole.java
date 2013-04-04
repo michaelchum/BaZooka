@@ -40,4 +40,6 @@ public enum PlayerRole {
 				return role;
 		return PlayerRole.NULL;
 	}
+	
+	
 }

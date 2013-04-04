@@ -65,5 +65,9 @@ public class Catapult {
 	   centreM.stop();
 	   Delay.msDelay(1000);
 	}
+	
+	public void block() {
+		
+	}
 
 }
