@@ -17,7 +17,8 @@ import bluetooth.StartCorner;
 public class Forward extends Robot {
 	static final double distanceFromCenterToRamp = 6.5, loadingDistance = 5,
 			distanceToWall = 17;
-	private double loadingX = 0, loadingY = 0, loadingHeading = 0;
+	private double loadingX = 0, loadingY = 0, preciseLoadingX = 0,
+			preciseLoadingY = 0, loadingHeading = 0;
 	private double closestX = 0, closestY = 0;
 
 	/**
@@ -53,6 +54,7 @@ public class Forward extends Robot {
 
 		// navigate to loading area and load balls
 		myNav.navigateTo(loadingX, loadingY);
+		myNav.travelTo(preciseLoadingX, preciseLoadingY);
 		myNav.turnTo(loadingHeading, true);
 		loadFiveBalls();
 
@@ -61,11 +63,13 @@ public class Forward extends Robot {
 		myNav.travelTo(closestX, closestY);
 		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor,
 				rightMotor, closestX, closestY);
-		
-		 //navigate to firing area
-		 myNav.navigateTo(150, goalY - (d1 + 1) * 30);
-		 LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor, rightMotor); //localize before shooting
-		 shootFiveBalls();
+
+		// navigate to firing area
+		myNav.navigateTo(135, goalY - ((d1 + 1) * 30) - 15);
+		myNav.travelTo(150, goalY - ((d1 + 1) * 30));
+		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor,
+				rightMotor); // localize before shooting
+		shootFiveBalls();
 
 	}
 
@@ -76,23 +80,31 @@ public class Forward extends Robot {
 	 * @param by
 	 */
 	private void computeLoadingCoordinates(int bx, int by) {
-		if (bx < 0) { // western wall
-			loadingX = bx + loadingDistance;
-			loadingY = by + distanceFromCenterToRamp;
+		if (bx == -1) { // western wall
+			preciseLoadingX = bx + loadingDistance;
+			preciseLoadingY = by + distanceFromCenterToRamp;
 			loadingHeading = 180;
+			
+			loadingX = -15;
+			loadingY = (by * 30) - 15;
 		}
 
-		if (by < 0) { // southern wall
-			loadingX = bx - distanceFromCenterToRamp;
-			loadingY = by + loadingDistance;
+		if (by == -1) { // southern wall
+			preciseLoadingX = bx * 30 - distanceFromCenterToRamp;
+			preciseLoadingY = by * 30 + loadingDistance;
 			loadingHeading = 270;
+			
+			loadingY = -15;
+			loadingX = (bx * 30) - 15;
 		}
 
-		if (bx > 10 && by > 0) { // eastern wall
-			loadingX = bx - loadingDistance;
+		if (bx == 11) { // eastern wall
+			preciseLoadingX = bx * 30 - loadingDistance;
+			preciseLoadingY = by * 30 - distanceFromCenterToRamp;
 			// loadingX should be between 16-18 cm of the wall
 
-			loadingY = by - distanceFromCenterToRamp;
+			loadingX = 315;
+			loadingY = (by * 30) - 15;
 			loadingHeading = 0;
 		}
 
