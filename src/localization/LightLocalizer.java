@@ -7,6 +7,7 @@ import lejos.nxt.LCD;
 import lejos.nxt.Sound;
 import lejos.nxt.LightSensor;
 import lejos.nxt.NXTRegulatedMotor;
+import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
 
 import java.lang.Math;
@@ -137,6 +138,8 @@ public class LightLocalizer {
 
 		myNav.travelTo(0, 0);
 		myNav.turnTo(0, true);
+		sweepForLine();
+		myOdometer.setTheta(0);
 		pause(1000);
 
 		LCD.drawString("x: " + myOdometer.getX(), 0, 5);
@@ -232,6 +235,29 @@ public class LightLocalizer {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void sweepForLine() {
+		DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36,
+				16.32, myLeftMotor, myRightMotor, false);
+		val = ls.readValue();
+		myPilot.setRotateSpeed(1);
+		double sweepAngle = 1;
+		double direction = 1;
+		double sweptSoFar = 0;
+		while ((baseValue - val) < 8) {
+			
+			val = ls.readValue();
+			myPilot.rotate(direction, false);
+			sweptSoFar += direction;
+			if (sweptSoFar == sweepAngle) {
+				direction *= -1;
+				sweepAngle *= -2;
+			}
+			
+		}
+		myPilot.stop();
+		myPilot.quickStop();
 	}
 
 }

@@ -46,10 +46,10 @@ public class Forward extends Robot {
 			int w2, int d1, int goalX, int goalY) {
 
 //		myCatapult.arm();
-//		USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav,
-//				leftMotor, rightMotor);
-//		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor,
-//				rightMotor);
+USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav,
+			leftMotor, rightMotor);
+LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor,
+		rightMotor);
 		myNav.navigateTo(45, 105);
 		LCD.drawString(String.valueOf(myOdometer.getX()), 0, 1);
 		LCD.drawString(String.valueOf(myOdometer.getY()), 0, 2);
@@ -156,5 +156,8 @@ public class Forward extends Robot {
 			myCatapult.shootCenter();
 		}
 	}
-
+	
+	
+	
+	
 }
