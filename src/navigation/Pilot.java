@@ -3,6 +3,7 @@ package navigation;
 import odometry.Odometer;
 
 import lejos.nxt.NXTRegulatedMotor;
+import lejos.util.Delay;
 
 public class Pilot {
 	final static int FAST = 175, SLOW = 85, ACCELERATION = 2000; // default 4000, trying lower for smooth transitions
@@ -78,7 +79,8 @@ public class Pilot {
 		minAng = (Math.atan2(y - myOdometer.getY(), x - myOdometer.getX())) * (180.0 / Math.PI);
 		if (minAng < 0)
 			minAng += 360.0;
-		this.turnTo(minAng, false);
+		this.turnTo(minAng, true);
+		Delay.msDelay(500); 
 		this.setSpeeds(FAST, FAST);
 		leftMotor.setSpeed(FAST);
 		rightMotor.setSpeed(FAST);
@@ -100,7 +102,8 @@ public class Pilot {
 			minAng = (Math.atan2(y - myOdometer.getY(), x - myOdometer.getX())) * (180.0 / Math.PI);
 			if (minAng < 0)
 				minAng += 360.0;
-			this.turnTo(minAng, false);
+			this.turnTo(minAng, true);
+			Delay.msDelay(500); 
 			this.setSpeeds(FAST, FAST);
 		}
 		this.setSpeeds(0, 0);

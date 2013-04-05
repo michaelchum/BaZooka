@@ -206,7 +206,7 @@ public class Navigator extends Pilot{
 			// if no obstacle move to next block
 			if(!obstacleDetected){
 
-				travelTo2(destX, destY); // travel to next tile
+				travelTo(destX, destY); // travel to next tile
 			
 				current_I = Next_I; // update new I position for loop
 				current_J = Next_J; // update new J position for loop

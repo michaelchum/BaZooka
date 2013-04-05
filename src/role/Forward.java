@@ -1,5 +1,6 @@
 package role;
 
+import lejos.nxt.LCD;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
 import lejos.robotics.navigation.DifferentialPilot;
@@ -44,33 +45,34 @@ public class Forward extends Robot {
 	public void play(StartCorner startingCorner, int bx, int by, int w1,
 			int w2, int d1, int goalX, int goalY) {
 
-		myCatapult.arm();
-		USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav,
-				leftMotor, rightMotor);
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor,
-				rightMotor);
-		myNav.travelTo(15, 15);
-
+//		myCatapult.arm();
+//		USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav,
+//				leftMotor, rightMotor);
+//		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor,
+//				rightMotor);
+		myNav.navigateTo(45, 105);
+		LCD.drawString(String.valueOf(myOdometer.getX()), 0, 1);
+		LCD.drawString(String.valueOf(myOdometer.getY()), 0, 2);
 		computeLoadingCoordinates(bx, by);
 
-		// navigate to loading area and load balls
-		myNav.navigateTo(loadingX, loadingY);
-		myNav.travelTo(preciseLoadingX, preciseLoadingY);
-		myNav.turnTo(loadingHeading, true);
-		loadFiveBalls();
-
-		// localize again (pushing the button fucks it up)
-		computeClosestIntersection();
-		myNav.travelTo(closestX, closestY);
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor,
-				rightMotor, closestX, closestY);
-
-		// navigate to firing area
-		myNav.navigateTo(135, goalY - ((d1 + 1) * 30) - 15);
-		myNav.travelTo(150, goalY - ((d1 + 1) * 30));
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor,
-				rightMotor); // localize before shooting
-		shootFiveBalls();
+//		// navigate to loading area and load balls
+//		myNav.navigateTo(loadingX, loadingY);
+//		myNav.travelTo(preciseLoadingX, preciseLoadingY);
+//		myNav.turnTo(loadingHeading, true);
+//		loadFiveBalls();
+//
+//		// localize again (pushing the button fucks it up)
+//		computeClosestIntersection();
+//		myNav.travelTo(closestX, closestY);
+//		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor,
+//				rightMotor, closestX, closestY);
+//
+//		// navigate to firing area
+//		myNav.navigateTo(135, goalY - ((d1 + 1) * 30) - 15);
+//		myNav.travelTo(150, goalY - ((d1 + 1) * 30));
+//		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor,
+//				rightMotor); // localize before shooting
+//		shootFiveBalls();
 
 	}
 
