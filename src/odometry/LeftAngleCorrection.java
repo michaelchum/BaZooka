@@ -14,18 +14,18 @@ public class LeftAngleCorrection extends Thread {
 
 	private double sensorDistance = 18.5; // distance measured between the light sensor's position
 	
-	double initialAngle, initialX, initialY; // coordinates when first line is detected
-	double secondAngle, secondX, secondY;  // coordinates when second line is detected
-	double actualAngle, actualX, actualY;  // actual robot coordinates
-	double deltaPosition, deltaX,deltaY; // change in robot position
+	private double initialAngle, initialX, initialY; // coordinates when first line is detected
+	private double secondAngle, secondX, secondY;  // coordinates when second line is detected
+	private double actualAngle, actualX, actualY;  // actual robot coordinates
+	private double deltaPosition, deltaX,deltaY; // change in robot position
 	
-	boolean leftLineDetected = false;
-	boolean rightLineDetected = false;
-	boolean leftLineFirst = false;
-	int valL;
-	int valR;
-	int preValL;
-	int preValR;
+	private boolean leftLineDetected = false;
+	private boolean rightLineDetected = false;
+	private boolean leftLineFirst = false;
+	private int valL;
+	private int valR;
+	private int preValL;
+	private int preValR;
 	
 	/**
 	 * Constructor for angle correction

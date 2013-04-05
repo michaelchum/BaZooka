@@ -23,8 +23,8 @@ public class USLocalizer {
 
 	private UltrasonicSensor mySensor;
 	private Odometer myOdometer;
-	private DifferentialPilot myPilot;
-	private Navigator myNavigator;
+	
+	private Navigator myNav;
 	private static final int ROTATION_SPEED = 30;
 
 	// public final int myRotationTarget;
@@ -46,12 +46,11 @@ public class USLocalizer {
 			Navigator navigator, RegulatedMotor leftMotor,
 			RegulatedMotor rightMotor) {
 		mySensor = sensor;
-		myNavigator = navigator;
+		myNav = navigator;
 		myOdometer = odometer;
 		myLeftMotor = leftMotor;
 		myRightMotor = rightMotor;
-		DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36, 16.32,
-				myLeftMotor, myRightMotor, false);
+		
 
 	}
 
@@ -97,7 +96,7 @@ public class USLocalizer {
 		myOdometer.setTheta(myOdometer.getAng() + dTheta);
 		LCD.drawString("Turning to 45", 0, 1);
 
-		myNavigator.turnTo(45, true);
+		myNav.turnTo(45, true);
 
 		// if it fucks up, fix it
 		if (!isReasonable(45)) {

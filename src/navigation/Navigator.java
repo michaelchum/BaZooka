@@ -14,12 +14,12 @@ import navigation.Pilot;
 import navigation.Map;
 
 public class Navigator extends Pilot{
-	Map map;
+	private Map myMap;
 	UltrasonicSensor USSensor;
 	
 	public Navigator(Odometer odo, Map map, UltrasonicSensor USSensor){
 		super(odo);
-		this.map = map;
+		this.myMap = map;
 		this.USSensor = USSensor;
 	}
 	
@@ -35,17 +35,17 @@ public class Navigator extends Pilot{
 		
 		// copy grid to a temporary grid for traveling purposes
 		int [][] grid = new int[10][10];
-		for(int i=0;i<map.grid.length;i++){
-			for(int j=0;j<map.grid[i].length;j++){
-				grid[i][j] = map.grid[i][j];
+		for(int i=0;i<myMap.getGrid().length;i++){
+			for(int j=0;j<myMap.getGrid()[i].length;j++){
+				grid[i][j] = myMap.getGrid()[i][j];
 			}
 		}
 		
 		// retrieve the positions in terms of grid coordinates
-		int currentI = map.currentI();
-		int currentJ = map.currentJ();
-		int destJ = map.destJ(destX);
-		int destI = map.destI(destY);
+		int currentI = myMap.currentI();
+		int currentJ = myMap.currentJ();
+		int destJ = myMap.destJ(destX);
+		int destI = myMap.destI(destY);
 		
 		// set the goal on the grid map
 		grid[destI][destJ]=2;
@@ -182,7 +182,7 @@ public class Navigator extends Pilot{
 				obstacleDetected = true;
 				
 				// set the obstacle on the Map grid
-				map.grid[Next_I][Next_J] = 1;
+				myMap.getGrid()[Next_I][Next_J] = 1;
 				
 				// find destination location by grid
 				int finalJ = 0;
@@ -197,7 +197,7 @@ public class Navigator extends Pilot{
 				}
 				
 				// recursion
-				navigateTo(map.destX(finalJ),map.destY(finalI));
+				navigateTo(myMap.destX(finalJ),myMap.destY(finalI));
 				
 				// terminate this loop
 				current_low = 2;

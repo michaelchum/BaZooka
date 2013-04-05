@@ -20,16 +20,16 @@ import odometry.Odometer;
 
 public class Map {
 	
-	Odometer odo;
+	private Odometer myOdometer;
 	double tileWidth;
-	int nothing = 0;
-	int obstacle = 1;
-	int goal = 1;
-	int robot = 99;
-	double [] coordsX = new double[10];
-	double [] coordsY = new double[10];
+	private static final int NOTHING = 0;
+	private static final int OBSTACLE = 1;
+	private static final int GOAL = 1;
+	private static final int ROBOT = 99;
+	private double [] coordsX = new double[10];
+	private double [] coordsY = new double[10];
 
-	int[][] grid = new int[][] {{1,0,0,0,0,0,0,0,0,1}, 
+	private int[][] grid = new int[][] {{1,0,0,0,0,0,0,0,0,1}, 
 			   			       	{1,0,0,0,0,0,0,0,0,1}, 
 			   			       	{1,0,0,0,0,0,0,0,0,1}, 
 			   			       	{1,0,0,0,0,0,0,0,0,1}, 
@@ -41,7 +41,7 @@ public class Map {
 			   			       	{1,0,0,0,0,0,0,0,0,1}};
 	
 	public Map(Odometer odo, double tileWidth){
-		this.odo = odo;
+		this.myOdometer = odo;
 		this.tileWidth = tileWidth;
 		
 		this.tileWidth = tileWidth;
@@ -49,24 +49,24 @@ public class Map {
 		double sumY = tileWidth/2 + tileWidth*9;
 		
 		// build x coordinates of map
-		for(int i=0;i<this.coordsX.length;i++){
-			this.coordsX[i] = sumX;
+		for(int i=0;i<this.getCoordsX().length;i++){
+			this.getCoordsX()[i] = sumX;
 			sumX = sumX + this.tileWidth;
 		}
 		
 		//build y coordinates of map
-		for(int j=0;j<this.coordsY.length;j++){
-			this.coordsY[j] = sumY;
+		for(int j=0;j<this.getCoordsY().length;j++){
+			this.getCoordsY()[j] = sumY;
 			sumY = sumY - this.tileWidth;
 		}
 	}
 	
 	public int currentI(){
-		double currentY = getClosest(coordsY, odo.getY());
+		double currentY = getClosest(getCoordsY(), myOdometer.getY());
 		int currentI = 0;
-		for(int j=0; j<coordsY.length; j++){
+		for(int j=0; j<getCoordsY().length; j++){
 			double delta = 3.00;
-			if(Math.abs(currentY-coordsY[j]) < delta){
+			if(Math.abs(currentY-getCoordsY()[j]) < delta){
 				currentI=j;
 				break;
 			}
@@ -75,11 +75,11 @@ public class Map {
 	}
 	
 	public int currentJ(){
-		double currentX = getClosest(coordsX, odo.getX());
+		double currentX = getClosest(getCoordsX(), myOdometer.getX());
 		int currentJ = 0;
-		for(int i=0; i<coordsX.length; i++){
+		for(int i=0; i<getCoordsX().length; i++){
 			double delta = 3.00;
-			if(Math.abs(currentX-coordsX[i]) < delta){
+			if(Math.abs(currentX-getCoordsX()[i]) < delta){
 				currentJ=i;
 				break;
 			}
@@ -89,9 +89,9 @@ public class Map {
 	
 	public int destJ(double destX){
 		int destJ = 0;
-		for(int i=0; i<coordsX.length; i++){
+		for(int i=0; i<getCoordsX().length; i++){
 			double delta = 2.00; 
-			if(Math.abs(destX-coordsX[i]) <= delta){
+			if(Math.abs(destX-getCoordsX()[i]) <= delta){
 				destJ = i;
 				break;
 			}
@@ -102,9 +102,9 @@ public class Map {
 	
 	public int destI(double destY){
 		int destI = 0;
-		for(int j=0; j<coordsY.length; j++){
+		for(int j=0; j<getCoordsY().length; j++){
 			double delta = 2.00; 
-			if(Math.abs(destY-coordsY[j]) <= delta){
+			if(Math.abs(destY-getCoordsY()[j]) <= delta){
 				destI = j;
 				break;
 			}
@@ -113,24 +113,24 @@ public class Map {
 	}
 	
 	public double destX(int destJ){
-		return this.coordsX[destJ];
+		return this.getCoordsX()[destJ];
 	}
 	
 	public double destY(int destI){
-		return this.coordsY[destI];
+		return this.getCoordsY()[destI];
 	}
 	
-    public void insertValue(int i, int j, int value){
-        grid[i][j]= value;
+    private void insertValue(int i, int j, int value){
+        getGrid()[i][j]= value;
     }
 
-    public int getValue(int i, int j) {
+    private int getValue(int i, int j) {
         if(i>=0 && i<10 && j>=0 && j<10)
-                return grid[i][j];
+                return getGrid()[i][j];
         else return -3;
     }
     
-	public double getClosest(double[] array, double position) {
+	private double getClosest(double[] array, double position) {
 	    double lowestDiff = Double.MAX_VALUE;
 	    double result = 0.0;
 	    for (double i : array) {
@@ -143,7 +143,7 @@ public class Map {
 	    return result;
 	}
 	
-	public int getHighest(int[][] grid){
+	private int getHighest(int[][] grid){
 		int highest= 1;
 		for(int i = 0; i < grid.length; i++) {
 		    for(int j = 0; j < grid.length; j++){
@@ -156,7 +156,31 @@ public class Map {
 	}
 	
 	// filer map for impossible paths
-	public int[][] filterMap(int[][] grid){
+	private int[][] filterMap(int[][] grid){
 		return grid;
+	}
+
+	public int[][] getGrid() {
+		return grid;
+	}
+
+	public void setGrid(int[][] grid) {
+		this.grid = grid;
+	}
+
+	double [] getCoordsX() {
+		return coordsX;
+	}
+
+	void setCoordsX(double [] coordsX) {
+		this.coordsX = coordsX;
+	}
+
+	double [] getCoordsY() {
+		return coordsY;
+	}
+
+	void setCoordsY(double [] coordsY) {
+		this.coordsY = coordsY;
 	}
 }

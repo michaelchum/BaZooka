@@ -35,8 +35,8 @@ public class Defender extends Robot {
 	public void play(StartCorner startingCorner, int bx, int by, int w1,
 			int w2, int d1, int goalX, int goalY) {
 		myCatapult.arm();
-		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor, rightMotor, startingCorner);
-		USLocalizer.doFallingEdgeLocalization(myOdo, USSensor, myNav, leftMotor, rightMotor);
+		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, startingCorner);
+		USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav, leftMotor, rightMotor);
 		myNav.travelTo(15, 15);
 		
 		myNav.navigateTo((goalX * 30) - 15, goalY - ((w2 * 30) + 15)); //navigate to defensive zone

@@ -7,13 +7,13 @@ import lejos.nxt.NXTRegulatedMotor;
 public class Pilot {
 	final static int FAST = 175, SLOW = 85, ACCELERATION = 2000; // default 4000, trying lower for smooth transitions
 	final static double DEG_ERR = 1.0, CM_ERR = 1.0;
-	private Odometer odometer;
+	private Odometer myOdometer;
 	private NXTRegulatedMotor leftMotor, rightMotor;
 
 	public Pilot(Odometer odo) {
-		this.odometer = odo;
+		this.myOdometer = odo;
 
-		NXTRegulatedMotor[] motors = this.odometer.getMotors();
+		NXTRegulatedMotor[] motors = this.myOdometer.getMotors();
 		this.leftMotor = motors[0];
 		this.rightMotor = motors[1];
 
@@ -68,22 +68,22 @@ public class Pilot {
 	public void travelTo(double x, double y) {
 		
 		// determine the vectors needed to travel
-		double vectorX = x - odometer.getX();
-		double vectorY = y - odometer.getY();
+		double vectorX = x - myOdometer.getX();
+		double vectorY = y - myOdometer.getY();
 		
 		// calculate the distance needed to travel
 		double distance = Math.sqrt(Math.pow(vectorX,2) + Math.pow(vectorY,2));
 		
 		double minAng;
-		minAng = (Math.atan2(y - odometer.getY(), x - odometer.getX())) * (180.0 / Math.PI);
+		minAng = (Math.atan2(y - myOdometer.getY(), x - myOdometer.getX())) * (180.0 / Math.PI);
 		if (minAng < 0)
 			minAng += 360.0;
 		this.turnTo(minAng, false);
 		this.setSpeeds(FAST, FAST);
 		leftMotor.setSpeed(FAST);
 		rightMotor.setSpeed(FAST);
-		leftMotor.rotate(convertDistance(odometer.leftRadius, distance), true);
-		rightMotor.rotate(convertDistance(odometer.rightRadius, distance), false);
+		leftMotor.rotate(convertDistance(myOdometer.leftRadius, distance), true);
+		rightMotor.rotate(convertDistance(myOdometer.rightRadius, distance), false);
 	
 		leftMotor.stop();
 		rightMotor.stop();
@@ -96,8 +96,8 @@ public class Pilot {
 	 */
 	public void travelTo2(double x, double y) {
 		double minAng;
-		while (Math.abs(x - odometer.getX()) > CM_ERR || Math.abs(y - odometer.getY()) > CM_ERR) {
-			minAng = (Math.atan2(y - odometer.getY(), x - odometer.getX())) * (180.0 / Math.PI);
+		while (Math.abs(x - myOdometer.getX()) > CM_ERR || Math.abs(y - myOdometer.getY()) > CM_ERR) {
+			minAng = (Math.atan2(y - myOdometer.getY(), x - myOdometer.getX())) * (180.0 / Math.PI);
 			if (minAng < 0)
 				minAng += 360.0;
 			this.turnTo(minAng, false);
@@ -112,11 +112,11 @@ public class Pilot {
 	 */
 	public void turnTo(double angle, boolean stop) {
 		
-		double error = angle - this.odometer.getAng();
+		double error = angle - this.myOdometer.getAng();
 
 		while (Math.abs(error) > DEG_ERR) {
 
-			error = angle - this.odometer.getAng();
+			error = angle - this.myOdometer.getAng();
 
 			if (error < -180.0) {
 				this.setSpeeds(-SLOW, SLOW);
@@ -138,7 +138,7 @@ public class Pilot {
 	 * Go foward a set distance in cm
 	 */
 	public void goForward(double distance) {
-		this.travelTo(Math.cos(Math.toRadians(this.odometer.getAng())) * distance, Math.cos(Math.toRadians(this.odometer.getAng())) * distance);
+		this.travelTo(Math.cos(Math.toRadians(this.myOdometer.getAng())) * distance, Math.cos(Math.toRadians(this.myOdometer.getAng())) * distance);
 	}
 	
 	/*

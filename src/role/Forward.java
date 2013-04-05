@@ -45,9 +45,9 @@ public class Forward extends Robot {
 			int w2, int d1, int goalX, int goalY) {
 
 		myCatapult.arm();
-		USLocalizer.doFallingEdgeLocalization(myOdo, USSensor, myNav,
+		USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav,
 				leftMotor, rightMotor);
-		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor,
+		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor,
 				rightMotor);
 		myNav.travelTo(15, 15);
 
@@ -62,13 +62,13 @@ public class Forward extends Robot {
 		// localize again (pushing the button fucks it up)
 		computeClosestIntersection();
 		myNav.travelTo(closestX, closestY);
-		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor,
+		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor,
 				rightMotor, closestX, closestY);
 
 		// navigate to firing area
 		myNav.navigateTo(135, goalY - ((d1 + 1) * 30) - 15);
 		myNav.travelTo(150, goalY - ((d1 + 1) * 30));
-		LightLocalizer.doLocalization(myOdo, myNav, centerSensor, leftMotor,
+		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor,
 				rightMotor); // localize before shooting
 		shootFiveBalls();
 
@@ -115,15 +115,15 @@ public class Forward extends Robot {
 	 * Need to change these max values if the arena changes
 	 */
 	private void computeClosestIntersection() {
-		double currentX = myOdo.getX();
-		double currentY = myOdo.getY();
+		double currentX = myOdometer.getX();
+		double currentY = myOdometer.getY();
 
 		if (currentX < 0) {
 			closestX = 0;
 		} else if (currentX > 300) {
 			closestX = 300;
 		} else {
-			closestX = Math.round(myOdo.getX() / 30) * 30;
+			closestX = Math.round(myOdometer.getX() / 30) * 30;
 		}
 
 		if (currentY < 0) {
@@ -131,12 +131,12 @@ public class Forward extends Robot {
 		} else if (currentY > 300) {
 			closestY = 300;
 		} else {
-			closestX = Math.round(myOdo.getX() / 30) * 30;
+			closestX = Math.round(myOdometer.getX() / 30) * 30;
 		}
 
 	}
 
-	public void loadFiveBalls() {
+	private void loadFiveBalls() {
 		DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36, 16.32,
 				leftMotor, rightMotor, false);
 		myPilot.setTravelSpeed(5);

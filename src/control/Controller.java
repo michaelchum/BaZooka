@@ -1,4 +1,4 @@
-package main;
+package control;
 
 import lejos.nxt.Button;
 import lejos.nxt.Motor;
