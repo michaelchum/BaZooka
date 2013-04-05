@@ -22,10 +22,10 @@ public class Map {
 	
 	private Odometer myOdometer;
 	double tileWidth;
-	private static final int NOTHING = 0;
-	private static final int OBSTACLE = 1;
-	private static final int GOAL = 1;
-	private static final int ROBOT = 99;
+	public static final int NOTHING = 0;
+	public static final int OBSTACLE = 1;
+	public static final int GOAL = 1;
+	public static final int ROBOT = 99;
 	private double [] coordsX = new double[10];
 	private double [] coordsY = new double[10];
 

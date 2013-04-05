@@ -103,8 +103,8 @@ public class USLocalizer {
 			double theta = myOdometer.getAng();
 			DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36,
 					16.32, myLeftMotor, myRightMotor, false);
-			myPilot.rotate(180);
 			myPilot.setRotateSpeed(30);
+			myPilot.rotate(180);
 			myOdometer.setTheta(theta);
 		}
 

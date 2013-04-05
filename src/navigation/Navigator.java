@@ -182,7 +182,7 @@ public class Navigator extends Pilot{
 				obstacleDetected = true;
 				
 				// set the obstacle on the Map grid
-				myMap.getGrid()[Next_I][Next_J] = 1;
+				myMap.getGrid()[Next_I][Next_J] = Map.OBSTACLE;
 				
 				// find destination location by grid
 				int finalJ = 0;
