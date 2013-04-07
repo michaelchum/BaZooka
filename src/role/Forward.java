@@ -54,13 +54,13 @@ public class Forward extends Robot {
 
 		switch (startingCorner) {
 		case BOTTOM_LEFT:
-			myNav.travelTo(15, 15);
+			myNav.travelTo(15.0, 15.0);
 		case BOTTOM_RIGHT:
 		case TOP_RIGHT:
 		case TOP_LEFT:
 		}
-		myNav.travelTo(15, 15);
-		myNav.turnTo(90, true);
+		myNav.travelTo(15.0, 15.0);
+		myNav.turnTo(90.0, true);
 
 		LCD.drawString(String.valueOf(myOdometer.getX()), 0, 1);
 		LCD.drawString(String.valueOf(myOdometer.getY()), 0, 2);

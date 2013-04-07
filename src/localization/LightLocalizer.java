@@ -138,7 +138,7 @@ public class LightLocalizer {
 
 		myNav.travelTo(0, 0);
 		myNav.turnTo(0, true);
-		sweepForLine();
+		//sweepForLine();
 		myOdometer.setTheta(0);
 		pause(1000);
 
