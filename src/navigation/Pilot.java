@@ -6,7 +6,7 @@ import lejos.nxt.NXTRegulatedMotor;
 import lejos.util.Delay;
 
 public class Pilot {
-	final static int FAST = 175, SLOW = 85, ACCELERATION = 2000; // default 4000, trying lower for smooth transitions
+	final static int FAST = 175, SLOW = 85, ACCELERATION = 1500; // default 4000, trying lower for smooth transitions
 	final static double DEG_ERR = 1.0, CM_ERR = 1.0;
 	private Odometer myOdometer;
 	private NXTRegulatedMotor leftMotor, rightMotor;
@@ -79,9 +79,8 @@ public class Pilot {
 		minAng = (Math.atan2(y - myOdometer.getY(), x - myOdometer.getX())) * (180.0 / Math.PI);
 		if (minAng < 0)
 			minAng += 360.0;
-		this.turnTo(minAng, true);
-		Delay.msDelay(500); 
-		this.setSpeeds(FAST, FAST);
+		this.turnTo(minAng, false);
+		//this.setSpeeds(FAST, FAST);
 		leftMotor.setSpeed(FAST);
 		rightMotor.setSpeed(FAST);
 		leftMotor.rotate(convertDistance(myOdometer.leftRadius, distance), true);
@@ -98,12 +97,12 @@ public class Pilot {
 	 */
 	public void travelTo2(double x, double y) {
 		double minAng;
+		minAng = (Math.atan2(y - myOdometer.getY(), x - myOdometer.getX())) * (180.0 / Math.PI);
+		if (minAng < 0)
+			minAng += 360.0;
+		this.turnTo(minAng, true);
+		Delay.msDelay(500); 
 		while (Math.abs(x - myOdometer.getX()) > CM_ERR || Math.abs(y - myOdometer.getY()) > CM_ERR) {
-			minAng = (Math.atan2(y - myOdometer.getY(), x - myOdometer.getX())) * (180.0 / Math.PI);
-			if (minAng < 0)
-				minAng += 360.0;
-			this.turnTo(minAng, true);
-			Delay.msDelay(500); 
 			this.setSpeeds(FAST, FAST);
 		}
 		this.setSpeeds(0, 0);
