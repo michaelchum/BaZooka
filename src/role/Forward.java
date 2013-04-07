@@ -1,8 +1,12 @@
 package role;
 
+import odometry.LCDInfo;
+import odometry.Odometer;
 import lejos.nxt.LCD;
+import lejos.nxt.LightSensor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
+import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
 import localization.LightLocalizer;
@@ -45,28 +49,29 @@ public class Forward extends Robot {
 	public void play(StartCorner startingCorner, int bx, int by, int w1,
 			int w2, int d1, int goalX, int goalY) {
 
-		//localize(startingCorner);
-		
-		USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav, leftMotor, rightMotor, 0                 );
-//		switch (startingCorner) {
-//		case BOTTOM_LEFT:
-//			myNav.travelTo(15, 15);
-//		case BOTTOM_RIGHT:
-//		case TOP_RIGHT:
-//		case TOP_LEFT:
-//		}
-//		myNav.travelTo(15, 15);
-//		myNav.navigateTo(45, 105);
+		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor, centerSensor, rightSensor);
+		localize(startingCorner);
+
+		switch (startingCorner) {
+		case BOTTOM_LEFT:
+			myNav.travelTo(15, 15);
+		case BOTTOM_RIGHT:
+		case TOP_RIGHT:
+		case TOP_LEFT:
+		}
+		myNav.travelTo(15, 15);
+		myNav.turnTo(90, true);
+
 		LCD.drawString(String.valueOf(myOdometer.getX()), 0, 1);
 		LCD.drawString(String.valueOf(myOdometer.getY()), 0, 2);
 		computeLoadingCoordinates(bx, by);
 
-		// // navigate to loading area and load balls
-		// myNav.navigateTo(loadingX, loadingY);
-		// myNav.travelTo(preciseLoadingX, preciseLoadingY);
-		// myNav.turnTo(loadingHeading, true);
-		// loadFiveBalls();
-		//
+		// navigate to loading area and load balls
+		myNav.navigateTo(loadingX, loadingY);
+		myNav.travelTo(preciseLoadingX, preciseLoadingY);
+		myNav.turnTo(loadingHeading, true);
+		loadFiveBalls();
+
 		// // localize again (pushing the button fucks it up)
 		// computeClosestIntersection();
 		// myNav.travelTo(closestX, closestY);
@@ -149,11 +154,9 @@ public class Forward extends Robot {
 		DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36, 16.32,
 				leftMotor, rightMotor, false);
 		myPilot.setTravelSpeed(5);
-		for (int i = 0; i < 5; i++) {
-			myPilot.travel(5);
-			Delay.msDelay(1000);
-			myPilot.travel(-5);
-		}
+		myPilot.travel(5);
+		Delay.msDelay(30000);
+		myPilot.travel(-5);
 	}
 
 	private void shootFiveBalls() {

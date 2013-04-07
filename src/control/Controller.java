@@ -43,8 +43,8 @@ public class Controller {
 		final int goalY = 300;
 
 		// testing values
-		int bx = 0;
-		int by = 0;
+		int bx = -1;
+		int by = 4;
 		int w1 = 0;
 		int w2 = 0;
 		int d1 = 0;

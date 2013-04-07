@@ -116,7 +116,7 @@ public class LightLocalizer {
 		baseValue = ls.readValue();
 		val = baseValue;
 		// preVal = baseValue;
-		LCD.drawString("BASE READING: " + val, 0, 1);
+		
 
 		float thetaWest = rotateTilLineDetected(0, false);
 		pause(1000);
@@ -142,10 +142,7 @@ public class LightLocalizer {
 		myOdometer.setTheta(0);
 		pause(1000);
 
-		LCD.drawString("x: " + myOdometer.getX(), 0, 5);
-		LCD.drawString("y: " + myOdometer.getY(), 0, 6);
-
-		LCD.drawString("Theta: " + myOdometer.getAng(), 0, 7);
+		
 	}
 
 	/**
@@ -174,6 +171,7 @@ public class LightLocalizer {
 		myOdometer.setY(corner.getY() * 30);
 
 		double currentTheta = myOdometer.getAng();
+		
 		switch (corner) {
 		case BOTTOM_LEFT:
 		case TOP_LEFT:

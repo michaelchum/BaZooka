@@ -112,7 +112,7 @@ public class USLocalizer {
 
 		// update the odometer position (example to follow:)
 		myOdometer.setTheta(myOdometer.getAng() + dTheta);
-		LCD.drawString("Turning to 45", 0, 1);
+		
 
 		myNav.turnTo(45, true);
 
@@ -132,8 +132,8 @@ public class USLocalizer {
 
 		pause(1000);
 
-		LCD.clear(0);
-		LCD.drawString("Theta: " + myOdometer.getAng(), 0, 7);
+		
+		
 
 	}
 	
@@ -160,7 +160,7 @@ public class USLocalizer {
 
 		// update the odometer position (example to follow:)
 		myOdometer.setTheta(myOdometer.getAng() + dTheta);
-		LCD.drawString("Turning to " + rotationTarget, 0, 1);
+		
 
 		myNav.turnTo(rotationTarget, true);
 
@@ -181,7 +181,7 @@ public class USLocalizer {
 		pause(1000);
 
 		LCD.clear(0);
-		LCD.drawString("Theta: " + myOdometer.getAng(), 0, 7);
+		
 
 	}
 
