@@ -137,9 +137,9 @@ public class LightLocalizer {
 		pause(1000);
 
 		myNav.travelTo(0, 0);
-		myNav.turnTo(0, true);
+		myNav.turnTo(90.0, true);
 		//sweepForLine();
-		myOdometer.setTheta(0);
+		myOdometer.setTheta(90.0);
 		pause(1000);
 
 		
@@ -167,13 +167,14 @@ public class LightLocalizer {
 	public void doLocalization(StartCorner corner) {
 		doLocalization();
 
-		myOdometer.setX(corner.getX() * 30);
-		myOdometer.setY(corner.getY() * 30);
+		myOdometer.setX(corner.getX() * 30.0);
+		myOdometer.setY(corner.getY() * 30.0);
 
 		double currentTheta = myOdometer.getAng();
 		
 		switch (corner) {
 		case BOTTOM_LEFT:
+			myOdometer.setTheta(currentTheta);
 		case TOP_LEFT:
 			myOdometer.setTheta(currentTheta + 270);
 		case TOP_RIGHT:
