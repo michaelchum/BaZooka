@@ -10,6 +10,7 @@
 *.nxd
 *.nxj
 *.classpath
+*.ucls
 
 # Packages #
 ############
