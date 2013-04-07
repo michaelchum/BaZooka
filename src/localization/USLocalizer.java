@@ -70,6 +70,24 @@ public class USLocalizer {
 		temp.doFallingEdgeLocalization();
 
 	}
+	
+	/**
+	 * Convenience method for falling edge localization
+	 * 
+	 * @param sensor
+	 *            - the UltrasonicSensor used
+	 * @param navigator
+	 *            - the Navigator
+	 */
+	public static void doFallingEdgeLocalization(Odometer odometer,
+			UltrasonicSensor sensor, Navigator navigator,
+			RegulatedMotor leftMotor, RegulatedMotor rightMotor, int rotationTarget) {
+		USLocalizer temp = new USLocalizer(odometer, sensor, navigator,
+				leftMotor, rightMotor);
+		temp.doFallingEdgeLocalization(rotationTarget);
+
+	}
+	
 
 	/**
 	 * Does a falling edge localization and updates the odometer
@@ -100,6 +118,54 @@ public class USLocalizer {
 
 		// if it fucks up, fix it
 		if (!isReasonable(45)) {
+			double theta = myOdometer.getAng();
+			DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36,
+					16.32, myLeftMotor, myRightMotor, false);
+			myPilot.setRotateSpeed(30);
+			myPilot.rotate(180);
+			myOdometer.setTheta(theta);
+		}
+
+		LCD.drawString("x: " + myOdometer.getX(), 0, 5);
+		LCD.drawString("y: " + myOdometer.getY(), 0, 6);
+		// LCD.drawString("Theta: " + myOdometer.getTheta(),0, 7);
+
+		pause(1000);
+
+		LCD.clear(0);
+		LCD.drawString("Theta: " + myOdometer.getAng(), 0, 7);
+
+	}
+	
+	/**
+	 * Does a falling edge localization, rotating to the specified angle, and updates the odometer
+	 */
+	public void doFallingEdgeLocalization(int rotationTarget) {
+
+		// rotate the robot until it sees no wall
+
+		if (getFilteredData() < 50) {
+			rotateTilWallIsNotVisible(CLOCKWISE_ROTATION);
+		}
+
+		// keep rotating until the robot sees a wall, then latch the angle
+		double angleA = rotateTilWallIsVisible(CLOCKWISE_ROTATION);
+		// switch direction and wait until it sees no wall
+		rotateTilWallIsNotVisible(COUNTER_CLOCKWISE_ROTATION);
+		// keep rotating until the robot sees a wall, then latch the angle
+		double angleB = rotateTilWallIsVisible(COUNTER_CLOCKWISE_ROTATION);
+		// angleA is clockwise from angleB, so assume the average of the
+		// angles to the right of angleB is 45 degrees past 'north'
+		double dTheta = computeDeltaTheta(angleA, angleB);
+
+		// update the odometer position (example to follow:)
+		myOdometer.setTheta(myOdometer.getAng() + dTheta);
+		LCD.drawString("Turning to " + rotationTarget, 0, 1);
+
+		myNav.turnTo(rotationTarget, true);
+
+		// if it fucks up, fix it
+		if (!isReasonable(rotationTarget)) {
 			double theta = myOdometer.getAng();
 			DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36,
 					16.32, myLeftMotor, myRightMotor, false);

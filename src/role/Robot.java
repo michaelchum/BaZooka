@@ -5,6 +5,8 @@ import lejos.nxt.LightSensor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
+import localization.LightLocalizer;
+import localization.USLocalizer;
 
 import motion.Catapult;
 import navigation.Navigator;
@@ -69,4 +71,12 @@ public abstract class Robot {
 	 */
 	public abstract void play(StartCorner startingCorner, int bx, int by,
 			int w1, int w2, int d1, int goalX, int goalY);
+	
+	protected void localize(StartCorner startingCorner) {
+		USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav,
+				leftMotor, rightMotor);
+		
+		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
+				leftMotor, rightMotor, startingCorner);
+	}
 }
