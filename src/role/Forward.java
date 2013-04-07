@@ -51,16 +51,16 @@ public class Forward extends Robot {
 
 		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor, centerSensor, rightSensor);
 		localize(startingCorner);
-
+	
 		switch (startingCorner) {
 		case BOTTOM_LEFT:
-			myNav.travelTo(15.0, 15.0);
+			myOdometer.setPosition(new double [] {0.0, 0.0, 90.0}, new boolean [] {true, true, true});
+			myNav.travelTo2(15.0, 15.0);
+			myNav.turnTo(90.0, true);
 		case BOTTOM_RIGHT:
 		case TOP_RIGHT:
 		case TOP_LEFT:
 		}
-		myNav.travelTo(15.0, 15.0);
-		myNav.turnTo(90.0, true);
 
 		LCD.drawString(String.valueOf(myOdometer.getX()), 0, 1);
 		LCD.drawString(String.valueOf(myOdometer.getY()), 0, 2);
