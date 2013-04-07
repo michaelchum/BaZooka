@@ -162,7 +162,7 @@ public class Navigator extends Pilot{
 			destY = destY(Next_I);
 			
 			// turn to direction of next tile
-			turnTo(direction, true);
+			turnTo(direction, false);
 			try { Thread.sleep(500); } catch (InterruptedException e) {}
 	
 			// check if obstacle is detected
@@ -206,7 +206,7 @@ public class Navigator extends Pilot{
 			// if no obstacle move to next block
 			if(!obstacleDetected){
 
-				travelTo(destX, destY); // travel to next tile
+				travelTo2(destX, destY); // travel to next tile
 			
 				current_I = Next_I; // update new I position for loop
 				current_J = Next_J; // update new J position for loop
