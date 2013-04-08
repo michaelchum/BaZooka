@@ -48,7 +48,8 @@ public class Forward extends Robot {
 	@Override
 	public void play(StartCorner startingCorner, int bx, int by, int w1,
 			int w2, int d1, int goalX, int goalY) {
-
+		
+		// myCatapult.arm();
 		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor, centerSensor, rightSensor);
 		localize(startingCorner);
 	
