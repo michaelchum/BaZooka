@@ -14,6 +14,8 @@ import bluetooth.StartCorner;
  * 
  */
 public class Defender extends Robot {
+	private double defensiveZoneX, defensiveZoneY;
+	
 	/**
 	 * Constructor - same as Robot constructor
 	 * 
@@ -34,7 +36,7 @@ public class Defender extends Robot {
 	@Override
 	public void play(StartCorner startingCorner, int bx, int by, int w1,
 			int w2, int d1, int goalX, int goalY) {
-		myCatapult.arm();
+		//myCatapult.arm(); //taking this out because it wastes time for defenders
 		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, startingCorner);
 		USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav, leftMotor, rightMotor);
 		
@@ -66,9 +68,6 @@ public class Defender extends Robot {
 		
 	}
 	
-	private void block() {
-		
-	}
-
+	
 
 }

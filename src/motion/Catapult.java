@@ -82,8 +82,6 @@ public class Catapult {
 	   Delay.msDelay(1000);
 	}
 	
-	public void block() {
-		
-	}
+
 
 }

@@ -19,7 +19,10 @@ public class LightData extends Thread{
 		this.ls =ls;
 	}
 	
-	public void run() {
+	/**
+	 * Run the thread
+	 */
+		public void run() {
 		long correctionStart, correctionEnd;
 		while (true) {
 			correctionStart = System.currentTimeMillis();

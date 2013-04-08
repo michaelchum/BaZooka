@@ -25,6 +25,14 @@ public class LCDInfo implements TimerListener{
 	// arrays for displaying data
 	private double [] pos;
 	
+	/**
+	 * Constructor
+	 * @param odo
+	 * @param us
+	 * @param leftLight
+	 * @param middleLight
+	 * @param rightLight
+	 */
 	public LCDInfo(Odometer odo, UltrasonicSensor us, LightSensor leftLight, LightSensor middleLight, LightSensor rightLight) {
 		this.odo = odo;
 		this.lcdTimer = new Timer(LCD_REFRESH, this);
@@ -40,6 +48,9 @@ public class LCDInfo implements TimerListener{
 		lcdTimer.start();
 	}
 	
+	/**
+	 * Display updated info after set time interval
+	 */
 	public void timedOut() { 
 		odo.getPosition(pos);
 		distance = us.getDistance();

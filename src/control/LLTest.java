@@ -6,15 +6,20 @@ import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
 import localization.LightLocalizer;
-import localization.USLocalizer;
 import navigation.Map;
 import navigation.Navigator;
 import odometry.Odometer;
 
+/**
+ * Light localization test
+ * @author Team 13
+ *
+ */
 public class LLTest {
 
 	/**
-	 * @param args
+	 * Entry point of execution
+	 * @param args - ignored
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

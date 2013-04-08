@@ -1,11 +1,6 @@
 package navigation;
 
-/**
- * Sets a path on the wavefront grid and navigates tile per tile to destination
- * 
- * @author Team 13
- * 
- */
+
 
 import lejos.nxt.UltrasonicSensor;
 import lejos.util.Delay;
@@ -13,16 +8,33 @@ import odometry.Odometer;
 import navigation.Pilot;
 import navigation.Map;
 
+/**
+ * Sets a path on the wavefront grid and navigates tile per tile to destination
+ * 
+ * @author Team 13
+ * 
+ */
 public class Navigator extends Pilot{
 	private Map myMap;
 	UltrasonicSensor USSensor;
 	
+	/**
+	 * Constructor
+	 * @param odo
+	 * @param map
+	 * @param USSensor
+	 */
 	public Navigator(Odometer odo, Map map, UltrasonicSensor USSensor){
 		super(odo);
 		this.myMap = map;
 		this.USSensor = USSensor;
 	}
 	
+	/**
+	 * Navigates to a tile
+	 * @param destX - x-coordinate of middle of destination tile in cm.  Must be multiple of 15 but not multiple of 30
+	 * @param destY - y-coordinate of middle of destination tile in cm.  Must be multiple of 15 but not multiple of 30
+	 */
 	public void navigateTo(double destX, double destY){
 		
 		int [][] grid = setPath(destX, destY); // create the wavefront grid
@@ -31,6 +43,12 @@ public class Navigator extends Pilot{
 
 	}
 	
+	/**
+	 * Sets a path given the current coordinates and new destination
+	 * @param destX - x-coordinate of middle of destination tile in cm.  Must be multiple of 15 but not multiple of 30
+	 * @param destY - y-coordinate of middle of destination tile in cm.  Must be multiple of 15 but not multiple of 30
+	 * @return - 2D array of ints representing path to take
+	 */
 	public int[][] setPath(double destX, double destY){
 		
 		// copy grid to a temporary grid for traveling purposes
@@ -93,6 +111,10 @@ public class Navigator extends Pilot{
 		return grid;
 	}
 	
+	/**
+	 * Navigates a path
+	 * @param grid
+	 */
 	public void navigatePath(int [][] grid){
 		int robot_I = 0;
 		int robot_J = 0;
@@ -242,6 +264,11 @@ public class Navigator extends Pilot{
 		return distance;
 	}
 	
+	/**
+	 * 
+	 * @param destJ
+	 * @return
+	 */
 	public static double destX(int destJ){
 		double[] coordsX = new double[10];
 		double[] coordsY = new double[10];
@@ -264,6 +291,11 @@ public class Navigator extends Pilot{
 		return coordsX[destJ];
 	}
 	
+	/**
+	 * 
+	 * @param destI
+	 * @return
+	 */
 	public static double destY(int destI){
 		double[] coordsX = new double[10];
 		double[] coordsY = new double[10];

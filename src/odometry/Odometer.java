@@ -4,6 +4,11 @@ import lejos.util.Timer;
 import lejos.util.TimerListener;
 import lejos.nxt.NXTRegulatedMotor;
 
+/**
+ * Odometer class modified for our robot
+ * @author Team 13
+ *
+ */
 public class Odometer implements TimerListener {
 
 	private Timer timer;
@@ -13,7 +18,13 @@ public class Odometer implements TimerListener {
 	private double x, y, theta;
 	private double[] oldDH, dDH;
 	
-	// constructor
+	/**
+	 * Constructor
+	 * @param leftMotor
+	 * @param rightMotor
+	 * @param INTERVAL
+	 * @param autostart
+	 */
 	public Odometer (NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor, int INTERVAL, boolean autostart) {
 		
 		this.leftMotor = leftMotor;
@@ -38,18 +49,25 @@ public class Odometer implements TimerListener {
 			this.timer = null;
 	}
 	
-	// functions to start/stop the timerlistener
+	/**
+	 * Stop timerlistener
+	 */
 	public void stop() {
 		if (this.timer != null)
 			this.timer.stop();
 	}
+	/**
+	 * Start timerListener
+	 */
 	public void start() {
 		if (this.timer != null)
 			this.timer.start();
 	}
 	
-	/*
+
+	/**
 	 * Calculates displacement and heading as title suggests
+	 * @param data
 	 */
 	private void getDisplacementAndHeading(double[] data) {
 		int leftTacho, rightTacho;
@@ -60,7 +78,8 @@ public class Odometer implements TimerListener {
 		data[1] = (rightTacho * rightRadius - leftTacho * leftRadius) / width;
 	}
 	
-	/*
+
+	/**
 	 * Recompute the odometer values using the displacement and heading changes
 	 */
 	public void timedOut() {
@@ -81,21 +100,30 @@ public class Odometer implements TimerListener {
 		oldDH[1] += dDH[1];
 	}
 
-	// return X value
+	/**
+	 * Accessor
+	 * @return current x-coordinate
+	 */
 	public double getX() {
 		synchronized (this) {
 			return x;
 		}
 	}
 
-	// return Y value
+	/**
+	 * Accessor
+	 * @return current y-coordinate
+	 */
 	public double getY() {
 		synchronized (this) {
 			return y;
 		}
 	}
 
-	// return theta value
+	/**
+	 * Accessor
+	 * @return current angle
+	 */
 	public double getAng() {
 		synchronized (this) {
 			return theta;
@@ -132,7 +160,11 @@ public class Odometer implements TimerListener {
 		}
 	}
 
-	// set x,y,theta
+	/**
+	 * Mutator
+	 * @param position - array of doubles representing x, y, and theta
+	 * @param update - array of booleans representing whether or not each corresponding value is mutable
+	 */
 	public void setPosition(double[] position, boolean[] update) {
 		synchronized (this) {
 			if (update[0])
@@ -144,7 +176,10 @@ public class Odometer implements TimerListener {
 		}
 	}
 
-	// return x,y,theta
+	/**
+	 * Accessor
+	 * @param position - an array of doubles to insert x, y, and theta
+	 */
 	public void getPosition(double[] position) {
 		synchronized (this) {
 			position[0] = x;
@@ -153,24 +188,46 @@ public class Odometer implements TimerListener {
 		}
 	}
 
+	/**
+	 * Accessor
+	 * @return array of doubles representing x, y, and theta
+	 */
 	public double[] getPosition() {
 		synchronized (this) {
 			return new double[] { x, y, theta };
 		}
 	}
 	
-	// accessors to motors
+	/**
+	 * Accessor
+	 * @return array of left and right motors
+	 */
 	public NXTRegulatedMotor [] getMotors() {
 		return new NXTRegulatedMotor[] {this.leftMotor, this.rightMotor};
 	}
+	
+	/**
+	 * Accessor
+	 * @return left motors
+	 */
 	public NXTRegulatedMotor getLeftMotor() {
 		return this.leftMotor;
 	}
+	
+	/**
+	 * Accessor
+	 * @return right motor
+	 */
 	public NXTRegulatedMotor getRightMotor() {
 		return this.rightMotor;
 	}
 
-	// static 'helper' methods
+	
+	/**
+	 * Fixes the angle so its between 0 and 360
+	 * @param angle
+	 * @return an equivalent angle between 0 and 360
+	 */
 	public static double fixDegAngle(double angle) {
 		if (angle < 0.0)
 			angle = 360.0 + (angle % 360.0);
@@ -178,6 +235,12 @@ public class Odometer implements TimerListener {
 		return angle % 360.0;
 	}
 
+	/**
+	 * 
+	 * @param a - angle A
+	 * @param b - angle b
+	 * @return the minimum angle between angle a and angle b
+	 */
 	public static double minimumAngleFromTo(double a, double b) {
 		double d = fixDegAngle(b - a);
 

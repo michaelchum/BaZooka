@@ -18,7 +18,7 @@ import bluetooth.Transmission;
 import bluetooth.ParseTransmission;
 
 /**
- * Main controller of the system
+ * US localization test
  * 
  * @author Team 13
  * 
@@ -26,8 +26,7 @@ import bluetooth.ParseTransmission;
 public class USTest {
 
 	/**
-	 * Entry point of execution Opens up a BT connection, receives transmission,
-	 * and plays the game
+	 * Entry point of execution
 	 * 
 	 * @param args
 	 *            - ignored
@@ -37,13 +36,13 @@ public class USTest {
 		Button.waitForAnyPress();
 
 		Odometer odo = new Odometer(Motor.B, Motor.C, 20, true);
-		Map map= new Map(odo, 30);
+		Map map = new Map(odo, 30);
 		UltrasonicSensor USSensor = new UltrasonicSensor(SensorPort.S4);
 		Navigator nav = new Navigator(odo, map, null);
-		
-		USLocalizer.doFallingEdgeLocalization(odo, USSensor, nav, Motor.B, Motor.C, 0);
-		
-	
+
+		USLocalizer.doFallingEdgeLocalization(odo, USSensor, nav, Motor.B,
+				Motor.C, 0);
+
 		Button.waitForAnyPress();
 	}
 }

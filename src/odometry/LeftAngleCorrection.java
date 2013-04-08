@@ -14,9 +14,9 @@ public class LeftAngleCorrection extends Thread {
 
 	private double sensorDistance = 18.5; // distance measured between the light sensor's position
 	
-	private double initialAngle, initialX, initialY; // coordinates when first line is detected
-	private double secondAngle, secondX, secondY;  // coordinates when second line is detected
-	private double actualAngle, actualX, actualY;  // actual robot coordinates
+	private double initialX, initialY; // coordinates when first line is detected
+	private double secondX, secondY;  // coordinates when second line is detected
+	private double actualAngle;  // actual robot coordinates
 	private double deltaPosition, deltaX,deltaY; // change in robot position
 	
 	private boolean leftLineDetected = false;
@@ -46,6 +46,9 @@ public class LeftAngleCorrection extends Thread {
 		rightSensor.setFloodlight(true);
 	}
 	
+	/**
+	 * Run the thread
+	 */
 	public void run() {
 		
 		while (true){
@@ -70,12 +73,12 @@ public class LeftAngleCorrection extends Thread {
 						Sound.beep();
 						if(!rightLineDetected){
 							leftLineFirst = true;
-							initialAngle = myOdometer.getAng();
+							myOdometer.getAng();
 							initialX = myOdometer.getX();
 							initialY = myOdometer.getY();
 						}
 						else{
-						     secondAngle = myOdometer.getAng();
+						     myOdometer.getAng();
 						     secondX = myOdometer.getX();
 						     secondY = myOdometer.getY();
 						}
@@ -85,12 +88,12 @@ public class LeftAngleCorrection extends Thread {
 						rightLineDetected = true;
 						Sound.beep();
 						if(!leftLineDetected){
-							initialAngle = myOdometer.getAng();
+							myOdometer.getAng();
 							initialX = myOdometer.getX();
 							initialY = myOdometer.getY();
 						}
 						else{
-						    secondAngle = myOdometer.getAng();
+						    myOdometer.getAng();
 						    secondX = myOdometer.getX();
 						    secondY = myOdometer.getY();
 						}
@@ -108,6 +111,9 @@ public class LeftAngleCorrection extends Thread {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void correct(){
 		 
 		if (350 < myOdometer.getAng() && myOdometer.getAng() < 10){

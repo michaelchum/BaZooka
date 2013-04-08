@@ -5,6 +5,11 @@ import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.Sound;
 import lejos.util.Delay;
 
+/**
+ * Thread to correct the position
+ * @author Team 13
+ *
+ */
 public class OdometryCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 1000;
 	private static final int FORWARD_SPEED = 175;
@@ -24,7 +29,13 @@ public class OdometryCorrection extends Thread {
 	// array containing all the vertical lines
 	private double[] xLines = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
 	
-	// constructor
+	/**
+	 * Constructor
+	 * @param odometer
+	 * @param middleSensor
+	 * @param myLeftMotor
+	 * @param myRightMotor
+	 */
 	public OdometryCorrection(Odometer odometer, LightSensor middleSensor, NXTRegulatedMotor myLeftMotor, NXTRegulatedMotor myRightMotor) {
 		this.myOdometer = odometer;
 		this.middleSensor = middleSensor;
@@ -32,7 +43,9 @@ public class OdometryCorrection extends Thread {
 		this.rightMotor = myRightMotor;
 	}
 
-	// run method (required for Thread)
+	/**
+	 * Executes the thread
+	 */
 	public void run() {
 		try {Thread.sleep(500);} catch (InterruptedException e) {}
 		int val;
@@ -88,7 +101,12 @@ public class OdometryCorrection extends Thread {
 		}
 	}
 	
-	// method to get the closest point to to a point in an array
+	/**
+	 * 
+	 * @param array
+	 * @param position
+	 * @return - the closets point to a point in the array
+	 */
 	public double getClosest(double[] array, double position) {
 	    double lowestDiff = Double.MAX_VALUE;
 	    double result = 0.0;

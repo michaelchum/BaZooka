@@ -1,5 +1,9 @@
 package navigation;
 
+
+
+import odometry.Odometer;
+
 /**
  * A map has been written using the wavefront technique, which consists of mapping the entire field in a 2D array: a "wavefront grid".
  * Each number on the grid represents a 30' by 30' tile on the field. The system inserts numbers into the grid, in order to link the 
@@ -15,9 +19,6 @@ package navigation;
  * @author Team 13
  * 
  */
-
-import odometry.Odometer;
-
 public class Map {
 	
 	private Odometer myOdometer;
@@ -40,6 +41,11 @@ public class Map {
 			   			       	{1,0,0,0,0,0,0,0,0,1}, 
 			   			       	{1,0,0,0,0,0,0,0,0,1}};
 	
+	/**
+	 * Constructor
+	 * @param odo
+	 * @param tileWidth
+	 */
 	public Map(Odometer odo, double tileWidth){
 		this.myOdometer = odo;
 		this.tileWidth = tileWidth;
@@ -61,6 +67,10 @@ public class Map {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int currentI(){
 		double currentY = getClosest(getCoordsY(), myOdometer.getY());
 		int currentI = 0;
@@ -74,6 +84,10 @@ public class Map {
 		return currentI;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int currentJ(){
 		double currentX = getClosest(getCoordsX(), myOdometer.getX());
 		int currentJ = 0;
@@ -87,6 +101,11 @@ public class Map {
 		return currentJ;
 	}
 	
+	/**
+	 * 
+	 * @param destX
+	 * @return
+	 */
 	public int destJ(double destX){
 		int destJ = 0;
 		for(int i=0; i<getCoordsX().length; i++){
@@ -99,7 +118,11 @@ public class Map {
 		return destJ;
 	}
 	
-	
+	/**
+	 * 
+	 * @param destY
+	 * @return
+	 */
 	public int destI(double destY){
 		int destI = 0;
 		for(int j=0; j<getCoordsY().length; j++){
@@ -112,24 +135,53 @@ public class Map {
 		return destI;
 	}
 	
+	
+	/**
+	 * 
+	 * @param destJ
+	 * @return
+	 */
 	public double destX(int destJ){
 		return this.getCoordsX()[destJ];
 	}
 	
+	/**
+	 * 
+	 * @param destI
+	 * @return
+	 */
 	public double destY(int destI){
 		return this.getCoordsY()[destI];
 	}
 	
+	/**
+	 * 
+	 * @param i
+	 * @param j
+	 * @param value
+	 */
     private void insertValue(int i, int j, int value){
         getGrid()[i][j]= value;
     }
 
+    /**
+     * 
+     * @param i
+     * @param j
+     * @return
+     */
     private int getValue(int i, int j) {
         if(i>=0 && i<10 && j>=0 && j<10)
                 return getGrid()[i][j];
         else return -3;
     }
     
+    /**
+     * 
+     * @param array
+     * @param position
+     * @return
+     */
 	private double getClosest(double[] array, double position) {
 	    double lowestDiff = Double.MAX_VALUE;
 	    double result = 0.0;
@@ -143,6 +195,11 @@ public class Map {
 	    return result;
 	}
 	
+	/**
+	 * 
+	 * @param grid
+	 * @return
+	 */
 	private int getHighest(int[][] grid){
 		int highest= 1;
 		for(int i = 0; i < grid.length; i++) {
@@ -155,31 +212,61 @@ public class Map {
 		return highest;
 	}
 	
-	// filer map for impossible paths
+	/**
+	 * 
+	 * @param grid
+	 * @return
+	 */
 	private int[][] filterMap(int[][] grid){
 		return grid;
 	}
 
+	/**
+	 * Accessor
+	 * @return - 2D array of ints representing a grid which represents tha map
+	 */
 	public int[][] getGrid() {
 		return grid;
 	}
 
+	/**
+	 * Mutator
+	 * @param grid - the new grid
+	 */
 	public void setGrid(int[][] grid) {
 		this.grid = grid;
 	}
 
+	
+	/**
+	 * Accessor
+	 * @return
+	 */
 	double [] getCoordsX() {
 		return coordsX;
 	}
 
+	/**
+	 * Mutator
+	 * @param coordsX
+	 */
 	void setCoordsX(double [] coordsX) {
 		this.coordsX = coordsX;
 	}
 
+	
+	/**
+	 * Accessor
+	 * @return
+	 */
 	double [] getCoordsY() {
 		return coordsY;
 	}
 
+	/**
+	 * Mutator
+	 * @param coordsY
+	 */
 	void setCoordsY(double [] coordsY) {
 		this.coordsY = coordsY;
 	}

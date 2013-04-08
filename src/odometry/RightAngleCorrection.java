@@ -5,6 +5,11 @@ import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.Sound;
 import lejos.util.Delay;
 
+/**
+ * Thread that corrects angle of robot
+ * @author Team 13
+ *
+ */
 public class RightAngleCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 800;
 	private static final int FORWARD_SPEED = 175;
@@ -46,6 +51,9 @@ public class RightAngleCorrection extends Thread {
 		rightSensor.setFloodlight(true);
 	}
 	
+	/**
+	 * Executes the thread
+	 */
 	public void run() {
 		
 		while (true){
