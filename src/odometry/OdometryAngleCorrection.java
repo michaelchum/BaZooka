@@ -3,7 +3,7 @@ package odometry;
 import lejos.nxt.LightSensor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.Sound;
-import lejos.util.Delay;
+import odometry.LightData;
 
 /**
  * Thread that corrects angle of odometer
@@ -14,7 +14,6 @@ public class OdometryAngleCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 800;
 	private static final int FORWARD_SPEED = 175;
 	private Odometer myOdometer;
-	private LightSensor leftSensor, rightSensor;
 	private NXTRegulatedMotor leftMotor, rightMotor;
 
 	private double sensorDistance = 18.5; // distance measured between the light sensor's position
@@ -27,10 +26,9 @@ public class OdometryAngleCorrection extends Thread {
 	private boolean leftLineDetected = false;
 	private boolean rightLineDetected = false;
 	private boolean leftLineFirst = false;
-	private int valL;
-	private int valR;
-	private int preValL;
-	private int preValR;
+	
+	private LightData RLD;
+	private LightData LLD;
 	
 	/**
 	 * Constructor for angle correction
@@ -43,10 +41,10 @@ public class OdometryAngleCorrection extends Thread {
 	
 	public OdometryAngleCorrection(Odometer odometer, LightSensor leftSensor, LightSensor rightSensor, NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor){
 		this.myOdometer = odometer;
-		this.leftSensor = leftSensor;
-		this.rightSensor = rightSensor;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
+		this.RLD = new LightData(rightSensor);
+		this.LLD = new LightData(leftSensor);
 		leftSensor.setFloodlight(true);
 		rightSensor.setFloodlight(true);
 	}
@@ -55,7 +53,8 @@ public class OdometryAngleCorrection extends Thread {
 	 * Executes the thread
 	 */
 	public void run() {
-		
+		RLD.start();
+		LLD.start();
 		while (true){
 			
 			try {Thread.sleep(25);} catch (InterruptedException e) {} // important to limit resources from the CPU
@@ -63,50 +62,30 @@ public class OdometryAngleCorrection extends Thread {
 			// activate angle correction only when the robot is moving in a straight line
 			while (leftMotor.getSpeed()==FORWARD_SPEED && rightMotor.getSpeed()==FORWARD_SPEED) {
 				
-				leftLineDetected = false;
-				rightLineDetected = false;
-				preValL = leftSensor.getLightValue();
-				preValR = rightSensor.getLightValue();
-				
 				while (!leftLineDetected || !rightLineDetected){
 					
-					valL = leftSensor.getLightValue();
-					valR = rightSensor.getLightValue();
+					leftLineDetected = LLD.getIsLine();
+					rightLineDetected = RLD.getIsLine();
 					
-					if ((valL-preValL) > 8){
-						leftLineDetected = true;
-						Sound.beep();
+					if(leftLineDetected){
 						if(!rightLineDetected){
+							initialX = myOdometer.getX();
+							initialY = myOdometer.getY();
+							initialAngle = myOdometer.getAng();
 							leftLineFirst = true;
-							initialAngle = myOdometer.getAng();
-							initialX = myOdometer.getX();
-							initialY = myOdometer.getY();
 						}
 						else{
-						     secondAngle = myOdometer.getAng();
-						     secondX = myOdometer.getX();
-						     secondY = myOdometer.getY();
+							secondX = myOdometer.getX();
+							secondY = myOdometer.getY();
+							secondAngle = myOdometer.getAng();
 						}
 					}
 					
-					if ((valR-preValR) > 8){
-						rightLineDetected = true;
-						Sound.beep();
-						if(!leftLineDetected){
-							initialAngle = myOdometer.getAng();
-							initialX = myOdometer.getX();
-							initialY = myOdometer.getY();
-						}
-						else{
-						    secondAngle = myOdometer.getAng();
-						    secondX = myOdometer.getX();
-						    secondY = myOdometer.getY();
-						}
+					if(rightLineDetected){
+						initialX = myOdometer.getX();
+						initialY = myOdometer.getY();
+						initialAngle = myOdometer.getAng();
 					}
-					
-					preValL = valL;
-					preValR = valR;
-					Delay.msDelay(25); // delay is necessary for interval between val and preVal long enough
 				}	
 				
 				if (leftLineDetected && rightLineDetected){ // correct the angle and restart loop if both lines are detected
@@ -138,10 +117,6 @@ public class OdometryAngleCorrection extends Thread {
 			Sound.beepSequence();
 			  
 			// reset the sequence
-			valL = leftSensor.readValue();
-			preValL = leftSensor.readValue();
-			valR = rightSensor.readValue();
-			preValR = rightSensor.readValue();
 			this.leftLineDetected = false;
 			this.rightLineDetected = false;
 			this.leftLineFirst = false;

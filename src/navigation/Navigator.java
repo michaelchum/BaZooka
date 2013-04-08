@@ -1,7 +1,5 @@
 package navigation;
 
-
-
 import lejos.nxt.UltrasonicSensor;
 import lejos.util.Delay;
 import odometry.Odometer;

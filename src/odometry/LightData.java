@@ -8,7 +8,7 @@ public class LightData extends Thread{
 	
 	private static final long CORRECTION_PERIOD = 10;
 	private LightSensor ls;			
-	private boolean isLine = false;								
+	public boolean isLine = false;								
 	
 	/**
 	 * constructor
