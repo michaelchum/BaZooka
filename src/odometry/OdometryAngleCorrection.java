@@ -57,40 +57,46 @@ public class OdometryAngleCorrection extends Thread {
 		LLD.start();
 		while (true){
 			
-			try {Thread.sleep(25);} catch (InterruptedException e) {} // important to limit resources from the CPU
+			leftLineDetected = false;
+			rightLineDetected = false;
+			try {Thread.sleep(15);} catch (InterruptedException e) {} // important to limit resources from the CPU
 
 			// activate angle correction only when the robot is moving in a straight line
-			while (leftMotor.getSpeed()==FORWARD_SPEED && rightMotor.getSpeed()==FORWARD_SPEED) {
+			while ((!leftLineDetected || !rightLineDetected) && (leftMotor.getSpeed()==FORWARD_SPEED && rightMotor.getSpeed()==FORWARD_SPEED)) {
 				
-				while (!leftLineDetected || !rightLineDetected){
+				leftLineDetected = LLD.getIsLine();
+				rightLineDetected = RLD.getIsLine();
 					
-					leftLineDetected = LLD.getIsLine();
-					rightLineDetected = RLD.getIsLine();
-					
-					if(leftLineDetected){
-						if(!rightLineDetected){
-							initialX = myOdometer.getX();
-							initialY = myOdometer.getY();
-							initialAngle = myOdometer.getAng();
-							leftLineFirst = true;
-						}
-						else{
-							secondX = myOdometer.getX();
-							secondY = myOdometer.getY();
-							secondAngle = myOdometer.getAng();
-						}
+				if(leftLineDetected){
+					if(!rightLineDetected){
+						initialX = myOdometer.getX();
+						initialY = myOdometer.getY();
+						initialAngle = myOdometer.getAng();
+						leftLineFirst = true;
 					}
+					else{
+						secondX = myOdometer.getX();
+						secondY = myOdometer.getY();
+						secondAngle = myOdometer.getAng();
+					}
+				}
 					
-					if(rightLineDetected){
+				if(rightLineDetected){
+					if(!leftLineDetected){
 						initialX = myOdometer.getX();
 						initialY = myOdometer.getY();
 						initialAngle = myOdometer.getAng();
 					}
-				}	
-				
-				if (leftLineDetected && rightLineDetected){ // correct the angle and restart loop if both lines are detected
-					correct(); 
+					else{
+						secondX = myOdometer.getX();
+						secondY = myOdometer.getY();
+						secondAngle = myOdometer.getAng();
+					}
 				}
+			}
+			
+			if (leftLineDetected && rightLineDetected){ // correct the angle and restart loop if both lines are detected
+				correct(); 
 			}
 		}
 	}
