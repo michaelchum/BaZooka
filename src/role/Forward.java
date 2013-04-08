@@ -58,12 +58,19 @@ public class Forward extends Robot {
 			myNav.travelTo2(15.0, 15.0);
 			myNav.turnTo(90.0, true);
 		case BOTTOM_RIGHT:
+			myOdometer.setPosition(new double [] {300.0, 0.0, 90.0}, new boolean [] {true, true, true});
+			myNav.travelTo2(285.0, 15.0);
+			myNav.turnTo(90.0, true);
 		case TOP_RIGHT:
+			myOdometer.setPosition(new double [] {300.0, 300.0, 270.0}, new boolean [] {true, true, true});
+			myNav.travelTo2(285.0, 285.0);
+			myNav.turnTo(270.0, true);
 		case TOP_LEFT:
+			myOdometer.setPosition(new double [] {0.0, 300.0, 270.0}, new boolean [] {true, true, true});
+			myNav.travelTo2(15.0, 285.0);
+			myNav.turnTo(270.0, true);
 		}
 
-		LCD.drawString(String.valueOf(myOdometer.getX()), 0, 1);
-		LCD.drawString(String.valueOf(myOdometer.getY()), 0, 2);
 		computeLoadingCoordinates(bx, by);
 
 		// navigate to loading area and load balls
@@ -159,11 +166,19 @@ public class Forward extends Robot {
 		myPilot.travel(-5);
 	}
 
-	private void shootFiveBalls() {
+	private void shootFiveBallsCenter() {
 		myNav.turnTo(90, true);
 		for (int i = 0; i < 5; i++) {
 			myCatapult.carry();
 			myCatapult.shootCenter();
+		}
+	}
+	
+	private void shootFiveBallsSide() {
+		myNav.turnTo(90, true);
+		for (int i = 0; i < 5; i++) {
+			myCatapult.carry();
+			myCatapult.shootSide();
 		}
 	}
 

@@ -36,7 +36,7 @@ public class Catapult {
 		  
 		   // reset angle so that 0 is the armed position
 		   centreM.resetTachoCount();
-		   Delay.msDelay(500);
+		   Delay.msDelay(800);
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class Catapult {
 	public void carry() {
 	   centreM.setSpeed(30);
 	   centreM.setAcceleration(2500);
-	   centreM.rotateTo(-33);
+	   centreM.rotateTo(-40);
 	   centreM.setSpeed(25);
 	   centreM.rotateTo(0);
 	   centreM.stop();
@@ -53,11 +53,26 @@ public class Catapult {
    }
 
 	/**
-	 * Shoot the ball and rotate back to armed position
+	 * Shoot the ball and rotate back to armed position from the centered position
 	 */
 	public void shootCenter() {
 	   centreM.setSpeed(2500);
-	   centreM.rotateTo(100);
+	   centreM.rotateTo(118);
+	   centreM.stop();
+	   Delay.msDelay(2000);
+	   
+	   centreM.setSpeed(150);
+	   centreM.rotateTo(0);
+	   centreM.stop();
+	   Delay.msDelay(1000);
+	}
+	
+	/**
+	 * Shoot the ball and rotate back to armed position from the centered position
+	 */
+	public void shootSide() {
+	   centreM.setSpeed(2500);
+	   centreM.rotateTo(118);
 	   centreM.stop();
 	   Delay.msDelay(2000);
 	   
