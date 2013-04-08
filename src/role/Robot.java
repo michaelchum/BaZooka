@@ -59,7 +59,7 @@ public abstract class Robot {
 	}
 
 	/**
-	 * Virtual function detailing how the robot will play (must be overriden)
+	 * Virtual function detailing how the robot will play (must be overwritten)
 	 * 
 	 * @param startingCorner
 	 *            - the corner it starts in
