@@ -124,27 +124,35 @@ public abstract class Robot {
 	 * @param startingCorner
 	 */
 	protected void postLocalize(StartCorner startingCorner) {
-		switch (startingCorner) {
-		case BOTTOM_LEFT:
-			myOdometer.setPosition(new double[] { 0.0, 0.0, 90.0 },
-					new boolean[] { true, true, true });
+		
+		double newX = startingCorner.getX() * 30;
+		double newY = startingCorner.getY() * 30;
+		myOdometer.setX(newX);
+		myOdometer.setY(newY);
+		if (startingCorner == StartCorner.BOTTOM_LEFT) {
+			myOdometer.setTheta(90);
 			myNav.travelTo2(15.0, 15.0);
 			myNav.turnTo(90.0, true);
-		case BOTTOM_RIGHT:
-			myOdometer.setPosition(new double[] { 300.0, 0.0, 180.0 },
-					new boolean[] { true, true, true });
+		} else if (startingCorner == StartCorner.BOTTOM_RIGHT){
+			myOdometer.setTheta(180);
 			myNav.travelTo2(285.0, 15.0);
 			myNav.turnTo(90.0, true);
-		case TOP_RIGHT:
-			myOdometer.setPosition(new double[] { 300.0, 300.0, 270.0 },
-					new boolean[] { true, true, true });
+		}
+		else if (startingCorner == StartCorner.TOP_RIGHT) {
+			myOdometer.setTheta(270);
+//			myOdometer.setPosition(new double[] { 300.0, 300.0, 270.0 },
+//					new boolean[] { true, true, true });
 			myNav.travelTo2(285.0, 285.0);
 			myNav.turnTo(270.0, true);
-		case TOP_LEFT:
-			myOdometer.setPosition(new double[] { 0.0, 300.0, 0.0 },
-					new boolean[] { true, true, true });
+		}
+		else if (startingCorner == StartCorner.TOP_LEFT) {
+			myOdometer.setTheta(0);
+//			myOdometer.setPosition(new double[] { 0.0, 300.0, 0.0 },
+//					new boolean[] { true, true, true });
 			myNav.travelTo2(15.0, 285.0);
 			myNav.turnTo(270.0, true);
 		}
+		
+
 	}
 }

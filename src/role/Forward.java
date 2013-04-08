@@ -21,7 +21,7 @@ import bluetooth.StartCorner;
  */
 public class Forward extends Robot {
 	static final double distanceFromCenterToRamp = 6.5, loadingDistance = 5,
-			distanceToWall = 17;
+			distanceToWall = 22;
 	private double loadingTileX = 0, loadingTileY = 0, preciseLoadingX = 0,
 			preciseLoadingY = 0, loadingHeading = 0;
 
@@ -66,7 +66,7 @@ public class Forward extends Robot {
 		@SuppressWarnings("unused")
 		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor,
 				centerSensor, rightSensor);
-		localize(startingCorner);
+		// localize(startingCorner);
 		postLocalize(startingCorner);
 
 		computeLoadingCoordinates(bx, by);
@@ -74,7 +74,7 @@ public class Forward extends Robot {
 
 		// navigate to loading tile
 		myNav.navigateTo(loadingTileX, loadingTileY);
-
+		//
 		// localize
 		myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
 
@@ -90,32 +90,32 @@ public class Forward extends Robot {
 		myNav.travelTo(preciseLoadingX, preciseLoadingY);
 		myNav.turnTo(loadingHeading, true);
 		loadFiveBalls();
-
-		// localize again (pushing the button fucks it up)
-		myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
-
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
-				leftMotor, rightMotor, loadingLocalizationX,
-				loadingLocalizationY);
-
-		// make sure the odometer has been set properly
-		myOdometer.setX(loadingLocalizationX);
-		myOdometer.setY(loadingLocalizationY);
-		myOdometer.setTheta(90.0);
-
-		// navigate to firing area
-		myNav.navigateTo(135, goalY - ((d1 + 1) * 30) - 15);
-		myNav.travelTo(150, goalY - ((d1 + 1) * 30));
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
-				leftMotor, rightMotor, 150, goalY - ((d1 + 1) * 30)); // localize
-																		// before
-																		// shooting
-		// make sure the odometer has been set properly
-		myOdometer.setX(150);
-		myOdometer.setY(goalY - ((d1 + 1) * 30));
-		myOdometer.setTheta(90.0);
-
-		shootFiveBallsCenter();
+		//
+		// // localize again (pushing the button fucks it up)
+		// myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
+		//
+		// LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
+		// leftMotor, rightMotor, loadingLocalizationX,
+		// loadingLocalizationY);
+		//
+		// // make sure the odometer has been set properly
+		// myOdometer.setX(loadingLocalizationX);
+		// myOdometer.setY(loadingLocalizationY);
+		// myOdometer.setTheta(90.0);
+		//
+		// // navigate to firing area
+		// myNav.navigateTo(135, goalY - ((d1 + 1) * 30) - 15);
+		// myNav.travelTo(150, goalY - ((d1 + 1) * 30));
+		// LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
+		// leftMotor, rightMotor, 150, goalY - ((d1 + 1) * 30)); // localize
+		// // before
+		// // shooting
+		// // make sure the odometer has been set properly
+		// myOdometer.setX(150);
+		// myOdometer.setY(goalY - ((d1 + 1) * 30));
+		// myOdometer.setTheta(90.0);
+		//
+		// shootFiveBallsCenter();
 
 	}
 
@@ -167,17 +167,17 @@ public class Forward extends Robot {
 	 */
 	private void computeLoadingLocalizationCoords(int bx, int by) {
 		if (bx < 0) { // west wall
-			loadingLocalizationX = 0;
+			loadingLocalizationX = 30;
 			loadingLocalizationY = by * 30;
 		}
 
 		if (bx == 11) { // east wall
-			loadingLocalizationX = 0;
+			loadingLocalizationX = 270;
 			loadingLocalizationY = by * 30;
 		}
 
 		if (by == -1) { // southern wall
-			loadingLocalizationY = 0;
+			loadingLocalizationY = 30;
 			loadingLocalizationX = bx * 30;
 		}
 	}
@@ -206,7 +206,5 @@ public class Forward extends Robot {
 			myCatapult.shootSide();
 		}
 	}
-
-
 
 }
