@@ -13,10 +13,11 @@ import odometry.LightData;
 public class OdometryAngleCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 800;
 	private static final int FORWARD_SPEED = 175;
+	private static final int STOP_SPEED = 0;
 	private Odometer myOdometer;
 	private NXTRegulatedMotor leftMotor, rightMotor;
 
-	private double sensorDistance = 18.5; // distance measured between the light sensor's position
+	private double sensorDistance = 17.00; // distance measured between the light sensor's position
 	
 	private double initialAngle, initialX, initialY; // coordinates when first line is detected
 	private double secondAngle, secondX, secondY;  // coordinates when second line is detected
@@ -95,8 +96,10 @@ public class OdometryAngleCorrection extends Thread {
 				}
 			}
 			
-			if (leftLineDetected && rightLineDetected){ // correct the angle and restart loop if both lines are detected
-				correct(); 
+			while (leftLineDetected && rightLineDetected){ // correct the angle and restart loop if both lines are detected
+				if(leftMotor.getSpeed()==STOP_SPEED && rightMotor.getSpeed()==STOP_SPEED){
+						correct(); 
+				}
 			}
 		}
 	}
