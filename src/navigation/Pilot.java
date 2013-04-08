@@ -6,11 +6,11 @@ import lejos.nxt.NXTRegulatedMotor;
 import lejos.util.Delay;
 
 public class Pilot {
-<<<<<<< HEAD
-	final static int FAST = 100, SLOW = 85, ACCELERATION = 1500; // default 4000, trying lower for smooth transitions
-=======
-	final static int FAST = 175, SLOW = 85, VERY_SLOW = 50, ACCELERATION = 1500; // default 4000, trying lower for smooth transitions
->>>>>>> 7dc6edc813078650b9bee9902479290fa5c0d858
+
+	final static int FAST = 100, SLOW = 85,VERY_SLOW = 50, ACCELERATION = 1500; // default 4000, trying lower for smooth transitions
+
+	
+
 	final static double DEG_ERR = 1.0, CM_ERR = 1.0;
 	private Odometer myOdometer;
 	private NXTRegulatedMotor leftMotor, rightMotor;
