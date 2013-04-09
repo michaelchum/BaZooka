@@ -60,6 +60,7 @@ public class OdometryAngleCorrection extends Thread {
 			
 			leftLineDetected = false;
 			rightLineDetected = false;
+			leftLineFirst = false;
 			try {Thread.sleep(15);} catch (InterruptedException e) {} // important to limit resources from the CPU
 
 			// activate angle correction only when the robot is moving in a straight line
