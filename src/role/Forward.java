@@ -22,9 +22,7 @@ import odometry.OdometryAngleCorrection;
  * 
  */
 public class Forward extends Robot {
-	static final double CENTER_TO_RAMP = 6.5, LOADING_DISTANCE = 5,
-			
-			DISTANCE_TO_WALL = 22;
+	static final double CENTER_TO_RAMP = 6.5, LOADING_DISTANCE = 5, DISTANCE_TO_WALL = 22;
 	private double loadingTileX = 0, loadingTileY = 0, preciseLoadingX = 0,
 			preciseLoadingY = 0, loadingHeading = 0;
 
@@ -42,6 +40,7 @@ public class Forward extends Robot {
 																// loading
 																// balls
 	public double leftFiringX, leftFiringY, leftPosX, leftPosY, leftFiringAngle, rightFiringX, rightFiringY, rightPosX, rightPosY, rightFiringAngle;
+	public double firingCoordsX, firingCoordsY, firingPosX, firingPosY, firingAngle;
 
 	/**
 	 * Constructor - same as Robot constructor
@@ -70,16 +69,13 @@ public class Forward extends Robot {
 		@SuppressWarnings("unused")
 		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor, centerSensor, rightSensor);
 
-		//localize(startingCorner);
+		localize(startingCorner);
 
 		postLocalize(startingCorner);
 
 		computeLoadingCoordinates(bx, by);
 		computeLoadingLocalizationCoords(bx, by);
-		computeFiringCoordinates(d1, goalX, goalY);
-		
-		//OdometryCorrection myOdometryCorrection = new OdometryCorrection(myOdometer, centerSensor, leftMotor, rightMotor);
-		//myOdometryCorrection.start();
+		computeFiringCoordinates(d1, bx, goalX, goalY);
 		
 		/* BALL LOADING SEQUENCE */
 		
@@ -104,65 +100,15 @@ public class Forward extends Robot {
 
 		// localize again (pushing the button fucks it up)
 		myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
-		
 		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, loadingLocalizationX, loadingLocalizationY);
 		
 		// make sure the odometer has been set properly
 		myOdometer.setX(loadingLocalizationX);
 		myOdometer.setY(loadingLocalizationY);
 		myOdometer.setTheta(90.0);
-		
-//		/* LEFT SIDE FIRING  SEQUENCE */
-//		
-//		// navigate to firing area
-//		myNav.navigateTo(leftFiringX, leftFiringY);
-//		myNav.travelTo(leftPosX, leftPosY);
-//		
-//		// localize before shooting
-//		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, leftPosX, leftPosY); 
-//		// make sure the odometer has been set properly
-//		myOdometer.setX(leftPosX);
-//		myOdometer.setY(leftPosY);
-//		myOdometer.setTheta(90.0);
-//		myNav.turnTo(leftFiringAngle, true);
-//		
-//		shootFiveBallsCenter();
-//		
-//		// localize after shooting
-//		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, leftPosX, leftPosY); 
-//		// make sure the odometer has been set properly
-//		myOdometer.setX(leftPosX);
-//		myOdometer.setY(leftPosY);
-//		myOdometer.setTheta(90.0);
-		
-		/* RIGHT SIDE FIRING  SEQUENCE */
-		
-		/*
-		// navigate to firing area
-		myNav.navigateTo(rightFiringX, rightFiringY);
-		myNav.travelTo(rightPosX, rightPosY);
-		
-		// localize before shooting
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, rightPosX, rightPosY); 
-		// make sure the odometer has been set properly
-		myOdometer.setX(rightPosX);
-		myOdometer.setY(rightPosY);
-		myOdometer.setTheta(90.0);
-		myNav.turnTo(rightFiringAngle, true);
-		
-		shootFiveBallsCenter();
-		
-		// localize after shooting
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, rightPosX, rightPosY); 
-		// make sure the odometer has been set properly
-		myOdometer.setX(rightPosX);
-		myOdometer.setY(rightPosY);
-		myOdometer.setTheta(90.0);
-		*/
 
 		// localize again (pushing the button fucks it up)
 		myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
-		
 		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, loadingLocalizationX, loadingLocalizationY);
 		
 		// make sure the odometer has been set properly
@@ -170,55 +116,28 @@ public class Forward extends Robot {
 		myOdometer.setY(loadingLocalizationY);
 		myOdometer.setTheta(90.0);
 		
-		/* LEFT SIDE FIRING  SEQUENCE */
+		/* FIRING  SEQUENCE LEFT OR RIGHT DEPENDING ON bx */
 		
 		// navigate to firing area
-		myNav.navigateTo(leftFiringX, leftFiringY);
-		myNav.travelTo(leftPosX, leftPosY);
+		myNav.navigateTo(firingCoordsX, firingCoordsY);
+		myNav.travelTo(firingPosX, firingPosY);
 		
 		// localize before shooting
 		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, leftPosX, leftPosY); 
 		// make sure the odometer has been set properly
-		myOdometer.setX(leftPosX);
-		myOdometer.setY(leftPosY);
+		myOdometer.setX(firingPosX);
+		myOdometer.setY(firingPosY);
 		myOdometer.setTheta(90.0);
-		myNav.turnTo(leftFiringAngle, true);
+		myNav.turnTo(firingAngle, true);
 		
 		shootFiveBallsCenter();
 		
 		// localize after shooting
 		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, leftPosX, leftPosY); 
 		// make sure the odometer has been set properly
-		myOdometer.setX(leftPosX);
-		myOdometer.setY(leftPosY);
+		myOdometer.setX(firingPosX);
+		myOdometer.setY(firingPosY);
 		myOdometer.setTheta(90.0);
-		
-		/* SECOND LOADING SEQUENCE */
-		
-		/* RIGHT SIDE FIRING  SEQUENCE */
-		
-		/*
-		// navigate to firing area
-		myNav.navigateTo(rightFiringX, rightFiringY);
-		myNav.travelTo(rightPosX, rightPosY);
-		
-		// localize before shooting
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, rightPosX, rightPosY); 
-		// make sure the odometer has been set properly
-		myOdometer.setX(rightPosX);
-		myOdometer.setY(rightPosY);
-		myOdometer.setTheta(90.0);
-		myNav.turnTo(rightFiringAngle, true);
-		
-		shootFiveBallsCenter();
-		
-		// localize after shooting
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, rightPosX, rightPosY); 
-		// make sure the odometer has been set properly
-		myOdometer.setX(rightPosX);
-		myOdometer.setY(rightPosY);
-		myOdometer.setTheta(90.0);
-		*/
 		
 		/* RETURN HOME */
 		returnHome(startingCorner);
@@ -303,24 +222,35 @@ public class Forward extends Robot {
 		}
 	}
 	
-	private void computeFiringCoordinates(int d1, int goalX, int goalY) {
+	private void computeFiringCoordinates(int d1, int bx, int goalX, int goalY) {
+		
 		if(d1==8){
 			leftFiringX = 45;
 			leftFiringY = 45;
+			leftFiringAngle = 0;
+			
 			rightFiringX = 255;
 			rightFiringY = 45;
+			rightFiringAngle = 0;
 		}
 		else if(d1==7){
 			leftFiringX = 45;
 			leftFiringY = 75;
+			leftFiringAngle = 0;
+			
 			rightFiringX = 255;
 			rightFiringY = 75;
+			rightFiringAngle = 0;
+			
 		}
 		else if(d1<7){
 			leftFiringX = 45;
 			leftFiringY = 105;
+			leftFiringAngle = 0;
+			
 			rightFiringX = 255;
 			rightFiringY = 105;
+			rightFiringAngle = 0;
 		}
 		
 		leftPosX = leftFiringX+15;
@@ -328,13 +258,17 @@ public class Forward extends Robot {
 		rightPosX = rightFiringX-15;
 		rightPosY = rightFiringY-15;
 		
-		leftFiringAngle = (Math.atan2(goalY - leftPosY, goalX - leftPosX)) * (180.0 / Math.PI);
-		if (leftFiringAngle < 0){
-			leftFiringAngle += 360.0;
+		/* IF BALL DISPENSER IS ON THE LEFT SIDE SHOOT FROM THE LEFT */
+		if(bx<5){
+			firingCoordsX = leftFiringX;
+			firingCoordsY = leftFiringY;
+			firingAngle = leftFiringAngle;
 		}
-		rightFiringAngle = (Math.atan2(goalY - rightPosY, goalX - rightPosX)) * (180.0 / Math.PI);
-		if (rightFiringAngle < 0){
-			rightFiringAngle += 360.0;
+		/* IF BALL DISPENSER IS ON THE RIGHT SIDE SHOOT FROM THE RIGHT */
+		else{
+			firingCoordsX = rightFiringX;
+			firingCoordsY = rightFiringY;
+			firingAngle = rightFiringAngle;
 		}
 	}
 	
