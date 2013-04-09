@@ -73,7 +73,7 @@ public class RightAngleCorrection extends Thread {
 					valL = leftSensor.getLightValue();
 					valR = rightSensor.getLightValue();
 					
-					if ((valL-preValL) > 8){
+					if ((valL-preValL) > 7){
 						leftLineDetected = true;
 						Sound.beep();
 						if(!rightLineDetected){
@@ -89,7 +89,7 @@ public class RightAngleCorrection extends Thread {
 						}
 					}
 					
-					if ((valR-preValR) > 8){
+					if ((valR-preValR) > 7){
 						rightLineDetected = true;
 						Sound.beep();
 						if(!leftLineDetected){

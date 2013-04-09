@@ -120,7 +120,7 @@ public abstract class Robot {
 	}
 	
 	/**
-	 * Adjust localization for starting corner.  Also in localization itself but this makes sure
+	 * Adjust localization for starting corner.  Also in localization itself but this makes sure the change to odometer persists
 	 * @param startingCorner
 	 */
 	protected void postLocalize(StartCorner startingCorner) {
@@ -131,25 +131,25 @@ public abstract class Robot {
 		myOdometer.setY(newY);
 		if (startingCorner == StartCorner.BOTTOM_LEFT) {
 			myOdometer.setTheta(90);
-			myNav.travelTo2(15.0, 15.0);
+			myNav.travelTo(15.0, 15.0);
 			myNav.turnTo(90.0, true);
 		} else if (startingCorner == StartCorner.BOTTOM_RIGHT){
 			myOdometer.setTheta(180);
-			myNav.travelTo2(285.0, 15.0);
+			myNav.travelTo(285.0, 15.0);
 			myNav.turnTo(90.0, true);
 		}
 		else if (startingCorner == StartCorner.TOP_RIGHT) {
 			myOdometer.setTheta(270);
 //			myOdometer.setPosition(new double[] { 300.0, 300.0, 270.0 },
 //					new boolean[] { true, true, true });
-			myNav.travelTo2(285.0, 285.0);
+			myNav.travelTo(285.0, 285.0);
 			myNav.turnTo(270.0, true);
 		}
 		else if (startingCorner == StartCorner.TOP_LEFT) {
 			myOdometer.setTheta(0);
 //			myOdometer.setPosition(new double[] { 0.0, 300.0, 0.0 },
 //					new boolean[] { true, true, true });
-			myNav.travelTo2(15.0, 285.0);
+			myNav.travelTo(15.0, 285.0);
 			myNav.turnTo(270.0, true);
 		}
 		

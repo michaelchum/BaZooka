@@ -39,21 +39,20 @@ public class Controller {
 		 */
 
 		// position of the basket
-		final int goalX = 150;
-		final int goalY = 300;
+		int goalX = 150;
+		int goalY = 300;
 
 		// testing values
-		int bx = -1;
-		int by = 2;
+		int bx = 11;
+		int by = 8;
 		int w1 = 0;
 		int w2 = 0;
-		int d1 = 0;
+		int d1 = 7;
 
-		
 		
 		// 1 is (0,0), 2 is (0,10), 3 is (10,10), 4 is (10,0)
 		StartCorner startingCorner;
-		startingCorner = StartCorner.lookupCorner(1);
+		startingCorner = StartCorner.lookupCorner(3);
 		
 		
 		// 2 is defender, 1 is attacker

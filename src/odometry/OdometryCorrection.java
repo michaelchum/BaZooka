@@ -12,7 +12,7 @@ import lejos.util.Delay;
  */
 public class OdometryCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 1000;
-	private static final int FORWARD_SPEED = 175;
+	private static final int FORWARD_SPEED = 120;
 	private Odometer myOdometer;
 	private LightSensor middleSensor;
 	private NXTRegulatedMotor leftMotor, rightMotor;
@@ -21,7 +21,7 @@ public class OdometryCorrection extends Thread {
 	private final double tileWidth = 30.00;
 	
 	// distance measured between the light sensor's position and the the center between the wheels
-	private double sensorCenter = 11.80;
+	private double sensorCenter = 11.50;
 	
 	// array containing all the horizontal lines
 	private double[] yLines = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
@@ -54,14 +54,14 @@ public class OdometryCorrection extends Thread {
 		while(true) {
 			
 			// important to limit resources from the CPU
-			try {Thread.sleep(25);} catch (InterruptedException e) {}
+			try {Thread.sleep(50);} catch (InterruptedException e) {}
 			
 			// activate correction only when the robot is moving in a straight line and no line is detected
 			while (	leftMotor.getSpeed() == FORWARD_SPEED && rightMotor.getSpeed() == FORWARD_SPEED ) {
 				
 				val = middleSensor.readValue();
 					
-				if ((val-preVal) > 8) {
+				if ((val-preVal) > 7) {
 					
 					Sound.beep();
 								

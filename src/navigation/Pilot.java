@@ -9,8 +9,6 @@ public class Pilot {
 
 	final static int FAST = 100, SLOW = 85,VERY_SLOW = 50, ACCELERATION = 1500; // default 4000, trying lower for smooth transitions
 
-	
-
 	final static double DEG_ERR = 1.0, CM_ERR = 1.0;
 	private Odometer myOdometer;
 	private NXTRegulatedMotor leftMotor, rightMotor;
@@ -72,25 +70,6 @@ public class Pilot {
 	 */
 	public void travelTo(double x, double y) {
 		
-		double minAng;
-		minAng = (Math.atan2(y - myOdometer.getY(), x - myOdometer.getX())) * (180.0 / Math.PI);
-		if (minAng < 0)
-			minAng += 360.0;
-		this.turnTo(minAng, true);
-		Delay.msDelay(500); 
-		while (Math.abs(x - myOdometer.getX()) > CM_ERR || Math.abs(y - myOdometer.getY()) > CM_ERR) {
-			this.setSpeeds(FAST, FAST);
-		}
-		this.setSpeeds(0, 0);
-
-	}
-	
-	/*
-	 * TravelTo function which takes as arguments the x and y position in cm Will travel to designated position, while
-	 * constantly updating it's heading
-	 */
-	public void travelTo2(double x, double y) {
-
 		// determine the vectors needed to travel
 		double vectorX = x - myOdometer.getX();
 		double vectorY = y - myOdometer.getY();
@@ -111,7 +90,26 @@ public class Pilot {
 	
 		leftMotor.stop();
 		rightMotor.stop();
-		
+
+	}
+	
+	/*
+	 * TravelTo function which takes as arguments the x and y position in cm Will travel to designated position, while
+	 * constantly updating it's heading
+	 */
+	public void travelTo2(double x, double y) {
+
+		double minAng;
+		minAng = (Math.atan2(y - myOdometer.getY(), x - myOdometer.getX())) * (180.0 / Math.PI);
+		if (minAng < 0)
+			minAng += 360.0;
+		this.turnTo(minAng, true);
+		Delay.msDelay(500); 
+		while (Math.abs(x - myOdometer.getX()) > CM_ERR || Math.abs(y - myOdometer.getY()) > CM_ERR) {
+			this.setSpeeds(FAST, FAST);
+		}
+		this.setSpeeds(0, 0);
+	
 	}
 	
 	/*
