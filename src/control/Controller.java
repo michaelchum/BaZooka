@@ -57,7 +57,7 @@ public class Controller {
 		
 		// 2 is defender, 1 is attacker
 		PlayerRole role;
-		role = PlayerRole.lookupRole(2);
+		role = PlayerRole.lookupRole(1);
 		Robot robot;
 		if (role == PlayerRole.ATTACKER) {
 			robot = new Forward(Motor.A, Motor.B, Motor.C, SensorPort.S1,

@@ -76,8 +76,8 @@ public class Forward extends Robot {
 		computeLoadingLocalizationCoords(bx, by);
 		computeFiringCoordinates(d1, goalX, goalY);
 		
-		OdometryCorrection myOdometryCorrection = new OdometryCorrection(myOdometer, centerSensor, leftMotor, rightMotor);
-		myOdometryCorrection.start();
+		//OdometryCorrection myOdometryCorrection = new OdometryCorrection(myOdometer, centerSensor, leftMotor, rightMotor);
+		//myOdometryCorrection.start();
 		
 		/* BALL LOADING SEQUENCE */
 		
