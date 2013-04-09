@@ -69,12 +69,9 @@ public class Forward extends Robot {
 		myCatapult.arm();
 		@SuppressWarnings("unused")
 		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor, centerSensor, rightSensor);
-		
-<<<<<<< HEAD
+
 		//localize(startingCorner);
-=======
-		localize(startingCorner);
->>>>>>> 4fe5a82b2d7a09c9de15e09a9cc4bc93deab7b25
+
 		postLocalize(startingCorner);
 
 		computeLoadingCoordinates(bx, by);
@@ -104,7 +101,6 @@ public class Forward extends Robot {
 		myNav.travelTo(preciseLoadingX, preciseLoadingY);
 		myNav.turnTo(loadingHeading, true);
 		loadFiveBalls();
-<<<<<<< HEAD
 
 		// localize again (pushing the button fucks it up)
 		myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
@@ -163,9 +159,6 @@ public class Forward extends Robot {
 		myOdometer.setY(rightPosY);
 		myOdometer.setTheta(90.0);
 		*/
-	
-=======
->>>>>>> 4fe5a82b2d7a09c9de15e09a9cc4bc93deab7b25
 
 		// localize again (pushing the button fucks it up)
 		myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
@@ -342,8 +335,6 @@ public class Forward extends Robot {
 		rightFiringAngle = (Math.atan2(goalY - rightPosY, goalX - rightPosX)) * (180.0 / Math.PI);
 		if (rightFiringAngle < 0){
 			rightFiringAngle += 360.0;
-<<<<<<< HEAD
-=======
 		}
 	}
 	
@@ -362,7 +353,6 @@ public class Forward extends Robot {
 		else if (startingCorner == StartCorner.TOP_LEFT) {
 			myNav.navigateTo(15.0, 285.0);
 			myNav.turnTo(270.0, true);
->>>>>>> 4fe5a82b2d7a09c9de15e09a9cc4bc93deab7b25
 		}
 	}
 }
