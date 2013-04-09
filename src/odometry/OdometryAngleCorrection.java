@@ -12,12 +12,12 @@ import odometry.LightData;
  */
 public class OdometryAngleCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 800;
-	private static final int FORWARD_SPEED = 175;
+	private static final int FORWARD_SPEED = 100;
 	private static final int STOP_SPEED = 0;
 	private Odometer myOdometer;
 	private NXTRegulatedMotor leftMotor, rightMotor;
 
-	private double sensorDistance = 17.00; // distance measured between the light sensor's position
+	private double sensorDistance = 14.00; // distance measured between the light sensor's position
 	
 	private double initialAngle, initialX, initialY; // coordinates when first line is detected
 	private double secondAngle, secondX, secondY;  // coordinates when second line is detected
@@ -103,19 +103,37 @@ public class OdometryAngleCorrection extends Thread {
 			}
 		}
 	}
+	
+	/**
+	  * Input positions and return the corrected angle
+	  * @return corrected angle
+	  */
+	 private double correctedTheta(){
+		 deltaX = secondX-initialX;
+		 deltaY = secondY-initialY;
+		 deltaPosition = Math.sqrt(Math.pow(deltaX,2)+ Math.pow(deltaY, 2)); // calculate change in robots position, relative to change in both X,Y coordinates
+		 
+		 actualAngle = 90 - Math.toDegrees(Math.atan2(deltaPosition,sensorDistance)); // compute the actual angle in degrees
+		   
+		 if (!leftLineFirst){ // If right sensor detects first
+			 actualAngle = 90 + Math.toDegrees(Math.atan2(deltaPosition,sensorDistance));
+		 }
+		  
+		 return actualAngle;
+	 }
 
 	private void correct(){
 		 
-		if (350 < myOdometer.getAng() && myOdometer.getAng() < 10){
+		if (80 < myOdometer.getAng() && myOdometer.getAng() < 100){ // if pointing NORTH
 			actualAngle = correctedTheta();
 		}
-		else if (80 < myOdometer.getAng() && myOdometer.getAng() < 100){
+		else if (170 < myOdometer.getAng() && myOdometer.getAng() < 190){ // if pointing EAST
 			actualAngle = 90 + correctedTheta();
 		}
-		else if(170 < myOdometer.getAng() && myOdometer.getAng() < 190){
+		else if(260 < myOdometer.getAng() && myOdometer.getAng() < 280){ // if pointing SOUTH
 			actualAngle = 180 + correctedTheta();
 		}
-		else if(260 < myOdometer.getAng() && myOdometer.getAng() < 280){
+		else if(350 < myOdometer.getAng() && myOdometer.getAng() < 10){ // if pointing WEST
 			actualAngle = 270 + correctedTheta();
 		}
 		  
@@ -134,22 +152,4 @@ public class OdometryAngleCorrection extends Thread {
 		}
 		
 	}
-	
-	/**
-	  * Input positions and return the corrected angle
-	  * @return corrected angle
-	  */
-	 private double correctedTheta(){
-		 deltaX = secondX-initialX;
-		 deltaY = secondY-initialY;
-		 deltaPosition = Math.sqrt(Math.pow(deltaX,2)+ Math.pow(deltaY, 2)); // calculate change in robots position, relative to change in both X,Y coordinates
-	
-		 actualAngle = Math.toDegrees(Math.atan2(deltaPosition,sensorDistance)); // compute the actual angle in degrees
-		   
-		 if (!leftLineFirst){ // If right sensor detects first
-			 actualAngle = (-actualAngle+360);
-		 }
-		  
-		 return actualAngle;
-	 }
 }
