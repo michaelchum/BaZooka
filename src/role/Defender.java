@@ -8,10 +8,6 @@ import bluetooth.StartCorner;
 import odometry.LCDInfo;
 import odometry.OdometryCorrection;
 import odometry.OdometryAngleCorrection;
-<<<<<<< HEAD
-=======
-
->>>>>>> 4fe5a82b2d7a09c9de15e09a9cc4bc93deab7b25
 
 /**
  * Specific role of defender
@@ -46,7 +42,7 @@ public class Defender extends Robot {
 	@Override
 	public void play(StartCorner startingCorner, int bx, int by, int w1,
 			int w2, int d1, int goalX, int goalY) {
-<<<<<<< HEAD
+
 		defensiveZoneY = goalY - (w2 * 30) - 15;
 		defensiveLocalizationX = goalX;
 		defensiveLocalizationY = defensiveZoneY - 15;
@@ -65,7 +61,6 @@ public class Defender extends Robot {
 															// defensive
 															// zone
 		patrol();
-=======
 		
 		myCatapult.arm(); // cannot take this out because of it will impair obstacle avoidance (USSensor)
 		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, startingCorner);
@@ -90,10 +85,7 @@ public class Defender extends Robot {
 			myNav.turnTo(270.0, true);
 		}
 		
-		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor, centerSensor, rightSensor);
-		//OdometryCorrection myOdometryCorrection = new OdometryCorrection(myOdometer, centerSensor, leftMotor, rightMotor);
-		//myOdometryCorrection.start();
-		
+
 		myNav.navigateTo((goalX * 30) - 15, goalY - ((w2 * 30) + 15)); //navigate to defensive zone
 		myNav.travelTo(goalX*30, goalY - ((w2 * 30))); //travel in front of the goal
 		
@@ -106,7 +98,6 @@ public class Defender extends Robot {
 		myOdometer.setTheta(90.0);
 		myNav.navigateTo(75.0,75.0);
 		*/
->>>>>>> 4fe5a82b2d7a09c9de15e09a9cc4bc93deab7b25
 	}
 
 	private void patrol() {
