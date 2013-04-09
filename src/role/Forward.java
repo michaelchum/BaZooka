@@ -12,8 +12,6 @@ import lejos.util.Delay;
 import localization.LightLocalizer;
 import localization.USLocalizer;
 import bluetooth.StartCorner;
-import odometry.OdometryCorrection;
-import odometry.OdometryAngleCorrection;
 
 /**
  * Specific role of forward
@@ -23,7 +21,7 @@ import odometry.OdometryAngleCorrection;
  */
 public class Forward extends Robot {
 	static final double distanceFromCenterToRamp = 6.5, loadingDistance = 5,
-			distanceToWall = 22;
+			distanceToWall = 17;
 	private double loadingTileX = 0, loadingTileY = 0, preciseLoadingX = 0,
 			preciseLoadingY = 0, loadingHeading = 0;
 
@@ -40,7 +38,6 @@ public class Forward extends Robot {
 																// before
 																// loading
 																// balls
-	public double leftFiringX, leftFiringY, leftPosX, leftPosY, leftFiringAngle, rightFiringX, rightFiringY, rightPosX, rightPosY, rightFiringAngle;
 
 	/**
 	 * Constructor - same as Robot constructor
@@ -67,23 +64,17 @@ public class Forward extends Robot {
 
 		myCatapult.arm();
 		@SuppressWarnings("unused")
-		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor, centerSensor, rightSensor);
-		
+		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor,
+				centerSensor, rightSensor);
 		localize(startingCorner);
 		postLocalize(startingCorner);
 
 		computeLoadingCoordinates(bx, by);
 		computeLoadingLocalizationCoords(bx, by);
-		computeFiringCoordinates(d1, goalX, goalY);
-		
-		OdometryCorrection myOdometryCorrection = new OdometryCorrection(myOdometer, centerSensor, leftMotor, rightMotor);
-		myOdometryCorrection.start();
-		
-		/* BALL LOADING SEQUENCE */
-		
+
 		// navigate to loading tile
 		myNav.navigateTo(loadingTileX, loadingTileY);
-	
+
 		// localize
 		myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
 
@@ -102,62 +93,29 @@ public class Forward extends Robot {
 
 		// localize again (pushing the button fucks it up)
 		myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
-		
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, loadingLocalizationX, loadingLocalizationY);
-		
+
+		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
+				leftMotor, rightMotor, loadingLocalizationX,
+				loadingLocalizationY);
+
 		// make sure the odometer has been set properly
 		myOdometer.setX(loadingLocalizationX);
 		myOdometer.setY(loadingLocalizationY);
 		myOdometer.setTheta(90.0);
-		
-		/* LEFT SIDE FIRING  SEQUENCE */
-		
+
 		// navigate to firing area
-		myNav.navigateTo(leftFiringX, leftFiringY);
-		myNav.travelTo(leftPosX, leftPosY);
-		
-		// localize before shooting
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, leftPosX, leftPosY); 
+		myNav.navigateTo(135, goalY - ((d1 + 1) * 30) - 15);
+		myNav.travelTo(150, goalY - ((d1 + 1) * 30));
+		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
+				leftMotor, rightMotor, 150, goalY - ((d1 + 1) * 30)); // localize
+																		// before
+																		// shooting
 		// make sure the odometer has been set properly
-		myOdometer.setX(leftPosX);
-		myOdometer.setY(leftPosY);
+		myOdometer.setX(150);
+		myOdometer.setY(goalY - ((d1 + 1) * 30));
 		myOdometer.setTheta(90.0);
-		myNav.turnTo(leftFiringAngle, true);
-		
+
 		shootFiveBallsCenter();
-		
-		// localize after shooting
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, leftPosX, leftPosY); 
-		// make sure the odometer has been set properly
-		myOdometer.setX(leftPosX);
-		myOdometer.setY(leftPosY);
-		myOdometer.setTheta(90.0);
-		
-		/* RIGHT SIDE FIRING  SEQUENCE */
-		
-		/*
-		// navigate to firing area
-		myNav.navigateTo(rightFiringX, rightFiringY);
-		myNav.travelTo(rightPosX, rightPosY);
-		
-		// localize before shooting
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, rightPosX, rightPosY); 
-		// make sure the odometer has been set properly
-		myOdometer.setX(rightPosX);
-		myOdometer.setY(rightPosY);
-		myOdometer.setTheta(90.0);
-		myNav.turnTo(rightFiringAngle, true);
-		
-		shootFiveBallsCenter();
-		
-		// localize after shooting
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, rightPosX, rightPosY); 
-		// make sure the odometer has been set properly
-		myOdometer.setX(rightPosX);
-		myOdometer.setY(rightPosY);
-		myOdometer.setTheta(90.0);
-		*/
-	
 
 	}
 
@@ -196,6 +154,7 @@ public class Forward extends Robot {
 			loadingTileY = (by * 30) - 15;
 			loadingHeading = 0;
 		}
+
 	}
 
 	/**
@@ -208,17 +167,17 @@ public class Forward extends Robot {
 	 */
 	private void computeLoadingLocalizationCoords(int bx, int by) {
 		if (bx < 0) { // west wall
-			loadingLocalizationX = 30;
+			loadingLocalizationX = 0;
 			loadingLocalizationY = by * 30;
 		}
 
 		if (bx == 11) { // east wall
-			loadingLocalizationX = 270;
+			loadingLocalizationX = 0;
 			loadingLocalizationY = by * 30;
 		}
 
 		if (by == -1) { // southern wall
-			loadingLocalizationY = 30;
+			loadingLocalizationY = 0;
 			loadingLocalizationX = bx * 30;
 		}
 	}
@@ -227,50 +186,27 @@ public class Forward extends Robot {
 		DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36, 16.32,
 				leftMotor, rightMotor, false);
 		myPilot.setTravelSpeed(5);
-		myPilot.travel(4.5);
-		Delay.msDelay(40000);
+		myPilot.travel(5);
+		Delay.msDelay(30000);
 		myPilot.travel(-10);
 	}
 
 	private void shootFiveBallsCenter() {
-		for (int i = 0; i < 6; i++) {
+		myNav.turnTo(90, true);
+		for (int i = 0; i < 5; i++) {
 			myCatapult.carry();
 			myCatapult.shootCenter();
 		}
 	}
-	
-	private void computeFiringCoordinates(int d1, int goalX, int goalY) {
-		if(d1==8){
-			leftFiringX = 45;
-			leftFiringY = 45;
-			rightFiringX = 255;
-			rightFiringY = 45;
-		}
-		else if(d1==7){
-			leftFiringX = 45;
-			leftFiringY = 75;
-			rightFiringX = 255;
-			rightFiringY = 75;
-		}
-		else if(d1<7){
-			leftFiringX = 45;
-			leftFiringY = 105;
-			rightFiringX = 255;
-			rightFiringY = 105;
-		}
-		
-		leftPosX = leftFiringX+15;
-		leftPosY = leftFiringY-15;
-		rightPosX = rightFiringX-15;
-		rightPosY = rightFiringY-15;
-		
-		leftFiringAngle = (Math.atan2(goalY - leftPosY, goalX - leftPosX)) * (180.0 / Math.PI);
-		if (leftFiringAngle < 0){
-			leftFiringAngle += 360.0;
-		}
-		rightFiringAngle = (Math.atan2(goalY - rightPosY, goalX - rightPosX)) * (180.0 / Math.PI);
-		if (rightFiringAngle < 0){
-			rightFiringAngle += 360.0;
+
+	private void shootFiveBallsSide() {
+		myNav.turnTo(90, true);
+		for (int i = 0; i < 5; i++) {
+			myCatapult.carry();
+			myCatapult.shootSide();
 		}
 	}
+
+
+
 }

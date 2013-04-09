@@ -203,7 +203,7 @@ public class LightLocalizer {
 			LCD.drawString("LS: ", 0, 4);
 			LCD.drawString("LS: " + val, 0, 4);
 
-			if ((baseValue - val) > 8) {
+			if ((baseValue - val) > 7) {
 				lineDetected = true;
 				theta = (float) myOdometer.getAng();
 				if (stopOnceDone) {
@@ -244,7 +244,7 @@ public class LightLocalizer {
 		double sweepAngle = 1;
 		double direction = 1;
 		double sweptSoFar = 0;
-		while ((baseValue - val) < 8) {
+		while ((baseValue - val) < 7) {
 			
 			val = ls.readValue();
 			myPilot.rotate(direction, false);

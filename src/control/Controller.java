@@ -39,16 +39,17 @@ public class Controller {
 		 */
 
 		// position of the basket
-		int goalX = 150;
-		int goalY = 300;
+		final int goalX = 150;
+		final int goalY = 300;
 
 		// testing values
 		int bx = -1;
-		int by = 2;
+		int by = 4;
 		int w1 = 0;
 		int w2 = 0;
-		int d1 = 7;
+		int d1 = 0;
 
+		
 		
 		// 1 is (0,0), 2 is (0,10), 3 is (10,10), 4 is (10,0)
 		StartCorner startingCorner;
@@ -57,7 +58,7 @@ public class Controller {
 		
 		// 2 is defender, 1 is attacker
 		PlayerRole role;
-		role = PlayerRole.lookupRole(2);
+		role = PlayerRole.lookupRole(1);
 		Robot robot;
 		if (role == PlayerRole.ATTACKER) {
 			robot = new Forward(Motor.A, Motor.B, Motor.C, SensorPort.S1,

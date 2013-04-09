@@ -3,33 +3,29 @@ package odometry;
 import lejos.nxt.LightSensor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.Sound;
-import odometry.LightData;
+import lejos.util.Delay;
 
-/**
- * Thread that corrects angle of odometer
- * @author Team 13
- *
- */
-public class OdometryAngleCorrection extends Thread {
+public class LeftAngleCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 800;
 	private static final int FORWARD_SPEED = 175;
-	private static final int STOP_SPEED = 0;
 	private Odometer myOdometer;
+	private LightSensor leftSensor, rightSensor;
 	private NXTRegulatedMotor leftMotor, rightMotor;
 
-	private double sensorDistance = 17.00; // distance measured between the light sensor's position
+	private double sensorDistance = 18.5; // distance measured between the light sensor's position
 	
-	private double initialAngle, initialX, initialY; // coordinates when first line is detected
-	private double secondAngle, secondX, secondY;  // coordinates when second line is detected
-	private double actualAngle, actualX, actualY;  // actual robot coordinates
+	private double initialX, initialY; // coordinates when first line is detected
+	private double secondX, secondY;  // coordinates when second line is detected
+	private double actualAngle;  // actual robot coordinates
 	private double deltaPosition, deltaX,deltaY; // change in robot position
 	
 	private boolean leftLineDetected = false;
 	private boolean rightLineDetected = false;
 	private boolean leftLineFirst = false;
-	
-	private LightData RLD;
-	private LightData LLD;
+	private int valL;
+	private int valR;
+	private int preValL;
+	private int preValR;
 	
 	/**
 	 * Constructor for angle correction
@@ -40,70 +36,84 @@ public class OdometryAngleCorrection extends Thread {
 	 * @param rightMotor - right motor
 	 */
 	
-	public OdometryAngleCorrection(Odometer odometer, LightSensor leftSensor, LightSensor rightSensor, NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor){
+	public LeftAngleCorrection(Odometer odometer, LightSensor leftSensor, LightSensor rightSensor, NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor){
 		this.myOdometer = odometer;
+		this.leftSensor = leftSensor;
+		this.rightSensor = rightSensor;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
-		this.RLD = new LightData(rightSensor);
-		this.LLD = new LightData(leftSensor);
 		leftSensor.setFloodlight(true);
 		rightSensor.setFloodlight(true);
 	}
 	
 	/**
-	 * Executes the thread
+	 * Run the thread
 	 */
 	public void run() {
-		RLD.start();
-		LLD.start();
+		
 		while (true){
 			
-			leftLineDetected = false;
-			rightLineDetected = false;
-			try {Thread.sleep(15);} catch (InterruptedException e) {} // important to limit resources from the CPU
+			try {Thread.sleep(25);} catch (InterruptedException e) {} // important to limit resources from the CPU
 
 			// activate angle correction only when the robot is moving in a straight line
-			while ((!leftLineDetected || !rightLineDetected) && (leftMotor.getSpeed()==FORWARD_SPEED && rightMotor.getSpeed()==FORWARD_SPEED)) {
+			while (leftMotor.getSpeed()==FORWARD_SPEED && rightMotor.getSpeed()==FORWARD_SPEED) {
 				
-				leftLineDetected = LLD.getIsLine();
-				rightLineDetected = RLD.getIsLine();
+				leftLineDetected = false;
+				rightLineDetected = false;
+				preValL = leftSensor.getLightValue();
+				preValR = rightSensor.getLightValue();
+				
+				while (!leftLineDetected || !rightLineDetected){
 					
-				if(leftLineDetected){
-					if(!rightLineDetected){
-						initialX = myOdometer.getX();
-						initialY = myOdometer.getY();
-						initialAngle = myOdometer.getAng();
-						leftLineFirst = true;
-					}
-					else{
-						secondX = myOdometer.getX();
-						secondY = myOdometer.getY();
-						secondAngle = myOdometer.getAng();
-					}
-				}
+					valL = leftSensor.getLightValue();
+					valR = rightSensor.getLightValue();
 					
-				if(rightLineDetected){
-					if(!leftLineDetected){
-						initialX = myOdometer.getX();
-						initialY = myOdometer.getY();
-						initialAngle = myOdometer.getAng();
+					if ((valL-preValL) > 8){
+						leftLineDetected = true;
+						Sound.beep();
+						if(!rightLineDetected){
+							leftLineFirst = true;
+							myOdometer.getAng();
+							initialX = myOdometer.getX();
+							initialY = myOdometer.getY();
+						}
+						else{
+						     myOdometer.getAng();
+						     secondX = myOdometer.getX();
+						     secondY = myOdometer.getY();
+						}
 					}
-					else{
-						secondX = myOdometer.getX();
-						secondY = myOdometer.getY();
-						secondAngle = myOdometer.getAng();
+					
+					if ((valR-preValR) > 8){
+						rightLineDetected = true;
+						Sound.beep();
+						if(!leftLineDetected){
+							myOdometer.getAng();
+							initialX = myOdometer.getX();
+							initialY = myOdometer.getY();
+						}
+						else{
+						    myOdometer.getAng();
+						    secondX = myOdometer.getX();
+						    secondY = myOdometer.getY();
+						}
 					}
-				}
-			}
-			
-			while (leftLineDetected && rightLineDetected){ // correct the angle and restart loop if both lines are detected
-				if(leftMotor.getSpeed()==STOP_SPEED && rightMotor.getSpeed()==STOP_SPEED){
-						correct(); 
+					
+					preValL = valL;
+					preValR = valR;
+					Delay.msDelay(25); // delay is necessary for interval between val and preVal long enough
+				}	
+				
+				if (leftLineDetected && rightLineDetected){ // correct the angle and restart loop if both lines are detected
+					correct(); 
 				}
 			}
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void correct(){
 		 
 		if (350 < myOdometer.getAng() && myOdometer.getAng() < 10){
@@ -126,6 +136,10 @@ public class OdometryAngleCorrection extends Thread {
 			Sound.beepSequence();
 			  
 			// reset the sequence
+			valL = leftSensor.readValue();
+			preValL = leftSensor.readValue();
+			valR = rightSensor.readValue();
+			preValR = rightSensor.readValue();
 			this.leftLineDetected = false;
 			this.rightLineDetected = false;
 			this.leftLineFirst = false;
