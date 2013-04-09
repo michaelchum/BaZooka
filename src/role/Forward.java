@@ -22,7 +22,8 @@ import odometry.OdometryAngleCorrection;
  * 
  */
 public class Forward extends Robot {
-	static final double CENTER_TO_RAMP = 6.5, LOADING_DISTANCE = 5, DISTANCE_TO_WALL = 22;
+	static final double CENTER_TO_RAMP = 6.5, LOADING_DISTANCE = 5,
+			DISTANCE_TO_WALL = 22;
 	private double loadingTileX = 0, loadingTileY = 0, preciseLoadingX = 0,
 			preciseLoadingY = 0, loadingHeading = 0;
 
@@ -39,8 +40,11 @@ public class Forward extends Robot {
 																// before
 																// loading
 																// balls
-	public double leftFiringX, leftFiringY, leftPosX, leftPosY, leftFiringAngle, rightFiringX, rightFiringY, rightPosX, rightPosY, rightFiringAngle;
-	public double firingCoordsX, firingCoordsY, firingPosX, firingPosY, firingAngle;
+	public double leftFiringX, leftFiringY, leftPosX, leftPosY,
+			leftFiringAngle, rightFiringX, rightFiringY, rightPosX, rightPosY,
+			rightFiringAngle;
+	public double firingCoordsX, firingCoordsY, firingPosX, firingPosY,
+			firingAngle;
 
 	/**
 	 * Constructor - same as Robot constructor
@@ -67,7 +71,8 @@ public class Forward extends Robot {
 
 		myCatapult.arm();
 		@SuppressWarnings("unused")
-		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor, centerSensor, rightSensor);
+		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor,
+				centerSensor, rightSensor);
 
 		localize(startingCorner);
 
@@ -76,72 +81,80 @@ public class Forward extends Robot {
 		computeLoadingCoordinates(bx, by);
 		computeLoadingLocalizationCoords(bx, by);
 		computeFiringCoordinates(d1, bx, goalX, goalY);
-		
-		/* BALL LOADING SEQUENCE */
-		
-		// navigate to loading tile
-		myNav.navigateTo(loadingTileX, loadingTileY);
-	
-		// localize
-		myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
 
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
-				leftMotor, rightMotor, loadingLocalizationX,
-				loadingLocalizationY);
+		while (true) {
+			/* BALL LOADING SEQUENCE */
 
-		// make sure the odometer has been set properly
-		myOdometer.setX(loadingLocalizationX);
-		myOdometer.setY(loadingLocalizationY);
-		myOdometer.setTheta(90.0);
+			// navigate to loading tile
+			myNav.navigateTo(loadingTileX, loadingTileY);
 
-		myNav.travelTo(preciseLoadingX, preciseLoadingY);
-		myNav.turnTo(loadingHeading, true);
-		loadFiveBalls();
+			// localize
+			myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
 
-		// localize again (pushing the button fucks it up)
-		myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, loadingLocalizationX, loadingLocalizationY);
-		
-		// make sure the odometer has been set properly
-		myOdometer.setX(loadingLocalizationX);
-		myOdometer.setY(loadingLocalizationY);
-		myOdometer.setTheta(90.0);
+			LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
+					leftMotor, rightMotor, loadingLocalizationX,
+					loadingLocalizationY);
 
-		// localize again (pushing the button fucks it up)
-		myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, loadingLocalizationX, loadingLocalizationY);
-		
-		// make sure the odometer has been set properly
-		myOdometer.setX(loadingLocalizationX);
-		myOdometer.setY(loadingLocalizationY);
-		myOdometer.setTheta(90.0);
-		
-		/* FIRING  SEQUENCE LEFT OR RIGHT DEPENDING ON bx */
-		
-		// navigate to firing area
-		myNav.navigateTo(firingCoordsX, firingCoordsY);
-		myNav.travelTo(firingPosX, firingPosY);
-		
-		// localize before shooting
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, leftPosX, leftPosY); 
-		// make sure the odometer has been set properly
-		myOdometer.setX(firingPosX);
-		myOdometer.setY(firingPosY);
-		myOdometer.setTheta(90.0);
-		myNav.turnTo(firingAngle, true);
-		
-		shootFiveBallsCenter();
-		
-		// localize after shooting
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, leftPosX, leftPosY); 
-		// make sure the odometer has been set properly
-		myOdometer.setX(firingPosX);
-		myOdometer.setY(firingPosY);
-		myOdometer.setTheta(90.0);
-		
-		/* RETURN HOME */
-		returnHome(startingCorner);
-	
+			// make sure the odometer has been set properly
+			myOdometer.setX(loadingLocalizationX);
+			myOdometer.setY(loadingLocalizationY);
+			myOdometer.setTheta(90.0);
+
+			myNav.travelTo(preciseLoadingX, preciseLoadingY);
+			myNav.turnTo(loadingHeading, true);
+			loadFiveBalls();
+
+			// localize again (pushing the button fucks it up)
+			myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
+			LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
+					leftMotor, rightMotor, loadingLocalizationX,
+					loadingLocalizationY);
+
+			// make sure the odometer has been set properly
+			myOdometer.setX(loadingLocalizationX);
+			myOdometer.setY(loadingLocalizationY);
+			myOdometer.setTheta(90.0);
+
+			// localize again (pushing the button fucks it up)
+			myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
+			LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
+					leftMotor, rightMotor, loadingLocalizationX,
+					loadingLocalizationY);
+
+			// make sure the odometer has been set properly
+			myOdometer.setX(loadingLocalizationX);
+			myOdometer.setY(loadingLocalizationY);
+			myOdometer.setTheta(90.0);
+
+			/* FIRING SEQUENCE LEFT OR RIGHT DEPENDING ON bx */
+
+			// navigate to firing area
+			myNav.navigateTo(firingCoordsX, firingCoordsY);
+			myNav.travelTo(firingPosX, firingPosY);
+
+			// localize before shooting
+			LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
+					leftMotor, rightMotor, leftPosX, leftPosY);
+			// make sure the odometer has been set properly
+			myOdometer.setX(firingPosX);
+			myOdometer.setY(firingPosY);
+			myOdometer.setTheta(90.0);
+			myNav.turnTo(firingAngle, true);
+
+			shootFiveBallsCenter();
+
+			// localize after shooting
+			LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
+					leftMotor, rightMotor, leftPosX, leftPosY);
+			// make sure the odometer has been set properly
+			myOdometer.setX(firingPosX);
+			myOdometer.setY(firingPosY);
+			myOdometer.setTheta(90.0);
+
+			/* RETURN HOME */
+			// returnHome(startingCorner);
+
+		}
 	}
 
 	/**
@@ -221,70 +234,66 @@ public class Forward extends Robot {
 			myCatapult.shootCenter();
 		}
 	}
-	
+
 	private void computeFiringCoordinates(int d1, int bx, int goalX, int goalY) {
-		
-		if(d1==8){
+
+		if (d1 == 8) {
 			leftFiringX = 45;
 			leftFiringY = 45;
 			leftFiringAngle = 0;
-			
+
 			rightFiringX = 255;
 			rightFiringY = 45;
 			rightFiringAngle = 0;
-		}
-		else if(d1==7){
+		} else if (d1 == 7) {
 			leftFiringX = 45;
 			leftFiringY = 75;
 			leftFiringAngle = 0;
-			
+
 			rightFiringX = 255;
 			rightFiringY = 75;
 			rightFiringAngle = 0;
-			
-		}
-		else if(d1<7){
+
+		} else if (d1 < 7) {
 			leftFiringX = 45;
 			leftFiringY = 105;
 			leftFiringAngle = 0;
-			
+
 			rightFiringX = 255;
 			rightFiringY = 105;
 			rightFiringAngle = 0;
 		}
-		
-		leftPosX = leftFiringX+15;
-		leftPosY = leftFiringY-15;
-		rightPosX = rightFiringX-15;
-		rightPosY = rightFiringY-15;
-		
+
+		leftPosX = leftFiringX + 15;
+		leftPosY = leftFiringY - 15;
+		rightPosX = rightFiringX - 15;
+		rightPosY = rightFiringY - 15;
+
 		/* IF BALL DISPENSER IS ON THE LEFT SIDE SHOOT FROM THE LEFT */
-		if(bx<5){
+		if (bx < 5) {
 			firingCoordsX = leftFiringX;
 			firingCoordsY = leftFiringY;
 			firingAngle = leftFiringAngle;
 		}
 		/* IF BALL DISPENSER IS ON THE RIGHT SIDE SHOOT FROM THE RIGHT */
-		else{
+		else {
 			firingCoordsX = rightFiringX;
 			firingCoordsY = rightFiringY;
 			firingAngle = rightFiringAngle;
 		}
 	}
-	
-	public void returnHome(StartCorner startingCorner){
+
+	public void returnHome(StartCorner startingCorner) {
 		if (startingCorner == StartCorner.BOTTOM_LEFT) {
 			myNav.navigateTo(15.0, 15.0);
 			myNav.turnTo(90.0, true);
-		} else if (startingCorner == StartCorner.BOTTOM_RIGHT){
+		} else if (startingCorner == StartCorner.BOTTOM_RIGHT) {
 			myNav.navigateTo(285.0, 15.0);
 			myNav.turnTo(90.0, true);
-		}
-		else if (startingCorner == StartCorner.TOP_RIGHT) {
+		} else if (startingCorner == StartCorner.TOP_RIGHT) {
 			myNav.navigateTo(285.0, 285.0);
 			myNav.turnTo(270.0, true);
-		}
-		else if (startingCorner == StartCorner.TOP_LEFT) {
+		} else if (startingCorner == StartCorner.TOP_LEFT) {
 			myNav.navigateTo(15.0, 285.0);
 			myNav.turnTo(270.0, true);
 		}
