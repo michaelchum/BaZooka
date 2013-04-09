@@ -5,6 +5,9 @@ import lejos.nxt.SensorPort;
 import localization.LightLocalizer;
 import localization.USLocalizer;
 import bluetooth.StartCorner;
+import odometry.LCDInfo;
+import odometry.OdometryCorrection;
+import odometry.OdometryAngleCorrection;
 
 
 /**
@@ -36,7 +39,9 @@ public class Defender extends Robot {
 	@Override
 	public void play(StartCorner startingCorner, int bx, int by, int w1,
 			int w2, int d1, int goalX, int goalY) {
-		//myCatapult.arm(); //taking this out because it wastes time for defenders
+		
+		/*
+		myCatapult.arm(); // cannot take this out because of it will impair obstacle avoidance (USSensor)
 		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, startingCorner);
 		USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav, leftMotor, rightMotor);
 		
@@ -61,7 +66,14 @@ public class Defender extends Robot {
 		
 		myNav.navigateTo((goalX * 30) - 15, goalY - ((w2 * 30) + 15)); //navigate to defensive zone
 		myNav.travelTo(goalX*30, goalY - ((w2 * 30))); //travel in front of the goal
-		
+		*/
+		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor, centerSensor, rightSensor);
+		OdometryCorrection myOdometryCorrection = new OdometryCorrection(myOdometer, centerSensor, leftMotor, rightMotor);
+		myOdometryCorrection.start();
+		myOdometer.setX(15.0);
+		myOdometer.setY(15.0);
+		myOdometer.setTheta(90.0);
+		myNav.navigateTo(75.0,75.0);
 	}
 	
 	private void patrol() {
