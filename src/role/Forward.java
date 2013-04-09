@@ -133,6 +133,8 @@ public class Forward extends Robot {
 		myOdometer.setY(leftPosY);
 		myOdometer.setTheta(90.0);
 		
+		/* SECOND LOADING SEQUENCE */
+		
 		/* RIGHT SIDE FIRING  SEQUENCE */
 		
 		/*
@@ -157,8 +159,10 @@ public class Forward extends Robot {
 		myOdometer.setY(rightPosY);
 		myOdometer.setTheta(90.0);
 		*/
+		
+		/* RETURN HOME */
+		returnHome(startingCorner);
 	
-
 	}
 
 	/**
@@ -271,6 +275,24 @@ public class Forward extends Robot {
 		rightFiringAngle = (Math.atan2(goalY - rightPosY, goalX - rightPosX)) * (180.0 / Math.PI);
 		if (rightFiringAngle < 0){
 			rightFiringAngle += 360.0;
+		}
+	}
+	
+	public void returnHome(StartCorner startingCorner){
+		if (startingCorner == StartCorner.BOTTOM_LEFT) {
+			myNav.navigateTo(15.0, 15.0);
+			myNav.turnTo(90.0, true);
+		} else if (startingCorner == StartCorner.BOTTOM_RIGHT){
+			myNav.navigateTo(285.0, 15.0);
+			myNav.turnTo(90.0, true);
+		}
+		else if (startingCorner == StartCorner.TOP_RIGHT) {
+			myNav.navigateTo(285.0, 285.0);
+			myNav.turnTo(270.0, true);
+		}
+		else if (startingCorner == StartCorner.TOP_LEFT) {
+			myNav.navigateTo(15.0, 285.0);
+			myNav.turnTo(270.0, true);
 		}
 	}
 }
