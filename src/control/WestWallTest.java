@@ -30,7 +30,7 @@ public class WestWallTest {
 
 		// testing values
 		int bx = -1; //west wall
-		int by = 7;
+		int by = 4;
 		int w1 = 0;
 		int w2 = 0;
 		int d1 = 7;
@@ -43,7 +43,7 @@ public class WestWallTest {
 		 * TOP LEFT		X4 (0,10) "TL"
 		 */
 		StartCorner startingCorner;
-		startingCorner = StartCorner.lookupCorner(4); //top left (0, 300)
+		startingCorner = StartCorner.lookupCorner(3); //top left (0, 300)
 		
 		
 		// 2 is defender, 1 is attacker

@@ -82,7 +82,7 @@ public class Forward extends Robot {
 		computeLoadingLocalizationCoords(bx, by);
 		computeFiringCoordinates(d1, bx, goalX, goalY);
 
-		while (true) {
+	
 			/* BALL LOADING SEQUENCE */
 
 			// navigate to loading tile
@@ -103,17 +103,6 @@ public class Forward extends Robot {
 			myNav.travelTo(preciseLoadingX, preciseLoadingY);
 			myNav.turnTo(loadingHeading, true);
 			loadFiveBalls();
-
-			// localize again (pushing the button fucks it up)
-			myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
-			LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
-					leftMotor, rightMotor, loadingLocalizationX,
-					loadingLocalizationY);
-
-			// make sure the odometer has been set properly
-			myOdometer.setX(loadingLocalizationX);
-			myOdometer.setY(loadingLocalizationY);
-			myOdometer.setTheta(90.0);
 
 			// localize again (pushing the button fucks it up)
 			myNav.travelTo(loadingLocalizationX, loadingLocalizationY);
@@ -152,10 +141,9 @@ public class Forward extends Robot {
 			myOdometer.setTheta(90.0);
 
 			/* RETURN HOME */
-			// returnHome(startingCorner);
+			returnHome(startingCorner);
 
 		}
-	}
 
 	/**
 	 * Compute loading coordinates Need to change values if the arena changes
@@ -171,7 +159,7 @@ public class Forward extends Robot {
 			preciseLoadingY = by * 30 + CENTER_TO_RAMP;
 			loadingHeading = 180;
 
-			loadingTileX = -15;
+			loadingTileX = 15;
 			loadingTileY = (by * 30) - 15;
 		}
 
@@ -180,7 +168,7 @@ public class Forward extends Robot {
 			preciseLoadingY = by * 30 + DISTANCE_TO_WALL;
 			loadingHeading = 270;
 
-			loadingTileY = -15;
+			loadingTileY = 15;
 			loadingTileX = (bx * 30) - 15;
 		}
 
@@ -188,7 +176,7 @@ public class Forward extends Robot {
 			preciseLoadingX = bx * 30 - DISTANCE_TO_WALL;
 			preciseLoadingY = by * 30 - CENTER_TO_RAMP;
 
-			loadingTileX = 315;
+			loadingTileX = 285;
 			loadingTileY = (by * 30) - 15;
 			loadingHeading = 0;
 		}
@@ -244,11 +232,11 @@ public class Forward extends Robot {
 
 			rightFiringX = 255;
 			rightFiringY = 45;
-			rightFiringAngle = 0;
+			rightFiringAngle = 107;
 		} else if (d1 == 7) {
 			leftFiringX = 45;
 			leftFiringY = 75;
-			leftFiringAngle = 0;
+			leftFiringAngle = 110;
 
 			rightFiringX = 255;
 			rightFiringY = 75;
@@ -273,12 +261,17 @@ public class Forward extends Robot {
 		if (bx < 5) {
 			firingCoordsX = leftFiringX;
 			firingCoordsY = leftFiringY;
+			firingPosX = leftPosX;
+			firingPosY = leftPosY;
 			firingAngle = leftFiringAngle;
+			
 		}
 		/* IF BALL DISPENSER IS ON THE RIGHT SIDE SHOOT FROM THE RIGHT */
 		else {
 			firingCoordsX = rightFiringX;
 			firingCoordsY = rightFiringY;
+			firingPosX = rightPosX;
+			firingPosY = rightPosY;
 			firingAngle = rightFiringAngle;
 		}
 	}

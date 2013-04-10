@@ -13,7 +13,7 @@ import lejos.util.Delay;
 public class OdometryCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 1000;
 
-	private static final int FORWARD_SPEED = 100;
+	private static final int FORWARD_SPEED = 175;
 
 	private Odometer myOdometer;
 	private LightSensor middleSensor;

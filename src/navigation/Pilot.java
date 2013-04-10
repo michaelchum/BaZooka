@@ -106,7 +106,7 @@ public class Pilot {
 		this.turnTo(minAng, true);
 		Delay.msDelay(500); 
 		while (Math.abs(x - myOdometer.getX()) > CM_ERR || Math.abs(y - myOdometer.getY()) > CM_ERR) {
-			this.setSpeeds(FAST, FAST);
+			this.setSpeeds(175, 175);
 		}
 		this.setSpeeds(0, 0);
 	
