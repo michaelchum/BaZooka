@@ -30,8 +30,8 @@ public class Map {
 	private double [] coordsX = new double[10];
 	private double [] coordsY = new double[10];
 
-	private int[][] grid = new int[][] {{1,0,0,0,0,0,0,0,0,1}, 
-			   			       	{1,0,0,0,0,0,0,0,0,1}, 
+	private int[][] grid = new int[][] {{1,0,0,1,1,0,0,0,0,1}, 
+			   			       	{1,0,0,0,1,1,0,0,0,1}, 
 			   			       	{1,0,0,0,0,0,0,0,0,1}, 
 			   			       	{1,0,0,0,0,0,0,0,0,1}, 
 			   			       	{1,0,0,0,0,0,0,0,0,1}, 

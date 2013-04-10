@@ -42,7 +42,8 @@ public class Defender extends Robot {
 	@Override
 	public void play(StartCorner startingCorner, int bx, int by, int w1,
 			int w2, int d1, int goalX, int goalY) {
-
+		//compute defensive zone coordinates
+		
 		defensiveZoneY = goalY - (w2 * 30) - 15;
 		defensiveLocalizationX = goalX;
 		defensiveLocalizationY = defensiveZoneY - 15;
@@ -59,45 +60,9 @@ public class Defender extends Robot {
 		myNav.navigateTo(defensiveZoneX, defensiveZoneY); // navigate
 															// to
 															// defensive
-															// zone
-		patrol();
-		
-		myCatapult.arm(); // cannot take this out because of it will impair obstacle avoidance (USSensor)
-		LightLocalizer.doLocalization(myOdometer, myNav, centerSensor, leftMotor, rightMotor, startingCorner);
-		USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav, leftMotor, rightMotor);
-		
-		switch (startingCorner) {
-		case BOTTOM_LEFT:
-			myOdometer.setPosition(new double [] {0.0, 0.0, 90.0}, new boolean [] {true, true, true});
-			myNav.travelTo2(15.0, 15.0);
-			myNav.turnTo(90.0, true);
-		case BOTTOM_RIGHT:
-			myOdometer.setPosition(new double [] {300.0, 0.0, 90.0}, new boolean [] {true, true, true});
-			myNav.travelTo2(285.0, 15.0);
-			myNav.turnTo(90.0, true);
-		case TOP_RIGHT:
-			myOdometer.setPosition(new double [] {300.0, 300.0, 270.0}, new boolean [] {true, true, true});
-			myNav.travelTo2(285.0, 285.0);
-			myNav.turnTo(270.0, true);
-		case TOP_LEFT:
-			myOdometer.setPosition(new double [] {0.0, 300.0, 270.0}, new boolean [] {true, true, true});
-			myNav.travelTo2(15.0, 285.0);
-			myNav.turnTo(270.0, true);
-		}
-		
-
-		myNav.navigateTo((goalX * 30) - 15, goalY - ((w2 * 30) + 15)); //navigate to defensive zone
-		myNav.travelTo(goalX*30, goalY - ((w2 * 30))); //travel in front of the goal
-		
-		/* TESTING CORRECTION
-		LCDInfo info = new LCDInfo(myOdometer, USSensor, leftSensor, centerSensor, rightSensor);
-		OdometryCorrection myOdometryCorrection = new OdometryCorrection(myOdometer, centerSensor, leftMotor, rightMotor);
-		myOdometryCorrection.start();
-		myOdometer.setX(15.0);
-		myOdometer.setY(15.0);
-		myOdometer.setTheta(90.0);
-		myNav.navigateTo(75.0,75.0);
-		*/
+		myNav.travelTo(goalX, defensiveZoneY);
+		myNav.turnTo(0, true);
+	
 	}
 
 	private void patrol() {

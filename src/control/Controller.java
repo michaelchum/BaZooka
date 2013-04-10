@@ -45,8 +45,8 @@ public class Controller {
 		// testing values
 		int bx = 11;
 		int by = 8;
-		int w1 = 0;
-		int w2 = 0;
+		int w1 = 2;
+		int w2 = 2;
 		int d1 = 7;
 
 		
