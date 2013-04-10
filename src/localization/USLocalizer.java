@@ -1,6 +1,3 @@
-/**
- *
- */
 package localization;
 
 import navigation.Navigator;
@@ -23,13 +20,14 @@ public class USLocalizer {
 
 	private UltrasonicSensor mySensor;
 	private Odometer myOdometer;
-	
+
 	private Navigator myNav;
 	private static final int ROTATION_SPEED = 30;
 
 	// public final int myRotationTarget;
 	public static final int CLOCKWISE_ROTATION = -200,
 			COUNTER_CLOCKWISE_ROTATION = 200;
+	private long lastWallDetectedTime;
 
 	RegulatedMotor myLeftMotor;
 	RegulatedMotor myRightMotor;
@@ -50,7 +48,6 @@ public class USLocalizer {
 		myOdometer = odometer;
 		myLeftMotor = leftMotor;
 		myRightMotor = rightMotor;
-		
 
 	}
 
@@ -70,7 +67,7 @@ public class USLocalizer {
 		temp.doFallingEdgeLocalization();
 
 	}
-	
+
 	/**
 	 * Convenience method for falling edge localization
 	 * 
@@ -81,24 +78,39 @@ public class USLocalizer {
 	 */
 	public static void doFallingEdgeLocalization(Odometer odometer,
 			UltrasonicSensor sensor, Navigator navigator,
-			RegulatedMotor leftMotor, RegulatedMotor rightMotor, int rotationTarget) {
+			RegulatedMotor leftMotor, RegulatedMotor rightMotor,
+			int rotationTarget) {
 		USLocalizer temp = new USLocalizer(odometer, sensor, navigator,
 				leftMotor, rightMotor);
 		temp.doFallingEdgeLocalization(rotationTarget);
 
 	}
-	
 
 	/**
 	 * Does a falling edge localization and updates the odometer
 	 */
 	public void doFallingEdgeLocalization() {
 
+		// rotate clockwise until 255
+		if (getFilteredData() < 255) {
+			myLeftMotor.setSpeed((int) ROTATION_SPEED);
+			myRightMotor.setSpeed((int) ROTATION_SPEED);
+
+			myLeftMotor.forward();
+			myRightMotor.backward();
+
+		}
+		while (getFilteredData() < 255) {
+			
+		}
+		myLeftMotor.stop();
+		myRightMotor.stop();
+
 		// rotate the robot until it sees no wall
 
-		if (getFilteredData() < 50) {
-			rotateTilWallIsNotVisible(CLOCKWISE_ROTATION);
-		}
+//		if (getFilteredData() < 33) {
+//			rotateTilWallIsNotVisible(CLOCKWISE_ROTATION);
+//		}
 
 		// keep rotating until the robot sees a wall, then latch the angle
 		double angleA = rotateTilWallIsVisible(CLOCKWISE_ROTATION);
@@ -112,7 +124,6 @@ public class USLocalizer {
 
 		// update the odometer position (example to follow:)
 		myOdometer.setTheta(myOdometer.getAng() + dTheta);
-		
 
 		myNav.turnTo(45, true);
 
@@ -132,19 +143,17 @@ public class USLocalizer {
 
 		pause(1000);
 
-		
-		
-
 	}
-	
+
 	/**
-	 * Does a falling edge localization, rotating to the specified angle, and updates the odometer
+	 * Does a falling edge localization, rotating to the specified angle, and
+	 * updates the odometer
 	 */
 	public void doFallingEdgeLocalization(int rotationTarget) {
 
 		// rotate the robot until it sees no wall
 
-		if (getFilteredData() < 50) {
+		if (getFilteredData() < 33) {
 			rotateTilWallIsNotVisible(CLOCKWISE_ROTATION);
 		}
 
@@ -160,7 +169,6 @@ public class USLocalizer {
 
 		// update the odometer position (example to follow:)
 		myOdometer.setTheta(myOdometer.getAng() + dTheta);
-		
 
 		myNav.turnTo(rotationTarget, true);
 
@@ -181,7 +189,6 @@ public class USLocalizer {
 		pause(1000);
 
 		LCD.clear(0);
-		
 
 	}
 
@@ -211,7 +218,7 @@ public class USLocalizer {
 		LCD.clear(3);
 		LCD.drawString("US: " + usDist, 0, 3);
 
-		while (usDist < 50) {
+		while (usDist < 255) {
 			usDist = getFilteredData();
 			LCD.clear(3);
 			LCD.drawString("US: " + usDist, 0, 3);
@@ -246,7 +253,7 @@ public class USLocalizer {
 		LCD.clear(3);
 		LCD.drawString("US: " + usDist, 0, 3);
 
-		while (usDist > 35) {
+		while (usDist > 33) {
 			usDist = getFilteredData();
 			LCD.clear(3);
 			LCD.drawString("US: " + usDist, 0, 3);

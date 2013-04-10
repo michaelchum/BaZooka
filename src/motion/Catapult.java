@@ -31,7 +31,7 @@ public class Catapult {
 		centreM.resetTachoCount();
 		centreM.setSpeed(150);
 		centreM.setAcceleration(500);
-		centreM.rotateTo(-228);//213
+		centreM.rotateTo(-178);//-228
 		centreM.stop();
 		  
 		// reset angle so that 0 is the armed position
@@ -45,7 +45,7 @@ public class Catapult {
 	public void carry() {
 		centreM.setAcceleration(3500);
 		centreM.setSpeed(90);
-		centreM.rotateTo(-55);
+		centreM.rotateTo(-58);
 		centreM.setSpeed(25);
 		centreM.rotateTo(0);
 		centreM.stop();
@@ -58,7 +58,7 @@ public class Catapult {
 	public void shootCenter() {
 		centreM.setAcceleration(100000);
 		centreM.setSpeed(100000);
-		centreM.rotateTo(115);
+		centreM.rotate(115);
 		centreM.stop();
 		Delay.msDelay(2000);
 		   

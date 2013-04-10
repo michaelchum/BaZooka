@@ -63,7 +63,7 @@ public class OdometryCorrection extends Thread {
 				
 				val = middleSensor.readValue();
 					
-				if ((val-preVal) > 7) {
+				if ((val-preVal) > 8) {
 					
 					Sound.beep();
 								

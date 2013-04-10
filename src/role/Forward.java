@@ -127,7 +127,7 @@ public class Forward extends Robot {
 
 			// localize before shooting
 			LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
-					leftMotor, rightMotor, leftPosX, leftPosY);
+					leftMotor, rightMotor, firingPosX, firingPosY);
 			// make sure the odometer has been set properly
 			myOdometer.setX(firingPosX);
 			myOdometer.setY(firingPosY);
@@ -142,7 +142,7 @@ public class Forward extends Robot {
 
 			// localize after shooting
 			LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
-					leftMotor, rightMotor, leftPosX, leftPosY);
+					leftMotor, rightMotor, firingPosX, firingPosY);
 			// make sure the odometer has been set properly
 			myOdometer.setX(firingPosX);
 			myOdometer.setY(firingPosY);
@@ -219,7 +219,7 @@ public class Forward extends Robot {
 		DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36, 16.32,
 				leftMotor, rightMotor, false);
 		myPilot.setTravelSpeed(5);
-		myPilot.travel(4.5);
+		myPilot.travel(5);
 		Delay.msDelay(40000);
 		myPilot.travel(-10);
 	}
@@ -236,11 +236,11 @@ private void computeFiringCoordinates(int d1, int bx, int goalX, int goalY) {
 		if(d1==8){
 			leftFiringX = 135;//60,30
 			leftFiringY = 45;
-			leftFiringAngle = 90.0;
+			leftFiringAngle = 89.0;
 			
 			rightFiringX = 165; //240,30
 			rightFiringY = 45;
-			rightFiringAngle = 90.0;
+			rightFiringAngle = 89.0;
 			/*
 			leftFiringX = 45;//60,30
 			leftFiringY = 45;

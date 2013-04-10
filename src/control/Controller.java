@@ -31,24 +31,30 @@ public class Controller {
 
 		Button.waitForAnyPress();
 
-		/*
-		 * BluetoothConnection myBTConnection = new BluetoothConnection();
-		 * Transmission t = myBTConnection.getTransmission(); PlayerRole role =
-		 * t.role; int bx = t.bx; int by = t.by; int w1 = t.w1; int w2 = t.w2;
-		 * int d1 = t.d1; StartCorner startingCorner = t.startingCorner;
-		 */
+		  BluetoothConnection myBTConnection = new BluetoothConnection();
+		  
+		  Transmission t = myBTConnection.getTransmission(); 
+		  PlayerRole role = t.role; 
+		  int bx = t.bx; 
+		  int by = t.by; 
+		  int w1 = t.w1; 
+		  int w2 = t.w2;
+		  int d1 = t.d1; 
+		  StartCorner startingCorner = t.startingCorner;
+		 
 
 		// position of the basket
 		int goalX = 150;
 		int goalY = 300;
-
+		
+		/*
 		// testing values
 		int bx = 11;
 		int by = 8;
 		int w1 = 2;
 		int w2 = 2;
 		int d1 = 7;
-
+		*/
 		
 		/**
 		 * BOTTOM LEFT	X1 (0,0) "BL"
@@ -56,13 +62,13 @@ public class Controller {
 		 * TOP RIGHT	X3 (10,10) "TR"
 		 * TOP LEFT		X4 (0,10) "TL"
 		 */
-		StartCorner startingCorner;
-		startingCorner = StartCorner.lookupCorner(3);
+		//StartCorner startingCorner;
+		//startingCorner = StartCorner.lookupCorner(3);
 		
 		
 		// 2 is defender, 1 is attacker
-		PlayerRole role;
-		role = PlayerRole.lookupRole(1);
+		//PlayerRole role;
+		//role = PlayerRole.lookupRole(1);
 		Robot robot;
 		if (role == PlayerRole.ATTACKER) {
 			robot = new Forward(Motor.A, Motor.B, Motor.C, SensorPort.S1,
