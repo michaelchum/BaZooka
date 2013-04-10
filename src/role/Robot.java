@@ -56,6 +56,8 @@ public abstract class Robot {
 		myOdometer = new Odometer(leftMotor, rightMotor, 20, true);
 		myMap = new Map(myOdometer, 30.00);
 		myNav = new Navigator(myOdometer, myMap, USSensor);
+		leftSensor.setFloodlight(false);
+		rightSensor.setFloodlight(false);
 	}
 
 	/**

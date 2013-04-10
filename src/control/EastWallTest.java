@@ -43,7 +43,7 @@ public class EastWallTest {
 		 * TOP LEFT		X4 (0,10) "TL"
 		 */
 		StartCorner startingCorner;
-		startingCorner = StartCorner.lookupCorner(2);
+		startingCorner = StartCorner.lookupCorner(1);
 		
 		
 		// 2 is defender, 1 is attacker

@@ -187,7 +187,24 @@ public class Pilot {
 	 * Go foward a set distance in cm
 	 */
 	public void goForward(double distance) {
-		this.travelTo(Math.cos(Math.toRadians(this.myOdometer.getAng())) * distance, Math.cos(Math.toRadians(this.myOdometer.getAng())) * distance);
+		leftMotor.setSpeed(FAST);
+		rightMotor.setSpeed(FAST);
+		leftMotor.rotate(convertDistance(myOdometer.leftRadius, distance), true);
+		rightMotor.rotate(convertDistance(myOdometer.rightRadius, distance), false);
+		leftMotor.stop();
+		rightMotor.stop();
+	}
+	
+	/*
+	 * Go backward a set distance in cm
+	 */
+	public void goBackward(double distance) {
+		leftMotor.setSpeed(-FAST);
+		rightMotor.setSpeed(-FAST);
+		leftMotor.rotate(convertDistance(myOdometer.leftRadius, distance), true);
+		rightMotor.rotate(convertDistance(myOdometer.rightRadius, distance), false);
+		leftMotor.stop();
+		rightMotor.stop();
 	}
 	
 	/*

@@ -1,4 +1,4 @@
-package role;
+	package role;
 
 import odometry.LCDInfo;
 import odometry.Odometer;
@@ -223,55 +223,61 @@ public class Forward extends Robot {
 		}
 	}
 
-	private void computeFiringCoordinates(int d1, int bx, int goalX, int goalY) {
-
-		if (d1 == 8) {
-			leftFiringX = 45;
+private void computeFiringCoordinates(int d1, int bx, int goalX, int goalY) {
+		
+		if(d1==8){
+			leftFiringX = 135;//60,30
+			leftFiringY = 45;
+			leftFiringAngle = 90.0;
+			
+			rightFiringX = 165; //240,30
+			rightFiringY = 45;
+			rightFiringAngle = 90.0;
+			/*
+			leftFiringX = 45;//60,30
 			leftFiringY = 45;
 			leftFiringAngle = 0;
-
-			rightFiringX = 255;
+			
+			rightFiringX = 255; //240,30
 			rightFiringY = 45;
-			rightFiringAngle = 107;
-		} else if (d1 == 7) {
-			leftFiringX = 45;
-			leftFiringY = 75;
-			leftFiringAngle = 110;
-
-			rightFiringX = 255;
-			rightFiringY = 75;
-			rightFiringAngle = 0;
-
-		} else if (d1 < 7) {
-			leftFiringX = 45;
-			leftFiringY = 105;
-			leftFiringAngle = 0;
-
-			rightFiringX = 255;
-			rightFiringY = 105;
-			rightFiringAngle = 0;
+			rightFiringAngle = 107.0;
+			*/
 		}
-
-		leftPosX = leftFiringX + 15;
-		leftPosY = leftFiringY - 15;
-		rightPosX = rightFiringX - 15;
-		rightPosY = rightFiringY - 15;
-
-		/* IF BALL DISPENSER IS ON THE LEFT SIDE SHOOT FROM THE LEFT */
-		if (bx < 5) {
-			firingCoordsX = leftFiringX;
-			firingCoordsY = leftFiringY;
-			firingPosX = leftPosX;
-			firingPosY = leftPosY;
-			firingAngle = leftFiringAngle;
+		else if(d1==7){
+			leftFiringX = 45;//60,60
+			leftFiringY = 75;
+			leftFiringAngle = 67.0;
+			
+			rightFiringX = 255;//240,60
+			rightFiringY = 75;
+			rightFiringAngle = 109.0;
 			
 		}
+		else if(d1<7){
+			leftFiringX = 45;//60,90
+			leftFiringY = 105;
+			leftFiringAngle = 65.0;
+			
+			rightFiringX = 255;//240,90
+			rightFiringY = 105;
+			rightFiringAngle = 112.0;
+		}
+		
+		leftPosX = leftFiringX+15;
+		leftPosY = leftFiringY-15;
+		rightPosX = rightFiringX-15;
+		rightPosY = rightFiringY-15;
+		
+		/* IF BALL DISPENSER IS ON THE LEFT SIDE SHOOT FROM THE LEFT */
+		if(bx<5){
+			firingCoordsX = leftFiringX;
+			firingCoordsY = leftFiringY;
+			firingAngle = leftFiringAngle;
+		}
 		/* IF BALL DISPENSER IS ON THE RIGHT SIDE SHOOT FROM THE RIGHT */
-		else {
+		else{
 			firingCoordsX = rightFiringX;
 			firingCoordsY = rightFiringY;
-			firingPosX = rightPosX;
-			firingPosY = rightPosY;
 			firingAngle = rightFiringAngle;
 		}
 	}
