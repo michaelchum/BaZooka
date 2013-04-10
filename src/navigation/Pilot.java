@@ -98,7 +98,29 @@ public class Pilot {
 	 * constantly updating it's heading
 	 */
 	public void travelTo2(double x, double y) {
-
+		
+		// determine the vectors needed to travel
+		double vectorX = x - myOdometer.getX();
+		double vectorY = y - myOdometer.getY();
+		
+		// calculate the distance needed to travel
+		double distance = Math.sqrt(Math.pow(vectorX,2) + Math.pow(vectorY,2));
+		
+		double minAng;
+		minAng = (Math.atan2(y - myOdometer.getY(), x - myOdometer.getX())) * (180.0 / Math.PI);
+		if (minAng < 0)
+			minAng += 360.0;
+		this.turnTo(minAng, false);
+		//this.setSpeeds(FAST, FAST);
+		leftMotor.setSpeed(175);
+		rightMotor.setSpeed(175);
+		leftMotor.rotate(convertDistance(myOdometer.leftRadius, distance), true);
+		rightMotor.rotate(convertDistance(myOdometer.rightRadius, distance), false);
+	
+		leftMotor.stop();
+		rightMotor.stop();
+		
+		/*
 		double minAng;
 		minAng = (Math.atan2(y - myOdometer.getY(), x - myOdometer.getX())) * (180.0 / Math.PI);
 		if (minAng < 0)
@@ -109,6 +131,7 @@ public class Pilot {
 			this.setSpeeds(175, 175);
 		}
 		this.setSpeeds(0, 0);
+		*/
 	
 	}
 	

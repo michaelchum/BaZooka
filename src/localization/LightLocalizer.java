@@ -109,7 +109,8 @@ public class LightLocalizer {
 	 * Localizes around 0, 0
 	 */
 	public void doLocalization() {
-		ls.setFloodlight(true);
+		
+		//ls.setFloodlight(true);
 		
 		myNav.turnTo(45, true);
 		ls.setFloodlight(true);
@@ -144,7 +145,7 @@ public class LightLocalizer {
 		myOdometer.setTheta(90.0);
 		pause(1000);
 
-		ls.setFloodlight(false);
+		//ls.setFloodlight(false);
 	}
 
 	/**

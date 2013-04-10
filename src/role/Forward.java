@@ -81,7 +81,9 @@ public class Forward extends Robot {
 		computeLoadingCoordinates(bx, by);
 		computeLoadingLocalizationCoords(bx, by);
 		computeFiringCoordinates(d1, bx, goalX, goalY);
-
+		
+		OdometryCorrection myOdometryCorrection = new OdometryCorrection(myOdometer, centerSensor, leftMotor, rightMotor);
+		myOdometryCorrection.start();
 	
 			/* BALL LOADING SEQUENCE */
 
@@ -114,6 +116,8 @@ public class Forward extends Robot {
 			myOdometer.setX(loadingLocalizationX);
 			myOdometer.setY(loadingLocalizationY);
 			myOdometer.setTheta(90.0);
+			
+			myNav.travelTo(loadingTileX, loadingTileY);
 
 			/* FIRING SEQUENCE LEFT OR RIGHT DEPENDING ON bx */
 
@@ -129,8 +133,12 @@ public class Forward extends Robot {
 			myOdometer.setY(firingPosY);
 			myOdometer.setTheta(90.0);
 			myNav.turnTo(firingAngle, true);
+			
+			myNav.goForward(23.0);
 
 			shootFiveBallsCenter();
+			
+			myNav.travelTo(firingPosX, firingPosY);
 
 			// localize after shooting
 			LightLocalizer.doLocalization(myOdometer, myNav, centerSensor,
@@ -273,12 +281,16 @@ private void computeFiringCoordinates(int d1, int bx, int goalX, int goalY) {
 			firingCoordsX = leftFiringX;
 			firingCoordsY = leftFiringY;
 			firingAngle = leftFiringAngle;
+			firingPosX = leftPosX;
+			firingPosY = leftPosY;
 		}
 		/* IF BALL DISPENSER IS ON THE RIGHT SIDE SHOOT FROM THE RIGHT */
 		else{
 			firingCoordsX = rightFiringX;
 			firingCoordsY = rightFiringY;
 			firingAngle = rightFiringAngle;
+			firingPosX = rightPosX;
+			firingPosY = rightPosY;
 		}
 	}
 
