@@ -56,6 +56,8 @@ public class Forward extends Robot {
 	 * @param centerLightPort
 	 * @param rightLightPort
 	 * @param USPort
+	 * 
+	 * 
 	 */
 	public Forward(NXTRegulatedMotor catapultMotor,
 			NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor,
@@ -219,9 +221,9 @@ public class Forward extends Robot {
 		DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36, 16.32,
 				leftMotor, rightMotor, false);
 		myPilot.setTravelSpeed(5);
-		myPilot.travel(5);
+		myPilot.travel(6.0);
 		Delay.msDelay(40000);
-		myPilot.travel(-10);
+		myPilot.travel(-11);
 	}
 
 	private void shootFiveBallsCenter() {
