@@ -4,6 +4,13 @@ import lejos.nxt.LightSensor;
 import lejos.nxt.Sound;
 import lejos.util.Delay;
 
+
+/**
+ * Retrieve readings from a light sensor and confirms when a line has been detected. A separate thread is created in order to maximize detection during OdometryAngleCorrection
+ * 
+ * @author Michael
+ *
+ */
 public class LightData extends Thread{
 	
 	private static final long CORRECTION_PERIOD = 10;
@@ -11,8 +18,8 @@ public class LightData extends Thread{
 	public boolean isLine = false;								
 	
 	/**
-	 * constructor
-	 * pass in light sensor w/ default 10 sleep time (optimal)
+	 * Constructor
+	 * Pass in light sensor with default 10ms sleep time (optimal)
 	 * @param ls - the light sensor to use
 	 */
 	public LightData(LightSensor ls){	
@@ -20,7 +27,7 @@ public class LightData extends Thread{
 	}
 	
 	/**
-	 * Run the thread
+	 * Run the scanning thread
 	 */
 		public void run() {
 		long correctionStart, correctionEnd;
@@ -65,16 +72,17 @@ public class LightData extends Thread{
 	
 
 	/**
-	 * set true or false (if there is a line)
-	 * @param isLine
+	 * 
+	 * Mutator Variable controlling whether a line is detected or not
+	 * @param isLine Set true or false (if there is a line)
 	 */
 	public void setIsLine(boolean isLine){
 		this.isLine = isLine;
 	}
 	
 	/**
-	 * 
-	 * @return true if line detected, false otherwise
+	 * Accessor Variable controlling whether a line is detected or not
+	 * @return True if line detected, false otherwise
 	 */
 	public boolean getIsLine(){
 		return isLine;

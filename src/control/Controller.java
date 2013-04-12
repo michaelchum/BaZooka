@@ -24,31 +24,27 @@ public class Controller {
 	 * Entry point of execution Opens up a BT connection, receives transmission,
 	 * and plays the game
 	 * 
-	 * @param args
-	 *            - ignored
+	 * @param args Main method of the entire robot
+	 *    
 	 */
 	public static void main(String[] args) {
 
 		Button.waitForAnyPress();
 
-		  BluetoothConnection myBTConnection = new BluetoothConnection();
-		  
-		  Transmission t = myBTConnection.getTransmission(); 
-		  PlayerRole role = t.role; 
-		  int bx = t.bx; 
-		  int by = t.by; 
-		  int w1 = t.w1; 
-		  int w2 = t.w2;
-		  int d1 = t.d1; 
-		  StartCorner startingCorner = t.startingCorner;
-		 
-
-		// position of the basket
-		int goalX = 150;
-		int goalY = 300;
+		/* BLUETOOTH INITIALIZATION */
 		
+		BluetoothConnection myBTConnection = new BluetoothConnection();
+		Transmission t = myBTConnection.getTransmission(); 
+		PlayerRole role = t.role; 
+		int bx = t.bx; 
+		int by = t.by; 
+		int w1 = t.w1; 
+		int w2 = t.w2;
+		int d1 = t.d1; 
+		StartCorner startingCorner = t.startingCorner;
+		
+		// values used for testing purposes
 		/*
-		// testing values
 		int bx = 11;
 		int by = 8;
 		int w1 = 2;
@@ -62,18 +58,22 @@ public class Controller {
 		 * TOP RIGHT	X3 (10,10) "TR"
 		 * TOP LEFT		X4 (0,10) "TL"
 		 */
+		
 		//StartCorner startingCorner;
 		//startingCorner = StartCorner.lookupCorner(3);
-		
 		
 		// 2 is defender, 1 is attacker
 		//PlayerRole role;
 		//role = PlayerRole.lookupRole(1);
+		
+		// position of the basket
+		int goalX = 150;
+		int goalY = 300;
+	
 		Robot robot;
 		if (role == PlayerRole.ATTACKER) {
 			robot = new Forward(Motor.A, Motor.B, Motor.C, SensorPort.S1,
 					SensorPort.S2, SensorPort.S3, SensorPort.S4);
-			//((Forward) robot).loadFiveBalls();
 		} else {
 			robot = new Defender(Motor.A, Motor.B, Motor.C, SensorPort.S1,
 					SensorPort.S2, SensorPort.S3, SensorPort.S4);

@@ -4,41 +4,33 @@ import navigation.Navigator;
 import odometry.Odometer;
 import lejos.nxt.LCD;
 
-import lejos.nxt.Motor;
 import lejos.nxt.Sound;
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.navigation.DifferentialPilot;
 
 /**
- * Class that defines how to localize the robot using ultrasonic sensors
+ * Class that defines how to localize the robot using the ultrasonic sensor
  * 
  * @author Team 13
  * 
  */
 public class USLocalizer {
 
-	private UltrasonicSensor mySensor;
 	private Odometer myOdometer;
-
+	private UltrasonicSensor mySensor;
 	private Navigator myNav;
-	private static final int ROTATION_SPEED = 30;
-
-	// public final int myRotationTarget;
-	public static final int CLOCKWISE_ROTATION = -200,
-			COUNTER_CLOCKWISE_ROTATION = 200;
-	private long lastWallDetectedTime;
-
 	RegulatedMotor myLeftMotor;
 	RegulatedMotor myRightMotor;
-
-	// private boolean timedOut = false;
+	
+	private static final int ROTATION_SPEED = 30;
+	public static final int CLOCKWISE_ROTATION = -200, COUNTER_CLOCKWISE_ROTATION = 200;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param sensor
-	 * @param navigator
+	 * @param sensor The middle ultrasonic sensor used for localization
+	 * @param navigator The navigator used for displacements
 	 */
 	public USLocalizer(Odometer odometer, UltrasonicSensor sensor,
 			Navigator navigator, RegulatedMotor leftMotor,
@@ -54,10 +46,8 @@ public class USLocalizer {
 	/**
 	 * Convenience method for falling edge localization
 	 * 
-	 * @param sensor
-	 *            - the UltrasonicSensor used
-	 * @param navigator
-	 *            - the Navigator
+	 * @param sensor The UltrasonicSensor used for localization
+	 * @param navigator The Navigator used for rotation
 	 */
 	public static void doFallingEdgeLocalization(Odometer odometer,
 			UltrasonicSensor sensor, Navigator navigator,
@@ -71,10 +61,8 @@ public class USLocalizer {
 	/**
 	 * Convenience method for falling edge localization
 	 * 
-	 * @param sensor
-	 *            - the UltrasonicSensor used
-	 * @param navigator
-	 *            - the Navigator
+	 * @param sensor The UltrasonicSensor used for localization
+	 * @param navigator The Navigator used for rotation
 	 */
 	public static void doFallingEdgeLocalization(Odometer odometer,
 			UltrasonicSensor sensor, Navigator navigator,
@@ -87,7 +75,7 @@ public class USLocalizer {
 	}
 
 	/**
-	 * Does a falling edge localization and updates the odometer
+	 * Perform a falling edge localization and updates the odometer
 	 */
 	public void doFallingEdgeLocalization() {
 
@@ -106,11 +94,6 @@ public class USLocalizer {
 		myLeftMotor.stop();
 		myRightMotor.stop();
 
-		// rotate the robot until it sees no wall
-
-//		if (getFilteredData() < 33) {
-//			rotateTilWallIsNotVisible(CLOCKWISE_ROTATION);
-//		}
 
 		// keep rotating until the robot sees a wall, then latch the angle
 		double angleA = rotateTilWallIsVisible(CLOCKWISE_ROTATION);
@@ -146,13 +129,14 @@ public class USLocalizer {
 	}
 
 	/**
-	 * Does a falling edge localization, rotating to the specified angle, and
-	 * updates the odometer
+	 * Perform a falling edge localization, rotating to the specified angle, and updates the odometer
+	 * 
+	 * @param rotationTarget The specified final rotation angle where the robot will stop after localizing
+	 * 
 	 */
 	public void doFallingEdgeLocalization(int rotationTarget) {
 
 		// rotate the robot until it sees no wall
-
 		if (getFilteredData() < 33) {
 			rotateTilWallIsNotVisible(CLOCKWISE_ROTATION);
 		}
@@ -193,10 +177,10 @@ public class USLocalizer {
 	}
 
 	/**
-	 * Rotates in the specified direction until the wall is not visible
+	 * Rotates in the specified direction until no wall is not visible
 	 * 
-	 * @param direction
-	 * @return The current odometer theta reading after rotation is complete
+	 * @param direction The rotation speed which also provides the direction
+	 * @return The current odometer theta reading after rotation has completed
 	 */
 	private double rotateTilWallIsNotVisible(int direction) {
 		pause(1000);
@@ -231,10 +215,10 @@ public class USLocalizer {
 	}
 
 	/**
-	 * Rotates in the specified direction until the wall is visible
+	 * Rotates in the specified direction until a wall is visible
 	 * 
-	 * @param direction
-	 * @return The current odometer theta reading after rotation is complete
+	 * @param direction The rotation speed which also provides the direction
+	 * @return The current odometer theta reading after a wall is detected and rotation stopped
 	 */
 	private double rotateTilWallIsVisible(int direction) {
 		myLeftMotor.setSpeed((int) ROTATION_SPEED);
@@ -270,7 +254,15 @@ public class USLocalizer {
 		pause(3000);
 		return angleA;
 	}
-
+	
+	/**
+	 * Compute the final angle where the robot is accurately pointing with respect to the floor
+	 * 
+	 * @param angleA The first angle latched
+	 * @param angleB The second angle latched
+	 * @return The actual angle the robot is facing with respect to the perpendicular walls
+	 *            
+	 */
 	private double computeDeltaTheta(double angleA, double angleB) {
 		double deltaTheta = 45 - ((angleA + angleB) / 2);
 		deltaTheta += 180;
@@ -279,16 +271,14 @@ public class USLocalizer {
 		}
 		LCD.drawString("Theta: " + deltaTheta, 0, 6);
 		return deltaTheta % 360;
-
 	}
 
 	/**
-	 * Checks to see if it can see a wall or not and compares it to the targeted
-	 * angle
+	 * Checks to see if it can see a wall or not and compares it to the targeted angle
 	 * 
-	 * @param angle
-	 * @return - whether or not its current measured orientation is consistent
-	 *         with whether or not it can see the wall
+	 * @param angle The angle to check
+	 * @return Whether or not its current measured orientation is consistent with the walls' position
+	 * 
 	 */
 	private boolean isReasonable(int angle) {
 		if (angle >= 0 && angle <= 90 && getFilteredData() < 100) {
@@ -298,9 +288,9 @@ public class USLocalizer {
 	}
 
 	/**
-	 * Waits 50 ms between each reading
+	 * Waits 50 ms between each reading in attempt to filter sudden false positives and false negatives
 	 * 
-	 * @return the reading from the ultrasonic sensor
+	 * @return The filtered reading from the ultrasonic sensor
 	 */
 	private int getFilteredData() {
 		int distance;
@@ -319,7 +309,12 @@ public class USLocalizer {
 
 		return distance;
 	}
-
+	
+	/**
+	 * Pause the thread for a specified interval of time
+	 * 
+	 * @param milliseconds Amount of time to pause in milliseconds
+	 */
 	private void pause(int milliseconds) {
 		try {
 			Thread.sleep(milliseconds);

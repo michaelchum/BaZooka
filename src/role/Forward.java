@@ -1,19 +1,13 @@
 	package role;
 
 import odometry.LCDInfo;
-import odometry.Odometer;
-import lejos.nxt.LCD;
-import lejos.nxt.LightSensor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
-import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
 import localization.LightLocalizer;
-import localization.USLocalizer;
 import bluetooth.StartCorner;
 import odometry.OdometryCorrection;
-import odometry.OdometryAngleCorrection;
 
 /**
  * Specific role of forward
@@ -47,7 +41,7 @@ public class Forward extends Robot {
 			firingAngle;
 
 	/**
-	 * Constructor - same as Robot constructor
+	 * Constructor Same as Robot constructor
 	 * 
 	 * @param catapultMotor
 	 * @param leftMotor
@@ -156,12 +150,10 @@ public class Forward extends Robot {
 		}
 
 	/**
-	 * Compute loading coordinates Need to change values if the arena changes
+	 * Compute loading coordinates, values change according to the location of the ball dispenser
 	 * 
-	 * @param bx
-	 *            - x-coordinate of ball dispenser in tiles
-	 * @param by
-	 *            - y-coordinate of ball dispenser in tiles
+	 * @param bx Coordinate of ball dispenser in tiles
+	 * @param by Coordinate of ball dispenser in tiles
 	 */
 	private void computeLoadingCoordinates(int bx, int by) {
 		if (bx == -1) { // western wall
@@ -195,10 +187,9 @@ public class Forward extends Robot {
 	/**
 	 * Compute loading localization coordinates
 	 * 
-	 * @param bx
-	 *            - x-coordinate of ball dispenser in tiles
-	 * @param by
-	 *            - y-coordinate of ball dispenser in tiles
+	 * @param bx X coordinate of ball dispenser in tiles
+	 * @param by Y coordinate of ball dispenser in tiles
+	 * 
 	 */
 	private void computeLoadingLocalizationCoords(int bx, int by) {
 		if (bx < 0) { // west wall
@@ -217,6 +208,10 @@ public class Forward extends Robot {
 		}
 	}
 
+	
+	/**
+	 * Load five balls when directly in front of ball dispenser
+	 */
 	private void loadFiveBalls() {
 		DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36, 16.32,
 				leftMotor, rightMotor, false);
@@ -226,6 +221,9 @@ public class Forward extends Robot {
 		myPilot.travel(-11);
 	}
 
+	/**
+	 * Catapult five balls towards the basket
+	 */
 	private void shootFiveBallsCenter() {
 		for (int i = 0; i < 6; i++) {
 			myCatapult.carry();
@@ -233,6 +231,13 @@ public class Forward extends Robot {
 		}
 	}
 
+/**
+ * The compute the coordinates on which the robot will navigate to according to d1 and the coordinates of the ball dispenser
+ * @param d1 Length of the forward line in tiles
+ * @param bx X coordinate of the dispenser
+ * @param goalX X coordinate of the goal
+ * @param goalY Y coordinate of the goal
+ */
 private void computeFiringCoordinates(int d1, int bx, int goalX, int goalY) {
 		
 		if(d1==8){
@@ -296,6 +301,9 @@ private void computeFiringCoordinates(int d1, int bx, int goalX, int goalY) {
 		}
 	}
 
+	/**
+	 * Navigate back to starting corner
+	 */
 	public void returnHome(StartCorner startingCorner) {
 		if (startingCorner == StartCorner.BOTTOM_LEFT) {
 			myNav.navigateTo(15.0, 15.0);

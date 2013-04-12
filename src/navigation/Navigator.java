@@ -7,9 +7,9 @@ import navigation.Pilot;
 import navigation.Map;
 
 /**
- * Sets a path on the wavefront grid and navigates tile per tile to destination
+ * Set a path in the wavefront grid and navigate tile per tile to destination
  * 
- * @author Team 13
+ * @author Michael
  * 
  */
 public class Navigator extends Pilot{
@@ -29,9 +29,9 @@ public class Navigator extends Pilot{
 	}
 	
 	/**
-	 * Navigates to a tile
-	 * @param destX - x-coordinate of middle of destination tile in cm.  Must be multiple of 15 but not multiple of 30
-	 * @param destY - y-coordinate of middle of destination tile in cm.  Must be multiple of 15 but not multiple of 30
+	 * Navigate to the center of a tile
+	 * @param destX X coordinate of the center of destination tile in cm.  Must be multiple of 15 but not multiple of 30
+	 * @param destY Y coordinate of the center of destination tile in cm.  Must be multiple of 15 but not multiple of 30
 	 */
 	public void navigateTo(double destX, double destY){
 		
@@ -42,10 +42,10 @@ public class Navigator extends Pilot{
 	}
 	
 	/**
-	 * Sets a path given the current coordinates and new destination
-	 * @param destX - x-coordinate of middle of destination tile in cm.  Must be multiple of 15 but not multiple of 30
-	 * @param destY - y-coordinate of middle of destination tile in cm.  Must be multiple of 15 but not multiple of 30
-	 * @return - 2D array of ints representing path to take
+	 * Set a path given the current coordinates and new destination on a grid map
+	 * @param destX X coordinate of center of destination tile in cm.  Must be multiple of 15 but not multiple of 30
+	 * @param destY Y coordinate of center of destination tile in cm.  Must be multiple of 15 but not multiple of 30
+	 * @return The wavefront grid, a 2D array of integers representing path to follow, the robot will follow the values in decreasing order
 	 */
 	public int[][] setPath(double destX, double destY){
 		
@@ -110,8 +110,8 @@ public class Navigator extends Pilot{
 	}
 	
 	/**
-	 * Navigates a path
-	 * @param grid
+	 * Navigate the path following the values of the wavefront grid in decreasing order
+	 * @param grid The wavefront grid containing the path
 	 */
 	public void navigatePath(int [][] grid){
 		int robot_I = 0;
@@ -235,6 +235,10 @@ public class Navigator extends Pilot{
 		}
 	}
 	
+	/**
+	 * Filter the ultrasonic sensor's values for false negatives
+	 * @return The filtered ultrasonic ping reading
+	 */
 	private int getFilteredData() {
 		int distance;
 		int filterControl = 0;
@@ -263,9 +267,9 @@ public class Navigator extends Pilot{
 	}
 	
 	/**
-	 * 
-	 * @param destJ
-	 * @return
+	 * Converts the J component of a tile form a wavefront grid into the X coordinate of the center of the tile
+	 * @param destJ The J component of a tile in a the wavefront grid
+	 * @return The X coordinate of the center of the destination tile
 	 */
 	public static double destX(int destJ){
 		double[] coordsX = new double[10];
@@ -290,9 +294,9 @@ public class Navigator extends Pilot{
 	}
 	
 	/**
-	 * 
-	 * @param destI
-	 * @return
+	 * Converts the I component of a tile form a wavefront grid into the Y coordinate of the center of the tile
+	 * @param destI The I component of a tile in a the wavefront grid
+	 * @return The Y coordinate of the center of the destination tile
 	 */
 	public static double destY(int destI){
 		double[] coordsX = new double[10];

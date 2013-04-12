@@ -5,7 +5,7 @@ import lejos.util.Delay;
 
 /**
  * 
- * The catapult of the robot
+ * The functions of the robots catapult
  * 
  * @author Team 13
  * 
@@ -17,16 +17,15 @@ public class Catapult {
 	
   	/**
 	* Constructor
-	* @param - The catapult's motor
+	* @param m The catapult's motor
 	*/
 	public Catapult(NXTRegulatedMotor m) {
 		centreM = m;
 	}
  
 	/**
-	 * From initial position, rotate the lever arm to armed position
+	 * From initial position, rotate the lever arm to armed position in which it will not interfere navigation
 	 */
-	// start from initial position and lock the arm at armed position
 	public void arm() {
 		centreM.resetTachoCount();
 		centreM.setSpeed(150);
@@ -53,7 +52,7 @@ public class Catapult {
 	}
 	
 	/**
-	 * Shoot the ball and rotate back to armed position from the centered position or any sides determined
+	 * Shoot the ball and rotate back to armed position
 	 */
 	public void shootCenter() {
 		centreM.setAcceleration(100000);

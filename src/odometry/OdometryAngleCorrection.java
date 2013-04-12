@@ -6,8 +6,8 @@ import lejos.nxt.Sound;
 import odometry.LightData;
 
 /**
- * Thread that corrects angle of odometer
- * @author Team 13
+ * Thread that corrects angle of odometer from two light sensors on the sides
+ * @author Michael
  *
  */
 public class OdometryAngleCorrection extends Thread {
@@ -33,11 +33,11 @@ public class OdometryAngleCorrection extends Thread {
 	
 	/**
 	 * Constructor for angle correction
-	 * @param odo - the myOdometer
-	 * @param leftSensor - left light sensor
-	 * @param rightSensor - right light sensor
-	 * @param leftMotor - left motor
-	 * @param rightMotor - right motor
+	 * @param odo The myOdometer
+	 * @param leftSensor left light sensor
+	 * @param rightSensor right light sensor
+	 * @param leftMotor left motor
+	 * @param rightMotor right motor
 	 */
 	
 	public OdometryAngleCorrection(Odometer odometer, LightSensor leftSensor, LightSensor rightSensor, NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor){
@@ -51,7 +51,7 @@ public class OdometryAngleCorrection extends Thread {
 	}
 	
 	/**
-	 * Executes the thread
+	 * Execute the thread
 	 */
 	public void run() {
 		RLD.start();
@@ -106,7 +106,7 @@ public class OdometryAngleCorrection extends Thread {
 	}
 	
 	/**
-	  * Input positions and return the corrected angle
+	  * Input positions of the odometer when a line detected and return the corrected angle
 	  * @return corrected angle
 	  */
 	 private double correctedTheta(){
@@ -123,6 +123,9 @@ public class OdometryAngleCorrection extends Thread {
 		 return actualAngle;
 	 }
 
+	/**
+	 * Correction the angle after two lines has been detected consecutively
+	 */
 	private void correct(){
 		 
 		if (80 < myOdometer.getAng() && myOdometer.getAng() < 100){ // if pointing NORTH

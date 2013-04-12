@@ -10,13 +10,14 @@ import odometry.Odometer;
  * robot to its target locations, thereafter the robot will travel block per block following a pattern of number until it reaches the
  * goal. For more information, the method has been entirely based on the following URL and open source information.
  * 
+ * 
  * http://www.societyofrobots.com/programming_wavefront.shtml
  * http://www.robotc.net/blog/2011/08/08/robotc-advanced-training/
  * http://www.mcs.alma.edu/LMICSE/LabMaterials/AlgoComp/Lab4/AlgCoL4.htm
  * https://code.google.com/p/mindstormsproject/source/browse/trunk/LejosProject/src/it/uniba/wavefront/GridWalker.java?r=5
  * https://code.google.com/p/mindstormsproject/source/browse/trunk/LejosProject/src/it/uniba/wavefront/Grid.java?r=6
  * 
- * @author Team 13
+ * @author Michael
  * 
  */
 public class Map {
@@ -42,9 +43,9 @@ public class Map {
 			   			       	{1,0,0,0,0,0,0,0,0,1}};
 	
 	/**
-	 * Constructor
-	 * @param odo
-	 * @param tileWidth
+	 * Constructor which builds a wavefront grid
+	 * @param odo The Odometer used to determine the robots displacement and position
+	 * @param tileWidth The width of a tile in centimeters
 	 */
 	public Map(Odometer odo, double tileWidth){
 		this.myOdometer = odo;
@@ -68,8 +69,7 @@ public class Map {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * @return The vertical coordinate I of the tile on which the robot currently reposes on according to the wavefront grid
 	 */
 	public int currentI(){
 		double currentY = getClosest(getCoordsY(), myOdometer.getY());
@@ -85,8 +85,7 @@ public class Map {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * @return The horizontal coordinate J of the tile on which the robot currently reposes on according to the wavefront grid
 	 */
 	public int currentJ(){
 		double currentX = getClosest(getCoordsX(), myOdometer.getX());
@@ -102,9 +101,9 @@ public class Map {
 	}
 	
 	/**
-	 * 
-	 * @param destX
-	 * @return
+	 * Convert an X coordinate to the corresponding horizontal component of the closest tile according to the wavefront grid
+	 * @param destX The X coordinate of the target destination
+	 * @return The horizontal J component of the closest tile to the input X coordinate according to the wavefront grid
 	 */
 	public int destJ(double destX){
 		int destJ = 0;
@@ -119,9 +118,9 @@ public class Map {
 	}
 	
 	/**
-	 * 
-	 * @param destY
-	 * @return
+	 * Convert an Y coordinate to the corresponding coordinate of the closest tile according to the wavefront grid
+	 * @param destY The Y coordinate of the target destination
+	 * @return vertical I component of the closest tile to the input Y coordinate according to the wavefront grid
 	 */
 	public int destI(double destY){
 		int destI = 0;
@@ -137,27 +136,27 @@ public class Map {
 	
 	
 	/**
-	 * 
-	 * @param destJ
-	 * @return
+	 * Convert the J component of a tile into the X coordiante of the center of the tile
+	 * @param destJ The J component of the destination tile
+	 * @return The X coordinate of the center of the destination tile
 	 */
 	public double destX(int destJ){
 		return this.getCoordsX()[destJ];
 	}
 	
 	/**
-	 * 
-	 * @param destI
-	 * @return
+	 * Convert the I component of a tile into the Y coordinate of the center of the tile
+	 * @param destI The I component of the destination tile
+	 * @return The Y coordinate of the center of the destination tile
 	 */
 	public double destY(int destI){
 		return this.getCoordsY()[destI];
 	}
 	
 	/**
-	 * 
-	 * @param i
-	 * @param j
+	 * Insert a value to a tile in the wavefront grid (e.g. 1 for obstacle, 99 for robot,  2 for destination, etc.)
+     * @param i I component in the wavefront grid
+     * @param j J component in the wavefront grid
 	 * @param value
 	 */
     private void insertValue(int i, int j, int value){
@@ -165,9 +164,9 @@ public class Map {
     }
 
     /**
-     * 
-     * @param i
-     * @param j
+     * Check a value the value of a tile in the wavefront grid (e.g. 1 for obstacle, 99 for robot,  2 for destination, etc.)
+     * @param i I component in the wavefront grid
+     * @param j J component in the wavefront grid
      * @return
      */
     private int getValue(int i, int j) {
@@ -177,10 +176,10 @@ public class Map {
     }
     
     /**
-     * 
-     * @param array
-     * @param position
-     * @return
+     * Compare a double with every value value in an array and return the closest one
+     * @param array The array containing all the values we want to get closest
+     * @param position The value from which we want to change to the closest
+     * @return The closest value
      */
 	private double getClosest(double[] array, double position) {
 	    double lowestDiff = Double.MAX_VALUE;
@@ -196,9 +195,9 @@ public class Map {
 	}
 	
 	/**
-	 * 
-	 * @param grid
-	 * @return
+	 * Check all the values of a two dimensional array and return the highest
+	 * @param grid The two dimensional array we want to check
+	 * @return The highest values
 	 */
 	private int getHighest(int[][] grid){
 		int highest= 1;
@@ -213,9 +212,9 @@ public class Map {
 	}
 	
 	/**
-	 * 
-	 * @param grid
-	 * @return
+	 * Filter the wavefront grid for all impossible paths due to obstacles creating U shape
+	 * @param grid The wavefront grid containing values of paths
+	 * @return The filtered wavefront grid
 	 */
 	private int[][] filterMap(int[][] grid){
 		return grid;
@@ -223,7 +222,7 @@ public class Map {
 
 	/**
 	 * Accessor
-	 * @return - 2D array of ints representing a grid which represents tha map
+	 * @return 2D array of integers representing the values in the wavefront grid
 	 */
 	public int[][] getGrid() {
 		return grid;
@@ -231,7 +230,7 @@ public class Map {
 
 	/**
 	 * Mutator
-	 * @param grid - the new grid
+	 * @param grid The new grid which will be used by Navigator
 	 */
 	public void setGrid(int[][] grid) {
 		this.grid = grid;
@@ -240,7 +239,7 @@ public class Map {
 	
 	/**
 	 * Accessor
-	 * @return
+	 * @return coordsX Array containing all the X coordinates of the center of every tile
 	 */
 	double [] getCoordsX() {
 		return coordsX;
@@ -248,7 +247,7 @@ public class Map {
 
 	/**
 	 * Mutator
-	 * @param coordsX
+	 * @param coordsX Array containing all the X coordinates of the center of every tile
 	 */
 	void setCoordsX(double [] coordsX) {
 		this.coordsX = coordsX;
@@ -257,7 +256,7 @@ public class Map {
 	
 	/**
 	 * Accessor
-	 * @return
+	 * @return coordsY Array containing all the Y coordinates of the center of every tile
 	 */
 	double [] getCoordsY() {
 		return coordsY;
@@ -265,7 +264,7 @@ public class Map {
 
 	/**
 	 * Mutator
-	 * @param coordsY
+	 * @param coordsY Array containing all the Y coordinates of the center of every tile
 	 */
 	void setCoordsY(double [] coordsY) {
 		this.coordsY = coordsY;

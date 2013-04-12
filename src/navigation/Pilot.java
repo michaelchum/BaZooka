@@ -5,6 +5,13 @@ import odometry.Odometer;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.util.Delay;
 
+
+/**
+ * All the "dumb" navigation functions which directly control the wheel's motors, it is basically a slight modification of Navigation.java from R&D experiments
+ * 
+ * @author Michael
+ *
+ */
 public class Pilot {
 
 	final static int FAST = 100, SLOW = 85,VERY_SLOW = 50, ACCELERATION = 1500; // default 4000, trying lower for smooth transitions
@@ -25,7 +32,7 @@ public class Pilot {
 		this.rightMotor.setAcceleration(ACCELERATION);
 	}
 
-	/*
+	/**
 	 * Functions to set the motor speeds jointly
 	 */
 	public void setSpeeds(float lSpd, float rSpd) {
@@ -54,7 +61,7 @@ public class Pilot {
 			this.rightMotor.forward();
 	}
 
-	/*
+	/**
 	 * Float the two motors jointly
 	 */
 	public void setFloat() {
@@ -64,7 +71,7 @@ public class Pilot {
 		this.rightMotor.flt(true);
 	}
 
-	/*
+	/**
 	 * TravelTo function which takes as arguments the x and y position in cm Will travel to designated position, while
 	 * constantly updating it's heading
 	 */
@@ -93,7 +100,7 @@ public class Pilot {
 
 	}
 	
-	/*
+	/**
 	 * TravelTo function which takes as arguments the x and y position in cm Will travel to designated position, while
 	 * constantly updating it's heading
 	 */
@@ -135,7 +142,7 @@ public class Pilot {
 	
 	}
 	
-	/*
+	/**
 	 * Same as TravelTo2 but in a very slow speed for accuracy during ball retrieval
 	 */
 	public void travelToSlow(double x, double y) {
@@ -151,7 +158,7 @@ public class Pilot {
 		this.setSpeeds(0, 0);
 	}
 
-	/*
+	/**
 	 * TurnTo function which takes an angle and boolean as arguments The boolean controls whether or not to stop the
 	 * motors when the turn is completed
 	 */
@@ -179,7 +186,7 @@ public class Pilot {
 		}
 	}
 	
-	/*
+	/**
 	 * Same as TurnTo but with a very slow speed for retrieving the ball accurately
 	 */
 	public void turnToSlow(double angle, boolean stop) {
@@ -218,7 +225,7 @@ public class Pilot {
 		rightMotor.stop();
 	}
 	
-	/*
+	/**
 	 * Go backward a set distance in cm
 	 */
 	public void goBackward(double distance) {
@@ -230,7 +237,7 @@ public class Pilot {
 		rightMotor.stop();
 	}
 	
-	/*
+	/**
 	 * Useful conversions from lab 2 squaredriver.java, converts distance to rotation degrees according to wheel radius
 	 */ 
 	private static int convertDistance(double radius, double distance) {

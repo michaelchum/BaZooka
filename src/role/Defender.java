@@ -3,7 +3,6 @@ package role;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
 import localization.LightLocalizer;
-import localization.USLocalizer;
 import bluetooth.StartCorner;
 import odometry.LCDInfo;
 import odometry.OdometryCorrection;
@@ -21,7 +20,7 @@ public class Defender extends Robot {
 	private double defensiveLocalizationX, defensiveLocalizationY;
 
 	/**
-	 * Constructor - same as Robot constructor
+	 * Constructor Same as Robot constructor
 	 * 
 	 * @param catapultMotor
 	 * @param leftMotor
@@ -42,8 +41,8 @@ public class Defender extends Robot {
 	@Override
 	public void play(StartCorner startingCorner, int bx, int by, int w1,
 			int w2, int d1, int goalX, int goalY) {
-		//compute defensive zone coordinates
 		
+		// Compute defensive zone coordinates
 		defensiveZoneY = goalY - (w2 * 30) - 15;
 		defensiveLocalizationX = goalX;
 		defensiveLocalizationY = defensiveZoneY - 15;
@@ -65,6 +64,9 @@ public class Defender extends Robot {
 	
 	}
 
+	/**
+	 * Patrol when in front of the basket
+	 */
 	private void patrol() {
 		while (true) {
 			for (int index = 0; index < 5; index++) {

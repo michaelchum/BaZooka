@@ -7,7 +7,7 @@ import lejos.util.Timer;
 import lejos.util.TimerListener;
 
 /**
- * Constantly updates LCD with Robot info
+ * Constantly update LCD with the all the robot`s information
  * @author Team 13
  *
  */
@@ -75,6 +75,13 @@ public class LCDInfo implements TimerListener{
 		LCD.drawInt(rightVal, 13, 6);
 	}
 	
+	
+	/**
+	 * Convert doubles into string because display of doubles is not supported on the NXT mindstorm's LCD screen
+	 * @param x The double number
+	 * @param places Number of decimal places to display
+	 * @return The double converted into string
+	 */
 	private static String formattedDoubleToString(double x, int places) { // taken from lab LAB 2 OdometryDisplay.java
 		String result = "";
 		String stack = "";

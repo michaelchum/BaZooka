@@ -46,7 +46,7 @@ public class OdometryCorrection extends Thread {
 	}
 
 	/**
-	 * Executes the thread
+	 * Execute the thread
 	 */
 	public void run() {
 		try {Thread.sleep(500);} catch (InterruptedException e) {}
@@ -107,7 +107,7 @@ public class OdometryCorrection extends Thread {
 	 * 
 	 * @param array
 	 * @param position
-	 * @return - the closets point to a point in the array
+	 * @return The closest point to a point in the array
 	 */
 	public double getClosest(double[] array, double position) {
 	    double lowestDiff = Double.MAX_VALUE;

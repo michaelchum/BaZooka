@@ -63,22 +63,14 @@ public abstract class Robot {
 	/**
 	 * Virtual function detailing how the robot will play (must be overwritten)
 	 * 
-	 * @param startingCorner
-	 *            - the corner it starts in
-	 * @param bx
-	 *            - x-coordinate of ball dispenser (in grid tiles, not cm)
-	 * @param by
-	 *            - y-coordinate of ball dispenser (in grid tiles, not cm)
-	 * @param w1
-	 *            - closer boundary of defensive zone (in grid tiles, not cm)
-	 * @param w2
-	 *            - farther boundary of defensive zone (in grid tiles, not cm)
-	 * @param d1
-	 *            - distance from goal (in grid tiles, not cm)
-	 * @param goalX
-	 *            - coordinates of goal (in cm)
-	 * @param goalY
-	 *            - coordinates of goal (in cm)
+	 * @param startingCorner The corner the robot debuts the game
+	 * @param bx The coordinate of ball dispenser (in grid tiles, not cm)
+	 * @param by Y coordinate of ball dispenser (in grid tiles, not cm)
+	 * @param w1 Closer boundary of defensive zone (in grid tiles, not cm)
+	 * @param w2 Further boundary of defensive zone (in grid tiles, not cm)
+	 * @param d1 Distance from goal (in grid tiles, not cm)
+	 * @param goalX Coordinates of the goal (in cm)
+	 * @param goalY Coordinates of the goal (in cm)
 	 */
 	public abstract void play(StartCorner startingCorner, int bx, int by,
 			int w1, int w2, int d1, int goalX, int goalY);
@@ -86,8 +78,7 @@ public abstract class Robot {
 	/**
 	 * Localizes at the start of the game
 	 * 
-	 * @param startingCorner
-	 *            - the starting corner of the robot
+	 * @param startingCorner The starting corner of the robot
 	 */
 	protected void localize(StartCorner startingCorner) {
 		USLocalizer.doFallingEdgeLocalization(myOdometer, USSensor, myNav,
@@ -98,7 +89,7 @@ public abstract class Robot {
 	}
 
 	/**
-	 * 
+	 * Computer the closest intersection (node) the the robot
 	 */
 	protected void computeClosestIntersection() {
 		double currentX = myOdometer.getX();
@@ -122,7 +113,7 @@ public abstract class Robot {
 	}
 	
 	/**
-	 * Adjust localization for starting corner.  Also in localization itself but this makes sure the change to odometer persists
+	 * Adjust localization for starting corner.  Also in localization itself but this ensures change to odometer after localization persists
 	 * @param startingCorner
 	 */
 	protected void postLocalize(StartCorner startingCorner) {

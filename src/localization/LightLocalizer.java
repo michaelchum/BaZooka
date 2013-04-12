@@ -16,24 +16,24 @@ import bluetooth.StartCorner;
 
 /**
  * 
- * Class that defines how to localize using light sensors
+ * Class that defines how to localize using the middle light sensor
  * @author Team 13
  *
  */
+
 public class LightLocalizer {
 
 	// tweaking of the distance between the sensor and center had to be done in
-	// order to get a more precise final position for light localization
+	// order to get a more precise and accurate final position for light localization
 	private final float LS_TO_CENTER = 11.5f;
+	public static int ROTATION_SPEED = 30;
 
 	private Odometer myOdometer;
 	private Navigator myNav;
 	private LightSensor ls;
 	NXTRegulatedMotor myLeftMotor, myRightMotor;
+	
 	int val;
-
-	public static int ROTATION_SPEED = 30;
-
 	private int baseValue = 0;
 
 	public LightLocalizer(Odometer odo, Navigator nav, LightSensor ls,
@@ -68,14 +68,15 @@ public class LightLocalizer {
 
 	
 	/**
-	 * Convenience method for localizing anywhere
+	 * Convenience method for localizing anywhere to a specific node on the map
 	 * 
 	 * @param odo
 	 * @param nav
 	 * @param ls
 	 * @param leftMotor
 	 * @param rightMotor
-	 * @param corner
+	 * @param closestX
+	 * @param closestY
 	 */
 	public static void doLocalization(Odometer odo, Navigator nav,
 			LightSensor ls, NXTRegulatedMotor leftMotor,
@@ -88,7 +89,7 @@ public class LightLocalizer {
 
 	
 	/**
-	 * Convenience method for localizing at a corner
+	 * Convenience method for localizing at one of the four corners of the map
 	 * 
 	 * @param odo
 	 * @param nav
@@ -106,11 +107,9 @@ public class LightLocalizer {
 	}
 
 	/**
-	 * Localizes around 0, 0
+	 * Localizes around the origin (0,0)
 	 */
 	public void doLocalization() {
-		
-		//ls.setFloodlight(true);
 		
 		myNav.turnTo(45, true);
 		ls.setFloodlight(true);
@@ -118,8 +117,6 @@ public class LightLocalizer {
 
 		baseValue = ls.readValue();
 		val = baseValue;
-		// preVal = baseValue;
-		
 
 		float thetaWest = rotateTilLineDetected(0, false);
 		pause(1000);
@@ -149,12 +146,10 @@ public class LightLocalizer {
 	}
 
 	/**
-	 * Localizes around a particular gridline intersection
+	 * Localizes around any particular gridline intersection (node) on the map
 	 * 
-	 * @param gridX
-	 *            the x-coordinate of the gridline intersection
-	 * @param gridY
-	 *            the y-coordinate of the gridline intersection
+	 * @param gridX The X coordinate of the gridline intersection
+	 * @param gridY The Y coordinate of the gridline intersection
 	 */
 	public void doLocalization(double gridX, double gridY) {
 		doLocalization();
@@ -163,9 +158,9 @@ public class LightLocalizer {
 	}
 
 	/**
-	 * Does localization and adjusts for the starting corner
+	 * Localizes at any starting corner
 	 * 
-	 * @param corner
+	 * @param corner Starting corner 1-4
 	 */
 	public void doLocalization(StartCorner corner) {
 		doLocalization();
@@ -187,7 +182,14 @@ public class LightLocalizer {
 		default:
 		}
 	}
-
+	
+	/**
+	 * Rotate the robot until a line is detected
+	 * 
+	 * @param initialPause Interval of the initial pause in milliseconds
+	 * @param stopOnceDone Whether to stop the motors or not when a line is detected
+	 * @return The angle given by the odometer when a line is detected
+	 */
 	private float rotateTilLineDetected(int initialPause, boolean stopOnceDone) {
 		float theta = 0;
 
@@ -221,14 +223,20 @@ public class LightLocalizer {
 		return theta;
 	}
 
+	/**
+	 * 
+	 * @param theta1 Angle when the first line is detected
+	 * @param theta2 Angle when the second line is detected
+	 * @param d Distance between the light sensor and the center of rotation
+	 * @return The exact coordinate where the robot's center of rotation is located on the map
+	 */
+	
 	private float computeCoordinate(float theta1, float theta2, float d) {
 		return (float) (-d * Math.cos(Math.toRadians(theta1 - theta2) / 2));
 	}
 
 	private float computeDeltaTheta(float theta1, float theta2) {
-
 		return (theta1 - theta2) / 2 - theta1 + 180;
-
 	}
 
 	private void pause(int milliseconds) {
@@ -239,6 +247,9 @@ public class LightLocalizer {
 		}
 	}
 	
+	/**
+	 * Rotate the robot until a line is detected and stop the motors
+	 */
 	private void sweepForLine() {
 		DifferentialPilot myPilot = new DifferentialPilot(5.36, 5.36,
 				16.32, myLeftMotor, myRightMotor, false);
